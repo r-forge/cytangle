@@ -1,0 +1,6 @@
+###
+### NAMESPACE
+###
+
+import(methods)
+import(graphics)

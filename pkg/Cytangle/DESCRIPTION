@@ -1,0 +1,12 @@
+Package: Cytangle
+Version: 0.0.1
+Date: 2016-11-08
+Title: Analyzing Single Cell Mass Cytometry Data
+Author: Kevin R. Coombes, Reginald McGee
+Maintainer: Kevin R. Coombes <krc@silicovore.com>
+Description: Defines classes and methods to analyze how relationships
+between protein markers vary in single cell mass cytometry data.
+Depends: R (>= 3.0)
+Imports: methods, graphics
+License: Apache License (== 2.0)
+URL: http://oompa.r-forge.r-project.org/
