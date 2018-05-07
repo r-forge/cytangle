@@ -4,3 +4,4 @@
 
 import(methods)
 import(graphics)
+import(flowCore)
