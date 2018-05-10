@@ -1,0 +1,12 @@
+Header,Conjugate,Antigen,MolWt,Short,Panel,Role
+Time,,,,,Time,admin
+Cell_length,,,,,Cell_length,admin
+(Pd102)Di,Pd102,,102,,Pd102,barcode
+(Pd104)Di,Pd104,,104,,Pd104,barcode
+(Pd105)Di,Pd105,,105,,Pd105,barcode
+(Pd106)Di,Pd106,,106,,Pd106,barcode
+(Pd108)Di,Pd108,,108,,Pd108,barcode
+(Pd110)Di,Pd110,,110,,Pd110,barcode
+FileNum,,,,,File Number,admin
+beadDist,,,,,beadDist,admin
+barcode,,,,,barcode,admin
