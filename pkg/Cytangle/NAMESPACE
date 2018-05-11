@@ -5,3 +5,6 @@
 import(methods)
 import(graphics)
 import(flowCore)
+import(Biobase)
+
+exportClass("CytangleDesign")

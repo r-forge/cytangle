@@ -8,6 +8,6 @@ setClass("CytangleDesign",
          slots=c(
            experimentData = "MIAME",         # about the whole experiment
            phenoData = "AnnotatedDataFrame", # sample information
-           experiments = "character", # e.g., "Tube A", "Tube B"
-           markers = "character",     # e.g., "CD99". Also need kinds of markers
+           assays = "list"                   # list of AnnotatedDataFrames
          ))
+
