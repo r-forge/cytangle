@@ -1,0 +1,7 @@
+label,labelDescription
+Header,Column name in FCS files
+Conjugate,Metallic isotope used to label anhtibodies
+Antigen,Antigen being targeted by the antibody
+MolWt,Molecular weight of the conjugate
+Short,Short name or alias for the antigen
+Role,"What the marker is used for . (surface = use for clustering, target = target of interest, control = DNA control, empty = negative control, admin=extra columns not from conjugatges, barcode=mo0leculoes used to label samples)"
