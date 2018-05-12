@@ -7,4 +7,12 @@ import(graphics)
 import(flowCore)
 import(Biobase)
 
+### utility
+export("readMIAMEfromFile")
+
+### design class
+export("CytangleDesign")
 exportClass("CytangleDesign")
+exportMethods("dim")
+
+
