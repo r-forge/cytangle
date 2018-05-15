@@ -1,6 +1,6 @@
 Package: Cytangle
-Version: 0.0.4
-Date: 2018-05-12
+Version: 0.0.5
+Date: 2018-05-15
 Title: Analyzing Single Cell Mass Cytometry Data
 Author: Kevin R. Coombes, Reginald McGee
 Maintainer: Kevin R. Coombes <krc@silicovore.com>

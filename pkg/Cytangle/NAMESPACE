@@ -15,4 +15,7 @@ export("CytangleDesign")
 exportClass("CytangleDesign")
 exportMethods("dim")
 
+### FCS2RDA
+export("readTangleRDA")
+
 

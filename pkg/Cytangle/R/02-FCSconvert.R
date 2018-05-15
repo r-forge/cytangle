@@ -3,28 +3,32 @@
 ### Function to convert from unified SPADE-clustered FCS files to
 ### node-separated chunks to be stored as Rdata files.
 
-readTangleRDA <- function(patient, node="all", path=".") {
-  loc <- file.path(path, patient)
+readTangleRDA <- function(patient, node="all", path=NULL) {
+  if (is.null(path)) {
+    loc <- patient
+  } else {
+    loc <- file.path(path, patient)
+  }
   if(!dir.exists(loc)) {
-    stop("Cannote find directory:", loc, "\n")
+    stop("Cannot find directory:", loc, "\n")
   }
   if (node == "all") {
-    fils <- dir(loc, pattern="node*Rda")
+    fils <- dir(loc, pattern="node(.*)Rda")
   } else {
     fils <- paste("node", node, ".Rda", sep="")
   }
   if (length(fils) == 0) {
-    stop("")
+    stop("No files to process.\n")
   }
   val <- NULL
-  for (fil %in% fils) {
+  for (fil in fils) {
     load(file.path(loc, fil))
     if (is.null(val)) {
-      val <- tempmat
+      val <- tempMat
     } else {
-      val <- rbid(val, tepMat)
+      val <- rbind(val, tempMat)
     }
-  rm(tempmat)
+    rm(tempMat)
   }
   val
 }
