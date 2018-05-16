@@ -10,9 +10,9 @@ readTangleRDA <- function(patient, node="all", path=NULL) {
     loc <- file.path(path, patient)
   }
   if(!dir.exists(loc)) {
-    stop("Cannot find directory:", loc, "\n")
+    stop("Cannot find directory: ", loc, "\n")
   }
-  if (node == "all") {
+  if (length(node) == 1 && node == "all") {
     fils <- dir(loc, pattern="node(.*)Rda")
   } else {
     fils <- paste("node", node, ".Rda", sep="")
