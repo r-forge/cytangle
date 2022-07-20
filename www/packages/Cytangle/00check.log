@@ -1,0 +1,206 @@
+* using log directory 'C:/Users/KRC/Desktop/RForge/cytangle/pkg/Cytangle.Rcheck'
+* using R version 4.2.1 (2022-06-23 ucrt)
+* using platform: x86_64-w64-mingw32 (64-bit)
+* using session charset: UTF-8
+* using option '--as-cran'
+* checking for file 'Cytangle/DESCRIPTION' ... OK
+* this is package 'Cytangle' version '0.3.0'
+* checking CRAN incoming feasibility ... NOTE
+Maintainer: 'Kevin R. Coombes <krc@silicovore.com>'
+
+New submission
+
+Package has a FOSS license but eventually depends on the following
+package which restricts use:
+  cytolib
+
+The Date field is over a month old.
+* checking package namespace information ... OK
+* checking package dependencies ... OK
+* checking if this is a source package ... OK
+* checking if there is a namespace ... OK
+* checking for executable files ... OK
+* checking for hidden files and directories ... OK
+* checking for portable file names ... OK
+* checking whether package 'Cytangle' can be installed ... OK
+* checking installed package size ... OK
+* checking package directory ... OK
+* checking for future file timestamps ... OK
+* checking DESCRIPTION meta-information ... OK
+* checking top-level files ... OK
+* checking for left-over files ... OK
+* checking index information ... OK
+* checking package subdirectories ... OK
+* checking R files for non-ASCII characters ... OK
+* checking R files for syntax errors ... OK
+* checking whether the package can be loaded ... OK
+* checking whether the package can be loaded with stated dependencies ... OK
+* checking whether the package can be unloaded cleanly ... OK
+* checking whether the namespace can be loaded with stated dependencies ... OK
+* checking whether the namespace can be unloaded cleanly ... OK
+* checking use of S3 registration ... OK
+* checking dependencies in R code ... NOTE
+Namespaces in Imports field not imported from:
+  'colorspace' 'igraph' 'plotrix'
+  All declared Imports should be used.
+* checking S3 generic/method consistency ... OK
+* checking replacement functions ... OK
+* checking foreign function calls ... OK
+* checking R code for possible problems ... NOTE
+chi_delta_groups_vs_normals: no visible binding for global variable
+  'featInd'
+chi_delta_groups_vs_normals: no visible binding for global variable
+  'groups'
+chi_delta_groups_vs_normals: no visible binding for global variable
+  'num_clusts'
+chi_delta_groups_vs_normals: no visible binding for global variable
+  'root'
+chi_delta_groups_vs_normals: no visible binding for global variable
+  'dataset'
+chi_delta_groups_vs_normals: no visible binding for global variable
+  'run_date'
+chi_delta_groups_vs_normals: no visible binding for global variable
+  'zgroup_10'
+chi_delta_patients: no visible binding for global variable 'featInd'
+chi_delta_patients: no visible binding for global variable 'groups'
+chi_delta_patients: no visible global function definition for 'combn'
+chi_delta_patients: no visible binding for global variable 'num_clusts'
+chi_delta_patients: no visible binding for global variable 'root'
+chi_delta_patients: no visible binding for global variable 'dataset'
+chi_delta_patients: no visible binding for global variable 'run_date'
+chi_delta_pooled_subsample: no visible binding for global variable
+  'featInd'
+chi_delta_pooled_subsample: no visible binding for global variable
+  'groups'
+chi_delta_pooled_subsample: no visible binding for global variable
+  'num_clusts'
+chi_delta_pooled_subsample: no visible binding for global variable
+  'root'
+chi_delta_pooled_subsample: no visible binding for global variable
+  'dataset'
+chi_delta_pooled_subsample: no visible binding for global variable
+  'run_date'
+chi_delta_pooled_subsample: no visible binding for global variable
+  'tempMat'
+chi_delta_pooled_subsample2: no visible binding for global variable
+  'featInd'
+chi_delta_pooled_subsample2: no visible binding for global variable
+  'groups'
+chi_delta_pooled_subsample2: no visible binding for global variable
+  'num_clusts'
+chi_delta_pooled_subsample2: no visible binding for global variable
+  'root'
+chi_delta_pooled_subsample2: no visible binding for global variable
+  'dataset'
+chi_delta_pooled_subsample2: no visible binding for global variable
+  'run_date'
+chi_delta_pooled_subsample2: no visible binding for global variable
+  'tempMat'
+cm_plots: no visible global function definition for 'colorRampPalette'
+cm_plots: no visible global function definition for 'diverge_hcl'
+cm_plots: no visible global function definition for 'dev.new'
+correlate: no visible binding for global variable 'eye26'
+group_biaxial_plot: no visible binding for global variable 'num_clusts'
+group_biaxial_plot: no visible binding for global variable
+  'all_adjusts'
+group_biaxial_plot: no visible binding for global variable 'short_list'
+group_biaxial_plot: no visible binding for global variable 'groups'
+group_biaxial_plot: no visible binding for global variable 'root'
+group_biaxial_plot: no visible binding for global variable 'dataset'
+group_biaxial_plot: no visible binding for global variable 'run_date'
+group_biaxial_plot: no visible binding for global variable 'tempMat'
+group_biaxial_plot: no visible global function definition for 'lm'
+indiv_biaxial_plot: no visible binding for global variable 'num_clusts'
+indiv_biaxial_plot: no visible binding for global variable
+  'all_adjusts'
+indiv_biaxial_plot: no visible binding for global variable 'root'
+indiv_biaxial_plot: no visible binding for global variable 'dataset'
+indiv_biaxial_plot: no visible binding for global variable 'run_date'
+indiv_biaxial_plot: no visible binding for global variable 'groups'
+indiv_biaxial_plot: no visible binding for global variable 'tempMat'
+local_chi_delta_groups_vs_normals: no visible binding for global
+  variable 'num_clusts'
+local_chi_delta_groups_vs_normals: no visible binding for global
+  variable 'featInd'
+local_chi_delta_groups_vs_normals: no visible binding for global
+  variable 'groups'
+local_chi_delta_groups_vs_normals: no visible binding for global
+  variable 'root'
+local_chi_delta_groups_vs_normals: no visible binding for global
+  variable 'dataset'
+local_chi_delta_groups_vs_normals: no visible binding for global
+  variable 'run_date'
+local_chi_delta_groups_vs_normals: no visible binding for global
+  variable 'zgroup_10'
+mst_compare: no visible global function definition for 'read_graph'
+mst_compare: no visible global function definition for 'read.table'
+mst_compare: no visible global function definition for
+  'set_vertex_attr'
+mst_compare: no visible binding for global variable 'famu3'
+mst_cor: no visible global function definition for 'read_graph'
+mst_cor: no visible global function definition for 'read.table'
+mst_cor: no visible global function definition for 'set_vertex_attr'
+mst_cor0: no visible binding for global variable 'folder'
+mst_cor0: no visible global function definition for 'read_graph'
+mst_cor0: no visible global function definition for 'read.table'
+mst_cor0: no visible global function definition for 'set_vertex_attr'
+mst_cor0: no visible binding for global variable 'mst7'
+node_finder: no visible binding for global variable 'root'
+node_finder: no visible binding for global variable 'dataset'
+node_finder: no visible binding for global variable 'run_date'
+node_finder: no visible global function definition for 'read_graph'
+node_finder: no visible global function definition for 'read.table'
+node_finder: no visible global function definition for
+  'set_vertex_attr'
+overlay: no visible global function definition for 'draw.ellipse'
+prev_mst_cor: no visible global function definition for 'read_graph'
+prev_mst_cor: no visible global function definition for 'read.table'
+prev_mst_cor: no visible global function definition for
+  'set_vertex_attr'
+prev_mst_cor0: no visible binding for global variable 'famu2'
+prev_mst_cor0: no visible global function definition for
+  'set_vertex_attr'
+prev_mst_cor0: no visible binding for global variable 'mst2'
+prev_mst_cor0: no visible binding for global variable 'lay'
+readTangleRDA: no visible binding for global variable 'tempMat'
+s0_comp: no visible global function definition for 'quantile'
+s0_comp: no visible global function definition for 'mad'
+s0_comp: no visible global function definition for 'var'
+Undefined global functions or variables:
+  all_adjusts colorRampPalette combn dataset dev.new diverge_hcl
+  draw.ellipse eye26 famu2 famu3 featInd folder groups lay lm mad mst2
+  mst7 num_clusts quantile read.table read_graph root run_date
+  set_vertex_attr short_list tempMat var zgroup_10
+Consider adding
+  importFrom("grDevices", "colorRampPalette", "dev.new")
+  importFrom("stats", "lm", "mad", "quantile", "var")
+  importFrom("utils", "combn", "read.table")
+to your NAMESPACE file.
+* checking for missing documentation entries ... WARNING
+Undocumented code objects:
+  'CytangleDesign' 'overlay' 'readMIAMEfromFile' 'readTangleRDA'
+Undocumented data sets:
+  'layoutTable' 'ucoords'
+Undocumented S4 classes:
+  'CytangleDesign'
+Undocumented S4 methods:
+  generic 'dim' and siglist 'CytangleDesign'
+All user-level objects in a package (including S4 classes and methods)
+should have documentation entries.
+See chapter 'Writing R documentation files' in the 'Writing R
+Extensions' manual.
+* checking contents of 'data' directory ... OK
+* checking data for non-ASCII characters ... OK
+* checking data for ASCII and uncompressed saves ... OK
+* checking R/sysdata.rda ... OK
+* checking examples ... NONE
+* checking for unstated dependencies in 'tests' ... OK
+* checking tests ... OK
+  Running '01-testDesign.R'
+  Running '02-testRDA.R'
+* checking PDF version of manual ... OK
+* skipping checking HTML version of manual: no command 'tidy' found
+* checking for non-standard things in the check directory ... OK
+* checking for detritus in the temp directory ... OK
+* DONE
+Status: 1 WARNING, 3 NOTEs
