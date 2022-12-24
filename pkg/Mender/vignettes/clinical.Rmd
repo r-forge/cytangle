@@ -1,0 +1,227 @@
+---
+title: "Mender: A Clinical Data Set Example"
+author: "Kevin R. Coombes"
+data: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Mender: A Clinical Data Set Example}
+  %\VignetteKeywords{TDA, topologicla data analysis, c;inical data}
+  %\VignetteDepends{Mender,igraph,Polychrome,Mercator,ClassDiscovery,dendextend,ape}
+  %\VignettePackage{Mender}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r opts, echo=FALSE}
+knitr::opts_chunk$set(fig.width=8, fig.height=5)
+options(width=96)
+.format <- knitr::opts_knit$get("rmarkdown.pandoc.to")
+.tag <- function(N, cap ) ifelse(.format == "html",
+                                 paste("Figure", N, ":",  cap),
+                                 cap)
+```
+# Introduction
+We want to illustrate the `Mender` package (Version `r packageVersion("Mender")`)
+with a clinical data set. Not surprisingly, we start by loading the package.
+```{r Mender}
+library(Mender)
+```
+We also load a lot of useful packages (some of which will eventually get incorporated
+into the package requirements).
+```{r libpack}
+library(Polychrome)
+data(Dark24)
+data(Light24)
+library(igraph)
+library(Mercator)
+library(ClassDiscovery)
+library(dendextend)
+library("ape")
+```
+Now we fetch the sample data set that is included with the package.
+```{r CLL}
+data(CLL)
+ls()
+```
+
+Here are some plots of the `TDA` results using tools from the original package.
+```{r diag, fig.width = 12}
+diag <- ripdiag[["diagram"]]
+summary(diag)
+opar <- par(mfrow = c(1,2))
+plot(diag)
+plot(diag, barcode = TRUE, main = "Barcode")
+par(opar)
+```
+
+```{r, fig.width = 9}
+L <- TDA::landscape(diag, KK = 1)
+S <- TDA::silhouette(diag)
+
+opar <- par(mfrow = c(1, 2))
+plot(L, type = "l", main = "Landscape")
+plot(S, type = "l", main = "Silhouette")
+par(opar)
+```
+
+```{r cltree}
+crt <- TDA::clusterTree(as.matrix(daisydist), k = 5, dist = "arbitrary")
+plot(crt, type = "lambda",main = "Lambda Cluster Tree")
+```
+
+
+Now we use our `Mercator` package to view the underlying data.
+```{r merc, fig.width = 9, fig.height = 9}
+mercury <- Mercator(daisydist, metric = "daisy", method = "hclust", K = 8)
+mercury <- addVisualization(mercury, "mds")
+mercury <- addVisualization(mercury, "tsne")
+mercury <- addVisualization(mercury, "umap")
+
+opar <- par(mfrow = c(2,2), cex = 1.2)
+plot(mercury, view = "hclust")
+plot(mercury, view = "mds", main = "MDS")
+plot(mercury, view = "tsne", main = "t-SNE")
+plot(mercury, view = "umap", main = "UMAP")
+par(opar)
+```
+
+Here is a picture of the "zero-cycle" data, which can also be used ultimately to cluster
+the points.
+```{r cycles}
+cycles <- ripdiag[["cycleLocation"]][2:266] # shouldn't hard code the 26 0-cycles in the diagram
+
+W <- mercury@view[["umap"]]$layout
+plot(W, main = "Connected Zero Cycles")
+for (cyc in cycles) {
+  points(W[cyc[1], , drop = FALSE], pch = 16,col = "red")
+  X <- c(W[cyc[1], 1], W[cyc[2],1])
+  Y <- c(W[cyc[1], 2], W[cyc[2],2])
+  lines(X, Y)
+}
+```
+
+## Dimension Zero
+We can convert the 0-dimensional cycles into a dendrogram, by first passing them through the `igraph` package..
+```{r}
+edges <- t(do.call(cbind, cycles)) # this cvreates an "edgelist"
+G <- graph_from_edgelist(edges)
+G <- set_vertex_attr(G, "label", value = attr(daisydist, "Labels"))
+set.seed(2734)
+Lt <- layout_as_tree(G)
+L <- layout_with_fr(G)
+
+opar <- par(mfrow = c(1,2))
+plot(G, layout = Lt, main = "As Tree")
+plot(G, layout = L, main = "FR")
+par(opar)
+```
+
+There are a variety of community-finding algorithms that we can apply. "Edge-betweenness" seems 
+to work best.
+```{r keg}
+# #keg <- cluster_fluid_communities(G, 12) # 12, as requested, though with comlpaints
+#keg <- cluster_leading_eigen(G)    # undirected
+#keg <- cluster_fast_greedy(G)      # undirected
+#keg <- cluster_louvain(G)          # undirected
+#keg <- cluster_leiden(G)           # undirected
+#keg <- cluster_optimal(G)          # too slow
+# keg <- cluster_label_prop(G)       # 177 (terrible!)
+# keg <- cluster_infomap(G)          # 34
+# keg <- cluster_walktrap(G)         # 24
+# keg <- cluster_spinglass(G)        # 21
+keg <- cluster_edge_betweenness(G) # 20
+table(membership(keg)) 
+pal <- Dark24[membership(keg)]
+```
+
+The first line in the next code chunk shows that we did actually produce a tree.
+We explore three different ways ro visualize it
+```{r fig.width = 7}
+is.hierarchical(keg)
+H <- as.hclust(keg)
+H$labels <- attr(daisydist, "Labels")
+K <-  7
+colset <- Light24[cutree(H, k=K)]
+G2 <- set_vertex_attr(G, "color", value = colset)
+e <- 0.01
+opar <- par(mai = c(e, e, e, e))
+plot(G2, layout = L)
+par(opar)
+
+D <- as.dendrogram(H)
+labels_colors(D) <- colset[order.dendrogram(D)]
+
+P <- as.phylo(H)
+
+plotColoredClusters(H, labs=H$labels, cols = colset, main = "Hclust")
+plot(D, main = "Dendextend/Dendrogram")
+plot(P, type = "u", tip.color = colset, cex = 1.2, main = "Ape/Cladogram")
+```
+
+We can visualize the `r K` clusters on the original data.
+```{r fig.width=12}
+swap <- invertColors()
+opar <- par(mfrow=c(1,3), cex = 1.2)
+U <- mercury@view[["mds"]]
+plot(U, col = colset, pch = 16, main = "MDS")
+V <- mercury@view[["tsne"]]$Y
+plot(V, col = colset, pch = 16, main = "tSNE")
+W <- mercury@view[["umap"]]$layout
+plot(W, col = colset, pch = 16, main = "UMAP")
+par(opar)
+par(swap)
+```
+
+```{r fig.width=10, fig.height=10}
+venus <- recluster(mercury, K = K)
+newc <- cutree(H, k = K)
+names(newc) <- attr(venus@distance,"Labels")
+venus <- setClusters(venus, newc)
+venus@palette <- Light24
+
+swap <- invertColors()
+opar <- par(mfrow = c(2,2), cex = 1.2)
+plot(venus, view = "hclust")
+plot(venus, view = "mds", main = "MDS")
+plot(venus, view = "tsne", main = "t-SNE")
+plot(venus, view = "umap", main = "UMAP")
+par(opar)
+par(swap)
+```
+
+
+# Significance
+We have a statistical approach to deciding which of the detected cycles are statistically
+significant. Empitirically, the persistence of 0-dimensional cycles looks like a gamma
+distribution, while the persistence of higher dimensional cycles looks like an exponential
+distribution. In both cases, we use an empirical Bayes approach, treating the observed
+distribution as a mixture of either gamma or exponential (as appropriate) with an unknown
+distribution contributing to heavier tails.
+```{r persistence}
+persistence <- diag[, "Death"] - diag[, "Birth"]
+```
+
+```{r d0}
+d0 <- persistence[diag[, "dimension"] == 0]
+d0 <- d0[d0 < 1]
+summary(d0)
+mu <- mean(d0)
+nu <- median(d0)
+sigma <- sd(d0)
+shape <- mu^2/sigma^2
+rate <- mu/sigma^2
+xx <- seq(0, 0.23, length = 100)
+yy <- dgamma(xx, shape = shape, rate = rate)
+hist(d0, breaks = 123, freq = FALSE)
+lines(xx, yy, col = "purple", lwd = 2)
+```
+
+```{r d1}
+d1 <- persistence[diag[, "dimension"] == 1]
+summary(d1)
+mu <- mean(d1)
+nu <- median(d1)
+sigma <- sd(d1)
+c(mu, nu/log(2), sigma)
+c(1/mu, log(2)/nu,1/sigma)
+Mender:::expoFit(d1)$lambda # should be close to log(2)/median? 
+```

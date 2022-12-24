@@ -1,0 +1,246 @@
+---
+title: "Cytangle: Topological Data Analysis (3D)"
+author: "Kevin R. Coombes"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    theme: yeti
+    highlight: kate
+---
+  
+```{r setup, include=FALSE, results="hide"}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r mycss, results="asis", echo=FALSE}
+cat('
+<style type="text/css">
+b, strong {color: red; }
+i, em {color: blue; }
+.defn {color: purple; }
+.para {color: purple;
+      font-weight: bold;
+}
+.figure { text-align: center; }
+.caption { font-weight: bold; }
+</style>
+')
+```
+
+# Overview
+We are preparing CyTOF (mass cytometry) data from Greg Behbehani for analysis.
+There are two parallel experiments from the same original set of samples, which
+consists of bone marrow cells from patients
+with acute myeloid leukemia (AML) or from normal controls. Experiment A studies
+cell cycle proteins while experiment B studies B-cell receptor signaling
+proteins. Both experiments use the same set of cell surface markers to identify
+the individual type of white cells present in the data.
+
+The goal of this report is to apply topological data analysis (TDA) to
+nodes (from all groups of samples in both experiments) with both a
+reasonable number of cells and a PC dimension of at least 3.
+
+# Getting Started
+Start by defining the default paths.
+```{r paths}
+source("r00-paths.R")
+```
+Then load the relevant summary data for both tubes (experiments).
+```{r summaries}
+load(file.path(paths$clean, "cellCountsA.Rda"))
+load(file.path(paths$clean, "cellCountsB.Rda"))
+load(file.path(paths$clean, "groups.Rda"))
+load(file.path(paths$clean, "isotopes.Rda"))
+```
+And load our library package for computing the number of principal components.
+```{r lib}
+library(ClassDiscovery)
+library(TDA)
+```
+## Down Sampling
+
+We borrow some of the down-sample code from spade. The point of this
+code is to draw fewer samples from the densest part of the data in
+order to ensure that rarer subtypes or states are retained. We do this
+largely to decrease computation time (which, for TDA, is roughly
+$O(N^2)$) while preserving essential structures,
+
+```{r compDensity}
+source("u05-downSample.R")
+compDensity
+```
+
+```{r downSample}
+downSample
+```
+
+## Using PC Dimensions
+We previously computed the number of significant principal components
+at each node in each sample. We now load those results.
+```{r pcdim}
+load(file.path(paths$scratch, "pcdimA.Rda"))
+load(file.path(paths$scratch, "pcdimB.Rda"))
+```
+# Long TDA Computations
+We are almost ready to apply TDA; for nodes with lots of cells, these
+computations can be quite time-consuming. First, though we must set up the
+directories to store the results. 
+
+```{r directories}
+ripDir <- file.path(paths$scratch, "rip3d")
+if (!file.exists(ripDir)) dir.create(ripDir)
+aDir <- file.path(ripDir, "A")
+if (!file.exists(aDir)) dir.create(aDir)
+bDir <- file.path(ripDir, "B")
+if (!file.exists(bDir)) dir.create(bDir)
+rm(aDir, bDir)
+figDir <- file.path(ripDir, "figs")
+if (!file.exists(figDir)) dir.create(figDir)
+aDir <- file.path(figDir, "A")
+if (!file.exists(aDir)) dir.create(aDir)
+bDir <- file.path(figDir, "B")
+if (!file.exists(bDir)) dir.create(bDir)
+rm(aDir, bDir)
+```
+
+# Tube A (Cell Cycle)
+```{r tubeA}
+set.seed(25982)
+count <- 0
+for (N in rownames(cellCountsA)) {   # nodes
+  for (S in colnames(cellCountsA)) { # samples
+    if (cellCountsA[N, S] > 5000) next
+    if (is.na(pcdimA[N, S]) | pcdimA[N, S] < 4) next # only do case of pcd >= 4
+    count <- count + 1
+    label <- paste("TubeA", S, N, sep=' ')
+    fname <- paste("tubeA", S, N, "rips.Rda", sep='-')
+    if (file.exists(file.path(ripDir, "A", fname))) {
+      cat("Skipping", S, "at node", N, "\n", file=stderr()) 
+      next
+    }
+    load(file.path(paths$clusters, "A", S, paste(N, "Rda", sep='.')))
+    M <- tempMat[, Atarget]
+    cat("Working on", S, "at node", N,
+        "with", nrow(M), "cells.\n", file=stderr()) 
+    spca <- SamplePCA(t(M))
+    usable <- spca@scores[, 1:4]
+    if (nrow(usable) > 120) {
+      keeper <- downSample(usable)
+    } else {
+      keeper <- usable
+    }
+    ## look up to 3D topological holes (1 = loops, 2 = spheres, 3 = hyper...)
+    rips <- ripsDiag(keeper, 3, 5, library="Dionysus", location=TRUE)
+    save(rips, keeper, file = file.path(ripDir, "A", fname))
+    png(file=file.path(figDir, "A", sub("Rda", "png", fname)),
+        width=640, height=640, bg="white")
+    plot(rips[["diagram"]], barcode=TRUE, main=label)
+    dev.off()
+    gc()
+  }
+}
+cat("There are", count, "nodes from Tube A across all samples.\n")
+```
+
+# Tube B (BCR Signaling)
+```{r tubeB}
+set.seed(88236)
+count <- 0
+for (N in rownames(cellCountsB)) {   # nodes
+  for (S in colnames(cellCountsB)) { # samples
+    if (cellCountsB[N, S] > 5000) next
+    if (is.na(pcdimB[N, S]) | pcdimB[N, S] < 4) next
+    label <- paste("TubeB", S, N, sep=' ')
+    fname <- paste("tubeB", S, N, "rips.Rda", sep='-')
+    count <- count + 1
+    if (file.exists(file.path(ripDir, "B", fname))) {
+      cat("Skipping", S, "at node", N, "\n", file=stderr()) 
+      next
+    }
+    load(file.path(paths$clusters, "B", S, paste(N, "Rda", sep='.')))
+    M <- tempMat[, Btarget]
+    cat("Working on", S, "at node", N,
+        "with", nrow(M), "cells.\n", file=stderr()) 
+    spca <- SamplePCA(t(M))
+    usable <- spca@scores[, 1:4]
+    if (nrow(usable) > 120) {
+      keeper <- downSample(usable)
+    } else {
+      keeper <- usable
+    }
+    rips <- ripsDiag(keeper, 3, 5, library="Dionysus", location=TRUE)
+    save(rips, keeper, file = file.path(ripDir, "B", fname))
+    png(file=file.path(figDir, "B", sub("Rda", "png", fname)),
+        width=640, height=640, bg="white")
+    plot(rips[["diagram"]], barcode=TRUE, main=label)
+    dev.off()
+    gc()
+  }
+}
+cat("There are", count, "nodes from Tube B across all samples.\n")
+```
+
+# Collate the rips diagram lengths
+We now perform one more long computation; we assemble a data frame with the
+rips-TDA results for all the nodes and all the samples where we performed the
+analysis. The time-cost for this step arises mainly from having to read lots
+of files from the hard drive.
+```{r AB}
+f <- file.path(paths$scratch, "collate3d.Rda")
+if (file.exists(f)) {
+  load(f)
+} else {
+  collate <- data.frame(Dimension=NA, Duration = NA,
+                        Tube = NA, Sample = NA, Node = NA, PCDim = NA)[-1,]
+  for (N in rownames(cellCountsA)) {   # nodes
+    for (S in colnames(cellCountsA)) { # samples
+      fname <- file.path(ripDir, "A", paste("tubeA", S, N, "rips.Rda", sep='-'))
+      if (file.exists(fname)) {
+        load(fname)              # overwrites local 'rips' and 'keeper' objects
+        M <- rips$diagram[, 1:3] # convert from S3 'diagram' to 'matrix'
+        L <- M[,3] - M[,2]       # duration 
+        daft <- data.frame(Dimension = M[,1],
+                           Duration = L,
+                           Tube = "A",
+                           Sample = S,
+                           Node = N,
+                           PCDim = pcdimA[N,S])
+        collate <- rbind(collate, daft)
+      }
+    }
+  }
+
+  for (N in rownames(cellCountsB)) {   # nodes
+    for (S in colnames(cellCountsB)) { # samples
+      fname <- file.path(ripDir, "B", paste("tubeB", S, N, "rips.Rda", sep='-'))
+      if (file.exists(fname)) {
+        load(fname)              # overwrites local 'rips' and 'keeper' objects
+        M <- rips$diagram[, 1:3] # convert from S3 'diagram' to 'matrix'
+        L <- M[,3] - M[,2]       # duration 
+        daft <- data.frame(Dimension = M[,1],
+                           Duration = L,
+                           Tube = "B",
+                           Sample = S,
+                           Node = N,
+                           PCDim = pcdimB[N,S])
+        collate <- rbind(collate, daft)
+      }
+    }
+  }
+  save(collate, file = f)
+}
+rm(f)
+```
+
+
+
+# Appendix
+These computations were performed in the following environment:
+```{r si}
+sessionInfo()
+```
+and in the following directory:
+```{r where}
+getwd()
+```
+

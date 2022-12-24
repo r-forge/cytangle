@@ -1,0 +1,510 @@
+---
+title: "Cytangle: Testing Significance of TDA"
+author: "Kevin R. Coombes"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    theme: yeti
+    highlight: kate
+---
+  
+```{r setup, include=FALSE, results="hide"}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r mycss, results="asis", echo=FALSE}
+cat('
+<style type="text/css">
+b, strong {color: red; }
+i, em {color: blue; }
+.defn {color: purple; }
+.para {color: purple;
+      font-weight: bold;
+}
+.figure { text-align: center; }
+.caption { font-weight: bold; }
+</style>
+')
+```
+
+# Overview
+We are preparing CyTOF (mass cytometry) data from Greg Behbehani for analysis.
+There are two parallel experiments from the same original set of samples, which
+consists of bone marrow cells from patients
+with acute myeloid leukemia (AML) or from normal controls. Experiment A studies
+cell cycle proteins while experiment B studies B-cell receptor signaling
+proteins. Both experiments use the same set of cell surface markers to identify
+the individual type of white cells present in the data.
+
+The goal of this report is to develop methods for testing the significance of
+topological "events" in differnt dimensions.
+
+# Getting Started
+Start by defining the default paths.
+```{r paths}
+source("r00-paths.R")
+```
+Load some useful packages.
+```{r libs}
+library(splines)
+library(ClassDiscovery)
+library(Polychrome)
+```
+
+Read the source code for a few utility funcions.
+```{r util}
+source("u01-justOverlay.R")
+```
+
+
+Finally, load the collated results of the TDA.
+```{r collate}
+load(file.path(paths$scratch, "recollate.Rda"))
+```
+
+# Empirical Bayes
+We noticed in the previous report (`x10`) that the distributions of the duration
+of topological events (TEs) in dimensiosn one and two looked nearly exponential
+Here we are going to try to work out more exactly what those distributions are.
+
+The idea (due, not surprisingly, to Brad Efron) is to model the distribution of
+observed durations as a mixture
+$$f(x) = \phi f_0(x) + (1-\phi) f_1(x), $$
+where $f_0(x)$ is the "known" theoretical distribtion (in this case, exponential,
+but with a parameter that we have to estimate from the data) and a completely
+arbitrary unknown distributi0on $f_1(x)$. We can't estimate $f_1(x)$ directly,
+but we can estimate the full distribtion $f(x)$ and solve for $f_1(x) as a
+function of the mixing parameter $\phi$.
+
+The code to make this work when $f_0(x) = \lambda e^{-\lambda x}$ comes from
+an exponential distibution is contained in one of our utility files:
+```{r ebexpo}
+source("u03-ebexpo.R")
+```
+
+# Dimension Two (Voids or Spheres)
+We look first at the two-dimensional case, TO start, we need to pull the
+appropriate subset of "durations" out of the `collate` object.
+```{r dd}
+attach(collate)
+dd <- Duration[Dimension == 2]
+detach()
+summary(dd)
+```
+
+Now we are going to try to fit the "theoretical" exponential distribuion, which
+requires us to optimize the single rate parameter $\lambda$, which should be one
+over the mean for an actual exponential distribution. We might try to estimate
+this parameter by the "method of moments". In other words, just compute the sample
+mean $\mu$ and invert it. However, We expect the mean of the observed data to be
+larger than the mean of the underlying (null) expoential distribution because all
+of the outliers will be large. Since our ultimate goal is to compare the empriical
+and theoretical probability density functions (PDFs) to see if the tail is bigger
+than expected, we probably don't want to use this simple-minded approach. 
+
+Instead, we are going to use a maximum likelihood approach. We get there by writing
+a function that measures the sum of the squared errors between the theoretical
+exponential function (depending on $\lambda$) and the empirical PDF. We then use 
+the built-in optimization routines to find the best $\lambda$
+```{r SSE, fig.width=8, fig.height=6, fig.cap="Sum of squared errors as a function of the exponential rate parameter."}
+ef <- expoFit(dd)
+plotExpoFit(ef)
+```
+The resulting plot confirms our suspicions; the MLE value of $\lambda$ is likely
+to be much better than the reciprocal of the estimated mean $\mu$.
+
+## EB Histogram
+At this point, we are ready for the empirical Bayes portion. The code to do this
+is liberally borrowed from our implementation of the `MultiWilcoxon` function in
+the `ClassComparison` package.
+```{r EBexpo}
+eb <- EBexpo(ef)
+th <- tailHisto(eb$expo$h0, 0.2)
+```
+The next block of code creats and saves a plot of the fitted model.
+```{r makeHistFit}
+fimage <- file.path(paths$R01figs, "histfit.png")
+png(file=fimage, width=6*300, height=6*300, res=300, bg="white")
+opar <- par(mai=c(0.9, 0.9, 0.6, 0.2))
+histEBexpo(eb)
+lines(eb$expo$X0, eb$theoretical.pdf, lwd=2, col='red')
+lines(eb$expo$X0, eb$expo$pdf, lwd=2, col='blue')
+par(mai=c(3.4, 3.0, 0.6, 0.6), new=TRUE)
+plot(th, freq=FALSE, main="")
+lines(eb$expo$X0, eb$theoretical.pdf, lwd=2, col='red')
+lines(eb$expo$X0, eb$expo$pdf, lwd=2, col='blue')
+par(opar)
+dev.off()
+```
+
+![Fitted exponential model, with a close-up of the tail of the distribution](`r fimage`)
+
+## Posterior Probabilities
+The key point that qualifies our approach as "empirtical Bayes" is that we don't
+actually create a fully coherent model, since some apparently sensible priors on
+the proportionof observed data coming from the null exponentuial distribution lead
+to improper posterior distibutions becasue some of the computed probabilities can
+become negative. Here we compute the largest prior that prevents the posterios from
+ever being negative; this is the most conservative interpretation of the posterior
+values.
+```{r }
+prior <- estPrior(eb, 0.9, 0.99)
+prior
+pp <- c(0.5, 0.75, 0.8, 0.85, 0.9, 0.95, 0.99)
+cuts <- sapply(pp, cutoff, prior = prior, object = eb)
+data.frame(PostProb=pp, Cut=cuts)
+f2image <- file.path(paths$R01figs, "postprob.png")
+png(file=f2image, width=6*300, height=6*300, res=300, bg="white")
+plotEB(eb, prior, c(0.5, 0.65, 0.8, 0.9))
+dev.off()
+```
+
+![Posterior probability of being interesting or significant."](`r f2image`)
+
+## Graph Of Intersting 2D Nodes
+We must read the igraph data.
+```{r setupIGraph}
+mst <- read_graph(file.path(paths$root, "SPADE", "mst.gml"), format="gml")
+mst <- set_vertex_attr(mst, "size", value=3)   # shrink the nodes
+mst <- set_vertex_attr(mst, "label", value="") # hide the labels
+```
+
+### Tube B (BCR Signaling)
+Now we figure out which nodes are interesting, which we currently define
+as having a duration that makes the posterior probability of not coming
+from the null exponential distribution greater than 50%.
+```{r}
+NO <- paste("node", 1:483, sep="") # damn magic numbers
+highlights <- collate[collate$Dimension == 2, ][dd > cuts[1],]
+Bhi <- highlights[highlights$Tube != "A",]
+bb <- NO %in% Bhi$Node
+table(bb)
+colset <- c("gray", "purple")
+foo <- colset[1+1*bb]
+mst2B <- set_vertex_attr(mst, "color", value=foo)
+```
+
+```{r makeGraph2B}
+f3image2b <- file.path(paths$R01figs, "interestingNodes-2B.png")
+png(file=f3image2b, width=9*300, height=9*300, res=300, bg="white")
+opar <- par(mai=c(0.2, 0.2, 1.2, 0.2), bg="white")
+plot(mst2B, layout=lay, main="spheric B")
+overlay()
+par(opar)
+dev.off()
+```
+
+![Nodes that have 2D voids in at least one sample (Tube B).](`r f3image2b`)
+
+### Tube A (Cell Cycle)
+We build the corresponding graph for Tube A.
+
+```{r}
+Ahi <- highlights[highlights$Tube == "A",]
+aa <- NO %in% Ahi$Node
+table(aa)
+foo <- colset[1+1*aa]
+mst2A <- set_vertex_attr(mst, "color", value=foo)
+```
+
+```{r makeGraph2A}
+f3image2a <- file.path(paths$R01figs, "interestingNodes-2A.png")
+png(file=f3image2a, width=9*300, height=9*300, res=300, bg="white")
+opar <- par(mai=c(0.2, 0.2, 1.2, 0.2), bg="white")
+plot(mst2A, layout=lay, main="spheric A")
+overlay()
+par(opar)
+dev.off()
+```
+
+![Nodes that have 2D voids in at least one samples (Tube A).](`r f3image2a`)
+
+# Dimension One (Loops and Circles)
+Now we look at the one-dimensional case, TO start, we need to pull the
+appropriate subset of "durations" out of the `collate` object.
+```{r D1}
+D1 <- collate$Duration[collate$Dimension == 1]
+summary(D1)
+```
+
+As before, we must estimate the exponential rate parameter.
+```{r SSE1, fig.width=8, fig.height=6, fig.cap="Sum of squared errors as a function of the exponential rate parameter."}
+ef1 <- expoFit(D1)
+plotExpoFit(ef1)
+```
+The resulting plot confirms our suspicions; the MLE value of $\lambda$ is likely
+to be much better than the reciprocal of the estimated mean $\mu$.
+
+## EB Histogram
+At this point, we are ready for the empirical Bayes portion. The code to do this
+is liberally borrowed from our implementation of the `MultiWilcoxon` function in
+the `ClassComparison` package.
+```{r EBexpo1}
+eb1 <- EBexpo(ef1)
+th1 <- tailHisto(eb1$expo$h0, 0.8)
+```
+The next block of code creats and saves a plot of the fitted model.
+```{r makeHistFit1}
+fimage1d <- file.path(paths$R01figs, "histfit-1d.png")
+png(file=fimage1d, width=6*300, height=6*300, res=300, bg="white")
+opar <- par(mai=c(0.9, 0.9, 0.6, 0.2))
+histEBexpo(eb1)
+lines(eb1$expo$X0, eb1$theoretical.pdf, lwd=2, col='red')
+lines(eb1$expo$X0, eb1$expo$pdf, lwd=2, col='blue')
+par(mai=c(3.4, 3.0, 0.6, 0.6), new=TRUE)
+plot(th1, freq=FALSE, main="")
+lines(eb1$expo$X0, eb1$theoretical.pdf, lwd=2, col='red')
+lines(eb1$expo$X0, eb1$expo$pdf, lwd=2, col='blue')
+par(opar)
+dev.off()
+```
+
+![Fitted exponential model, with a close-up of the tail of the distribution](`r fimage1d`)
+
+## Posterior Probabilities
+The key point that qualifies our approach as "empirtical Bayes" is that we don't
+actually create a fully coherent model, since some apparently sensible priors on
+the proportionof observed data coming from the null exponentuial distribution lead
+to improper posterior distibutions becasue some of the computed probabilities can
+become negative. Here we compute the largest prior that prevents the posterios from
+ever being negative; this is the most conservative interpretation of the posterior
+values.
+```{r prior1}
+prior1 <- estPrior(eb1, 0.9, 0.99)
+prior1
+pp <- c(0.5, 0.75, 0.8, 0.85, 0.9, 0.95, 0.99)
+cuts <- sapply(pp, cutoff, prior = prior1, object = eb1)
+data.frame(PostProb=pp, Cut=cuts)
+f2image1d <- file.path(paths$R01figs, "postprob-1d.png")
+png(file=f2image1d, width=6*300, height=6*300, res=300, bg="white")
+plotEB(eb1, prior1, c(0.5, 0.65, 0.8, 0.9))
+dev.off()
+```
+
+![Posterior probability of being interesting or significant."](`r f2image1d`)
+
+## Graph Of Interesting 1D Nodes
+Now we figure out which nodes are interesting, which we currently define
+as having a duration that makes the posterior probability of not coming
+from the null exponential distribution greater than 50%.
+
+### Tube B (BCR Signaling)
+```{r}
+highlights <- collate[collate$Dimension == 1, ][D1 > cuts[1],]
+Bhi <- highlights[highlights$Tube != "A",]
+bb <- NO %in% Bhi$Node
+table(bb)
+foo <- colset[1+1*bb]
+mst1B <- set_vertex_attr(mst, "color", value=foo)
+```
+
+```{r makeGraph1b}
+f3image1b <- file.path(paths$R01figs, "interestingNodes-1B.png")
+png(file=f3image1b, width=9*300, height=9*300, res=300, bg="white")
+opar <- par(mai=c(0.2, 0.2, 1.2, 0.2), bg="white")
+plot(mst1B, layout=lay, main="looped B")
+overlay()
+par(opar)
+dev.off()
+```
+
+![Nodes that have 1D loops in at least one sample (Tube B).](`r f3image1b`)
+
+### Tube A (Cell Cycle)
+```{r}
+Ahi <- highlights[highlights$Tube == "A",]
+aa <- NO %in% Ahi$Node
+table(aa)
+data(colorsafe)
+cs <- sortByHue(colorsafe)
+crp <- colorRampPalette(c(cs[3:6]))
+colset <- c("white", crp(9))
+tab <- table(Ahi$Node)
+foo <- rep(0, 483)
+names(foo) <- paste("node", 1:483, sep="")
+foo[names(tab)] <- tab[names(tab)]
+foo <- colset[1+foo]
+mst1A <- set_vertex_attr(mst, "color", value=foo)
+```
+
+```{r makeGraph1a}
+f3image1a <- file.path(paths$R01figs, "interestingNodes-1A.png")
+png(file=f3image1a, width=9*300, height=9*300, res=300, bg="white")
+layout(matrix(1:2, ncol=1), width=1, heights=c(9,1.3))
+opar <- par(mai=c(0.2, 0.2, 1.2, 0.2), bg="white")
+plot(mst1A, layout=lay, main="looped A")
+overlay()
+par(mai=c(1, 3, 0.01, 3))
+arf <- 0:9
+image(arf, 1:1, matrix(1:length(arf), ncol=1), col=colset,
+      xlab="Number of Samples", ylab="", yaxt="n")
+par(opar)
+dev.off()
+layout(1,1,1)
+```
+
+![Nodes that have 1D loops in at least one sample (Tube A).](`r f3image1a`)
+
+
+
+
+
+
+
+
+
+
+
+```{r eval=FALSE}
+### set default paths
+ripDir <- file.path(paths$scratch, "rip")
+
+
+### get as color palette
+lt <- light.colors()
+pal <- c("white", lt[c("NC7", "NC18", "NC3", "NC12")])
+rm(lt)
+
+### read the igraph data
+mst <- read_graph(file.path(paths$root, "SPADE", "mst.gml"), format="gml")
+mst <- set_vertex_attr(mst, "size", value=3)   # shrink the nodes
+mst <- set_vertex_attr(mst, "label", value="") # hide the labels
+
+###############################
+### where are there "significant" voids?
+
+pick <- (jframe$dimension==2 &
+           jframe$duration > 0.25 &
+             jframe$Tube == "B" &
+               jframe$PCDim > 2)
+summary(pick)
+sigVoid <- jframe[pick,]
+sigVoid$Sample <- factor(sigVoid$Sample)
+sigVoid$Node <- factor(sigVoid$Node)
+summary(sigVoid)
+
+### interactive loop
+
+if (interactive()) {
+  ## start display window(s)
+  rgl.open()
+  windows(width=9, height=10.5)
+  layout(matrix(1:2, ncol=1), 1, c(9, 1.5))
+
+#  for (i in 1:nrow(sigVoid)) {
+  i <- 47
+  {
+    y <- readline("continue? ")
+    if (y == 'n') break
+
+    ## 3d plot showing the void
+    while(rgl.cur()) rgl.close();
+    b <- sigVoid[i, "Tube"]
+    s <- sigVoid[i, "Sample"]
+    n <- sigVoid[i, "Node"]
+    voidPlot(b, s, n)
+
+    ## 2d igraph plot
+    ## figure out which nodes have signifcant voids
+    w <- which(sigVoid$Tube == b &
+                 sigVoid$Sample == s)
+    ns <- as.numeric(sub("node", "", as.character(sigVoid$Node[w])))
+    baffle <- rep(3, 483)
+#    baffle[ns] <- 5
+    baffle[as.numeric(sub("node", "", n))] <- 6
+    ## resize the nodes
+    mst <- set_vertex_attr(mst, "size", value=baffle)
+
+    ## set the color scheme
+    pb <- pcdimB[, as.character(s)]
+    pb[is.na(pb)] <- 0
+    pb[pb > 3] <- 4
+    mycols <- pal[1+pb]
+    mstN <- set_vertex_attr(mst, "color", value=mycols)
+    ## make the plot
+    opar <- par(mai=c(0.2, 0.2, 1.2, 0.2), bg="white")
+    plot(mstN, layout=lay, main=paste(s, ", ", n,
+                                      ", Tube B (BCR Signaling)",
+                                      sep=''))
+    overlay()
+    par(mai=c(1, 2, 0.03, 4))
+    image(1:4, 1:1, matrix(1:4, ncol=1), col=pal[2:5],
+          xlab="", ylab="", yaxt="n")
+    mtext("Dimension", side=2, line=1, las=2)
+    par(opar)
+  }
+}
+
+
+R <- 300
+png(file="igraph.png", width=9*R, height=10.5*R, res=R, bg="white")
+layout(matrix(1:2, ncol=1), 1, c(9, 1.5))
+opar <- par(mai=c(0.2, 0.2, 1.2, 0.2), bg="white")
+plot(mstN, layout=lay, main=paste(s,
+                                  ", Tube B (BCR Signaling)",
+                                  sep=''))
+overlay()
+text(-1.2, 1.4, "C", las=2, font=2, cex=1.3)
+#mtext("D", side=2, line=0, at=1.4, las=2, font=2, cex=1.3)
+par(mai=c(1, 2, 0.03, 4))
+image(1:4, 1:1, matrix(1:4, ncol=1), col=pal[2:5],
+      xlab="", ylab="", yaxt="n")
+mtext("Dimension", side=2, line=1, las=2)
+par(opar)
+dev.off()
+
+voidPlot(b, s, n)
+title3d(main="MAIN", xlab="X", ylab="Y", zlab="Z", col='purple')
+text3d(-4, 6, 6, "D", col='blue')
+pp <- dget("myview.R")
+par3d(pp)
+
+
+###############################
+### edquivalent of a perl script __END__ to include data
+
+#colnames(pcdimB)
+##  [1] "AML10"    "AML12"    "AML13"    "AML14"    "AML15"    "AML18"   
+##  [7] "AML19"    "AML20"    "AML21"    "AML22"    "AML23"    "AML25_x1"
+## [13] "AML25_x4" "AML26"    "AML27"    "AML29"    "AML30"    "AML31"   
+## [19] "AML32"    "AML33"    "AML35"    "AML36"    "AML37"    "AML38"   
+## [25] "AML39"    "AML4"     "AML40"    "AML41"    "AML5"     "AML6"    
+## [31] "AML7"     "AML8_x1"  "AML8_x4"  "AML9"     "APL1"     "APL3"    
+## [37] "APL4"     "APL5"     "CR2"      "CR3"      "CR5"      "CR6"     
+## [43] "CR7_x1"   "CR7_x4"   "Nl-1"     "Nl-3_x1"  "Nl-3_x2"  "Nl-3_x4" 
+## [49] "Nl-4_x2"  "Nl-4_x3"  "Nl-4_x4"  "Nl-5_x1"  "Nl-5_x3"  "Nl-5_x4" 
+## [55] "Nl-6"     "NL-6_x2"  "NL-6_x3"  "NL-6_x4" 
+```
+
+```{r eval=FALSE}
+D2 <- collate[collate$Dimension == 2,"Duration"]
+lambda <- 1/mean(c(mean(D2), sd(D2)))
+lambda <- 1/mean(D2)
+xx <- seq(0, 0.56, length=225)
+hh <- hist(D2, breaks=xx, prob=TRUE)
+zz <- (xx+0.5*mean(diff(xx)))[-length(xx)]
+yy <- dexp(zz, lambda)
+lines(zz, yy, col='red', lwd=2)
+
+z0 <- zz[hcut <- (hh$counts > 0 & zz < 0.2)]
+h0 <- hh$counts[hcut]
+ab <- coef(lm(log(h0) ~ z0))
+
+plot(zz, log(hh$counts))
+lines(zz,log(yy))
+abline(ab)
+
+
+```
+
+
+# Appendix
+These computations were performed in the following environment:
+```{r si}
+sessionInfo()
+```
+and in the following directory:
+```{r where}
+getwd()
+```
+

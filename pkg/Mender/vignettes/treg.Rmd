@@ -1,0 +1,98 @@
+---
+title: "Mender: Regulatory T Cells"
+author: "Kevin R. Coombes"
+data: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Mender: Regulatory T Cells}
+  %\VignetteKeywords{TDA, topological data analysis, regulatory T cells}
+  %\VignetteDepends{Mender,igraph,Polychrome,Mercator,ClassDiscovery,dendextend,ape}
+  %\VignettePackage{Mender}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r opts, echo=FALSE}
+knitr::opts_chunk$set(fig.width=8, fig.height=5)
+options(width=96)
+.format <- knitr::opts_knit$get("rmarkdown.pandoc.to")
+.tag <- function(N, cap ) ifelse(.format == "html",
+                                 paste("Figure", N, ":",  cap),
+                                 cap)
+```
+# Introduction
+We want to illustrate the `Mender` package (Version `r packageVersion("Mender")`)
+with a clinical data set. Not surprisingly, we start by loading the package.
+```{r Mender}
+library(Mender)
+```
+We also load a lot of useful packages (some of which will eventually get incorporated
+into the package requirements).
+```{r libpack}
+library(TDA)
+library(Polychrome)
+data(Dark24)
+data(Light24)
+library(igraph)
+library(ClassDiscovery)
+library(PCDimension)
+library(dendextend)
+library("ape")
+```
+Now we fetch the sample data set that is included with the package.
+```{r CLL}
+data(treg)
+dmat <- distanceMatrix(dset, "pearson")
+tmat <- distanceMatrix(treg, "pearson")
+ls()
+```
+
+```{r echo=FALSE, eval = FALSE}
+picked <- Mercator::downsample(target = 250, 
+                               distanceMat = as.matrix(dmat),
+                               cutoff = 1E-6)
+treg <- dset[, picked]
+rm(picked)
+set.seed(84263)
+rip <- ripsDiag(tmat, 2, 0.7, "arbitrary", "Dionysus", TRUE)
+save(dset, rip, treg, file = "treg.rda")
+```
+
+```{r Mercator}
+library(Mercator)
+attr(dmat, "Size")
+M <- Mercator(tmat, metric ="pearson", method = "mds", K = 8)
+M <- addVisualization(M, "hclust")
+M <- addVisualization(M, "tsne")
+M <- addVisualization(M, "umap")
+M@palette <- Light24
+set.seed(72345)
+clue <- kmeans(t(treg), centers = 8, iter.max = 100, nstart = 20)
+M <- setClusters(M, clue$cluster)
+plot(M, view = "hclust")
+plot(M, view = "mds")
+plot(M, view = "tsne")
+plot(M, view = "umap")
+```
+
+```{r SPCA}
+spca <- SamplePCA(treg, factor(M@clusters))
+plot(spca)
+```
+
+```{r AG}
+bsDimension(spca)
+ag.obj <- AuerGervini(spca)
+f <- makeAgCpmFun("Exponential")
+agfuns <- list(twice=agDimTwiceMean, specc=agDimSpectral,
+               km=agDimKmeans, km3=agDimKmeans3, 
+               tt=agDimTtest, tt2=agDimTtest2,
+               cpt=agDimCPT, cpm=f)
+sort(compareAgDimMethods(ag.obj, agfuns))
+plot(ag.obj, ylim=c(0, 30))
+```
+
+
+
+```{r SI}
+sessionInfo()
+```

@@ -1,0 +1,209 @@
+---
+title: "Cytangle: Nodal Principal Components"
+author: "Kevin R. Coombes"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    theme: yeti
+    highlight: kate
+---
+  
+```{r setup, include=FALSE, results="hide"}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r mycss, results="asis", echo=FALSE}
+cat('
+<style type="text/css">
+b, strong {color: red; }
+i, em {color: blue; }
+.defn {color: purple; }
+.para {color: purple;
+      font-weight: bold;
+}
+.figure { text-align: center; }
+.caption { font-weight: bold; }
+</style>
+')
+```
+
+# Overview
+We are preparing CyTOF (mass cytometry) data from Greg Behbehani for analysis.
+There are two parallel experiments from the same original set of samples, which
+consists of bone marrow cells from patients
+with acute myeloid leukemia (AML) or from normal controls. Experiment A studies
+cell cycle proteins while experiment B studies B-cell receptor signaling
+proteins. Both experiments use the same set of cell surface markers to identify
+the individual type of white cells present in the data.
+
+
+# Getting Started
+Start by defining the default paths.
+```{r paths}
+source("r00-paths.R")
+```
+Then load the relevant summary data for both tubes (experiments).
+```{r summaries}
+load(file.path(paths$clean, "cellCountsA.Rda"))
+load(file.path(paths$clean, "cellCountsB.Rda"))
+load(file.path(paths$clean, "groups.Rda"))
+load(file.path(paths$clean, "isotopes.Rda"))
+```
+And load our library package for computing the number of principal components.
+```{r lib}
+library(PCDimension)
+```
+
+# Compute Principal Component Dimensions, by Node
+
+## Tube A (Cell Cycle)
+Compute and summarize the mean dimension per node across all samples.
+```{r tubeA}
+f <- file.path(paths$scratch, "pcdimA.Rda")
+if (file.exists(f)) {
+  load(f)
+} else {
+  pcdimA <- NA * cellCountsA
+  for (N in rownames(cellCountsA)) {   # nodes
+    for (S in colnames(cellCountsA)) { # samples
+      if (cellCountsA[N,S] < 50) next
+      load(file.path(paths$clusters, "A", S, paste(N, "Rda", sep='.')))
+      M <- tempMat[, Atarget]
+      cat("Working on", S, "at node", N,
+          "with", nrow(M), "cells.\n", file=stderr()) 
+      spca <- SamplePCA(t(M))
+      ag <- AuerGervini(spca)
+      pcdimA[N, S] <- agDimension(ag, agfun=agDimTwiceMean)
+    }
+  }
+  save(pcdimA, file = f)
+  rm(N, S, M, spca, ag)
+}
+rm(f)
+```
+
+### Graph Visualization
+Next, we source the 'overlay' function, set the color palette,
+and customize the graph appearance.
+```{r overlay}
+source("u01-justOverlay.R")
+crp <- rev(topo.colors(11))
+arf <- seq(1, 6, by=0.5)
+
+mst <- read_graph(file.path(paths$root, "SPADE", "mst.gml"), format="gml")
+mst <- set_vertex_attr(mst, "size", value=3)   # shrink the nodes
+mst <- set_vertex_attr(mst, "label", value="") # hide the labels
+```
+
+```{r ma}
+mxa <- apply(pcdimA, 1, max, na.rm=TRUE)
+ma <- apply(pcdimA, 1, mean, na.rm=TRUE)
+hist(ma, breaks=33)
+ca <- cut(ma, breaks=seq(0.99, 6.5, by=0.5), 
+          labels=seq(1, 6, by=0.5), include.lowest = TRUE)
+table(ca)
+```
+
+
+```{r}
+mstA <- set_vertex_attr(mst, "color", value=crp[ca]) # color scheme
+resn <- 120
+aout <- file.path(paths$R01figs, "A-pcd.png")
+png(file = aout, width=9*resn, height=10.3*resn, res = resn, bg="white")
+layout(matrix(1:2, ncol=1), width=1, heights=c(9,1.3))
+opar <- par(mai=c(0.2, 0.2, 1.2, 0.2), bg="white")
+plot(mstA, layout=lay, main="A: Cell Cycle, Mean PC Dimension")
+overlay()
+par(mai=c(1, 3, 0.01, 3))
+image(arf, 1:1, matrix(1:length(arf), ncol=1), col=crp,
+      xlab="Mean PC Dimension", ylab="", yaxt="n")
+par(opar)
+dev.off()
+```
+
+![Mean pincipal component dimension for cell cycle proteins.](`r aout`)
+
+
+## Tube B (BCR Signaling)
+```{r tubeB}
+f <- file.path(paths$scratch, "pcdimB.Rda")
+if (file.exists(f)) {
+  load(f)
+} else {
+  pcdimB <- NA * cellCountsB
+  for (N in rownames(cellCountsB)) {   # nodes
+    for (S in colnames(cellCountsB)) { # samples
+      if (cellCountsB[N,S] < 50) next
+      load(file.path(paths$clusters, "B", S, paste(N, "Rda", sep='.')))
+      M <- tempMat[, Btarget]
+      cat("Working on", S, "at node", N,
+          "with", nrow(M), "cells.\n", file=stderr()) 
+      spca <- SamplePCA(t(M))
+      ag <- AuerGervini(spca)
+      pcdimB[N, S] <- agDimension(ag, agfun=agDimTwiceMean)
+    }
+  }
+  save(pcdimB, file = f)
+  rm(N, S, M, spca, ag)
+}
+rm(f)
+```
+
+### Graph Visualization
+
+Compute and summarize the mean dimension per node across all samples.
+```{r}
+mb <- apply(pcdimB, 1, mean, na.rm=TRUE)
+hist(mb, breaks=33)
+cb <- cut(mb, breaks=seq(0.99, 6.5, by=0.5), 
+          labels=seq(1, 6, by=0.5), include.lowest = TRUE)
+table(cb)
+```
+
+
+```{r}
+resn <- 120
+bout <- file.path(paths$R01figs, "B-pcd.png")
+png(file = bout, width=9*resn, height=10.3*resn, res = resn, bg="white")
+mstB <- set_vertex_attr(mst, "color", value=crp[cb]) # color scheme
+layout(matrix(1:2, ncol=1), width=1, heights=c(9,1.3))
+opar <- par(mai=c(0.2, 0.2, 1.2, 0.2), bg="white")
+plot(mstB, layout=lay, main="B: BCR Signaling; Mean PC Dimension")
+overlay()
+par(mai=c(1, 3, 0.01, 3))
+image(arf, 1:1, matrix(1:length(arf), ncol=1), col=crp,
+      xlab="Mean PC Dimension", ylab="", yaxt="n")
+par(opar)
+dev.off()
+```
+
+![Mean principal component dimension for BCR signaling proteins.](`r bout`)
+
+## Summary
+```{r AB}
+daft <- data.frame(A = table(as.vector(pcdimA)),
+                   B = table(as.vector(pcdimB)))
+daft <- daft[, -3]
+colnames(daft) <- c("Dimension", "CountANodes", "CountBNodes")
+daft
+```
+
+```{r fig.height=6, fig.width=9, fig.cap="Number of Nodes by PC Dimension."}
+library(Polychrome)
+data(colorsafe)
+barplot(log2(t(as.matrix(daft[, 2:3]))), 
+        beside=TRUE, col=colorsafe[c(4,7)], names.arg=0:16,
+        legend.text=c("Cell Cycle", "BCR Signaling"),
+        ylab="Log2 Count")
+```
+
+# Appendix
+These computations were performed in the following environment:
+```{r si}
+sessionInfo()
+```
+and in the following directory:
+```{r where}
+getwd()
+```
+

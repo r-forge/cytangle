@@ -1,0 +1,18 @@
+###
+### NAMESPACE
+###
+
+import(methods)
+import(TDA)
+
+importFrom("graphics",
+           "abline", "hist", "legend", "lines", "points")
+importFrom("stats",
+           "dexp", "lm", "optimize", "predict", "runif", "sd",
+           "dgamma", "optim")
+importFrom("grDevices",
+           "colorRampPalette")
+importFrom("Mercator",
+           "downsample", "Mercator")
+importFrom("ClassDiscovery",
+           "distanceMatrix", "SamplePCA")

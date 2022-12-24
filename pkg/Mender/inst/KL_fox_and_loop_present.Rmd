@@ -1,0 +1,484 @@
+---
+title: "KL_fox_and_loop_present"
+author: "Jake Reed"
+date: "`r Sys.Date()`"
+output:
+  html_document: default
+---
+
+# Setup up knitr environment
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.width = 18, fig.height = 11)
+knitr::opts_knit$set(root.dir = getwd())
+
+cat('
+<style type="text/css">
+b, strong {color: red; }
+i, em {color: blue; }
+.defn {color: purple; }
+.para {color: purple;
+      font-weight: bold;
+}
+.figure { text-align: center; }
+.caption { font-weight: bold; }
+</style>
+')
+```
+
+# Import libraries
+```{r, libraries, results = 'hide'}
+library(Seurat)
+library(dplyr)
+library(Rtsne)
+library(TDA)
+library(doParallel)
+library(foreach)
+library(ggplot2)
+library(Polychrome)
+source(file = file.path(getwd(), 'functions/angleMean.R'))
+source(file = file.path(getwd(), 'functions/comp_ds.R'))
+```
+
+# Create directories and load data
+```{r, directories, results='hide'}
+# Color palette
+p34 <- palette36.colors(36)[3:36]
+
+# Create directories
+data_dir <- file.path(getwd(), 'data')
+
+# Load test data
+load(file = file.path(data_dir, 'seurat_classify.rds'))
+```
+
+# Normalize and scale the seurat data
+Normalize and scale data based on the Seurat function. Set scale max in 
+Seurat function to > 10 in order to see what the distribution of FoxP3 expression
+is without truncating at 10. 
+```{r, normalize and scale data, results='hide'}
+# Prepocess data
+seurat <- NormalizeData(object = seurat)
+seurat <- ScaleData(object = seurat)
+
+# Unscaled seurat
+seurat.unscale <- NormalizeData(object = seurat)
+seurat.unscale <- ScaleData(object = seurat.unscale, scale.max = 1000000)
+```
+
+# Subset tregs and cite-seq ab
+Create a data frame of antibody markers and FoxP3 for further analysis
+```{r, create antibody data frame}
+library(RColorBrewer)
+
+# Subset data
+cell <- 'Treg'
+tr.seurat <- subset(seurat, subset = most_probable_cell_type == cell)
+
+# Create list of ab markers
+ab.ls <- rownames(tr.seurat@assays$RNA@data)[1:51]
+ab.ls <- c(ab.ls, 'FOXP3')
+
+# Subset data based on ab.ls
+ab.df <- matrix(nrow = 0, ncol = length(tr.seurat@assays$RNA@data[1,]))
+ind <- 1
+
+# For loop to create antibody data frame
+for (ab in ab.ls) {
+  
+  new.line <- NA
+  try(new.line <- tr.seurat@assays$RNA@scale.data[ab, ], 
+      silent = TRUE)
+  
+  # Concatanate data new row and data frame
+  ab.df <- rbind(ab.df, new.line)
+  rownames(ab.df)[ind] <- ab
+  ind <- ind + 1 
+  
+}
+```
+
+# Initial plots of FoxP3 expression and heatmap
+Create histogram of FoxP3 expression distribution and plot heatmap of 
+antibodies and FoxP3 vs cells to determine if there is any antibody marker
+which is correlated with FoxP3 expression.
+```{r}
+# Plot foxp3 expression as histogram
+# Plot data
+# Subset data
+cell <- 'Treg'
+tr.seurat.unscale <- subset(seurat.unscale, 
+                            subset = most_probable_cell_type == cell)
+data <- as.data.frame(tr.seurat.unscale@assays$RNA@scale.data['FOXP3', ])
+colnames(data) <- 'FoxP3 Normalized and Scaled Expression'
+foxp3.hist <- ggplot(data, aes(x = `FoxP3 Normalized and Scaled Expression`)) +
+  geom_histogram(aes(y=after_stat(density)), colour="black", fill="white") +
+  geom_density(alpha=.2, fill="#FF6666") +
+  ggtitle('FoxP3 Expression') +
+  theme(plot.title = element_text(size = 50, hjust = 0.5), 
+        text = element_text(size = 30))
+
+foxp3.hist
+
+# Setup color palette
+nb.col <- 9
+colors <- colorRampPalette(brewer.pal(8, "OrRd"))(nb.col)
+
+# Heatmap Ab markers vs cells
+data <- as.matrix(ab.df)
+par(cex.main = 3, cex.axis = 1, mar = c(3,2,2,3))
+heatmap(data, scale = 'none', margins = c(5, 12), col = colors)
+title("AB markers Vs Cells")
+```
+
+# Create thresholded data using normalmixEM
+NormalmixEM is a function in the mixtools package which assumes there are two 
+distributions in the dataset and outputs the mean, sd, and lambda of the 
+two distributions. The NormIntersect and optimize functions work in tandem to 
+find the local minimum between the two distributions mean's. This is then used 
+as the threshold for the antibody markers. If the metrics for the two 
+distributions can not be determined, then the threshold is set to NA. 
+```{r, threshold antibodies, warning=FALSE, results='hide'}
+library(mixtools)
+
+# Clean up
+rm(data, foxp3.hist, seurat.unscale, tr.seurat.unscale)
+
+# Save result.ls
+load(file = file.path(data_dir, 'ab_markers_data.rds'))
+
+#NormIntersect function
+NormIntersect <- function(x, mu1, sig1, lm1, mu2, sig2, lm2) {
+  (dnorm(x, mean = mu1, sd = sig1)*lm1 - dnorm(x, mean = mu2, sd = sig2)*lm2)^2
+}
+
+# Create list of ab markers
+ab.ls <- rownames(tr.seurat@assays$RNA@data)[1:51]
+
+# Create result data frame
+ab.thresh.df <- matrix(nrow = 0, ncol = length(tr.seurat@assays$RNA@scale.data[1,]))
+ind <- 1
+
+# Create for loop which sets any value below threshold to zero
+for(i in 1:length(ab.ls)) {
+  
+  # First retrieve ab marker
+  ab <- ab.ls[[i]]
+  
+  # determine threshold using normalmixem
+  dist <- NA
+  try(dist <- normalmixEM(result.ls[[ab]]$scale.val, k = 2, maxrestarts = 0,
+                          arbmean = TRUE, arbvar = TRUE), silent = TRUE)
+  
+  inter <- NA
+  inter$minimum <- NA
+  try(inter <- optimize(NormIntersect, interval = c(dist$mu[1], dist$mu[2]),
+                        mu1 = dist$mu[1], sig1 = dist$sigma[1], dist$lambda[1], 
+                        mu2 = dist$mu[2], sig2 = dist$sigma[2], dist$lambda[2]), 
+      silent = TRUE)
+  
+  # Retrieve data from t regulatory seurat and store in newline
+  new.line <- NA
+  if (!is.na(inter$minimum)) {
+    try(new.line <- tr.seurat@assays$RNA@scale.data[ab, ], 
+        silent = TRUE)
+    
+    
+    for(j in 1:length(new.line)) {
+      
+      # Create if statement to reassign value
+      if(new.line[j] < inter$minimum) {
+        new.line[j] <- 0
+      }
+      
+    }
+  }
+  
+  # Add line to result and assign rowname
+  ab.thresh.df <- rbind(ab.thresh.df, new.line)
+  rownames(ab.thresh.df)[ind] <- ab
+  ind <- ind + 1 
+} 
+```
+
+# Create plots with new thresholded data
+Plot thresholded data ordered by pearson correlation coefficients based on the 
+function distanceMatrix in the ClassDiscovery package. The heatmap of all 
+pearson correlation coefficients is also plotted. 
+```{r, heatmap plots}
+library(ClassDiscovery)
+
+# Add FoxP3 to ab.thresh.df data and remove NAs and rows where all values are
+# the same
+ab.thresh.df <- na.omit(ab.thresh.df)
+keep <- apply(ab.thresh.df, 1, function(x) length(unique(x[!is.na(x)])) != 1)
+ab.thresh.df <- ab.thresh.df[keep, ]
+FOXP3 <- t(as.data.frame(tr.seurat@assays$RNA@scale.data["FOXP3",]))
+rownames(FOXP3) <- "FoxP3"
+ab.thresh.df <- rbind(ab.thresh.df, FOXP3)
+
+# Setup plotting parameters
+par(cex.main = 3, cex.axis = 1, mar = c(3,2,2,3))
+
+# Subset data to only include ab markers
+data <- as.matrix(ab.thresh.df)
+
+# Create clusters by pearson correlation
+hc <- hclust(distanceMatrix(t(data), 'pearson'), method = 'average')
+hcy <- hclust(distanceMatrix(data, 'pearson'), method = 'average')
+
+# Heatmap Ab markers vs cells
+heatmap(data, margins = c(5, 12), scale = 'none', Rowv = as.dendrogram(hc),
+        Colv = as.dendrogram(hcy))
+title("Ab Markers vs Cells, Ordered By Pearson Correlation")
+
+# Plot heatmap of the pearson correlation
+pear.data <- distanceMatrix(t(data), 'pearson')
+hc <- hclust(distanceMatrix(t(data), 'pearson'), method = 'average')
+
+# Heatmap Ab markers vs cells
+heatmap(as.matrix(pear.data), margins = c(5, 12), 
+        Rowv = as.dendrogram(hc), Colv = as.dendrogram(hc), 
+        scale = 'none')
+title("Pearson (+) New Thresholding")
+```
+
+# Heatmap of all angle means
+A heatmap is plotted from data generated from the angleMeans function which 
+calculates mean expression of each gene within a 30 degree sector with regards 
+to the centroid of the loop/void found in the t-SNE data based on the ripsDiag
+function from the Topological Data Analysis package. 
+```{r, angleMeans data}
+# Create histogram first
+load(file = file.path(data_dir, 'angleMeans_all_genes_result.rds'))
+
+# Setup up result dataframe
+hm.df <- data.frame(matrix(nrow = 0, 
+                           ncol = length(result.ls[[1]]$UpperBound)))
+
+ind <- 1                    
+
+# For loop to create heatmap data frame
+for(gene in names(result.ls)) {
+  
+  new.row <- as.vector(result.ls[[gene]]$Mean)
+  hm.df <- rbind(hm.df, new.row)
+  rownames(hm.df)[ind] <- gene
+  ind <- ind + 1
+  
+}
+
+# Set column names
+colnames(hm.df) <- result.ls[[1]]$UpperBound
+```
+
+# Plot Histogram of all angleMeans
+```{r, angleMeans heatmap}
+
+library(RColorBrewer)
+
+# Setup color palette 
+nb.col <- 9
+colors <- colorRampPalette(brewer.pal(8, "OrRd"))(nb.col)
+
+# Order by rowmeans
+data <- as.matrix(head(hm.df[order(rowMeans(hm.df), decreasing = T), ], 50))
+
+# Plot heatmap of top50 genes without column clustering
+par(cex.main = 2, mar = c(3,2,2,3))
+heatmap(data, Colv = NA, scale = 'none', margins = c(7, 12), 
+        col = colors)
+title("Angle Means Around Loop")
+
+# Plot a legend in bottom right part of heatmap
+legend(x = "bottomright", legend = c("low", "medium", "high"),
+       cex = 1, fill = colors[c(1, 5, 9)])
+
+```
+
+# Generate data for t-SNE scatter plot
+The loop/void is found from the local density downsampled t-SNE data which is
+then combined with the expression of the five interesting genes which were 
+determined from inspecting the angleMeans heatmap. 
+```{r, loop/void data}
+library(scales)
+library(Rtsne)
+library(dplyr)
+library(TDA)
+library(reshape2)
+
+# Initial parameters for resolution
+resn <- 120
+
+# Set gene list and subset data
+gene.ls <- c("FOXP3", "IKZF2", "CTLA4", "IL2RA", "TNFRSF9")
+data <- t(as.matrix(tr.seurat@assays$RNA@scale.data))
+
+# Run tsne
+set.seed(5364)
+usable <- Rtsne(data, check_duplicates = FALSE, pca = FALSE)
+usable <- as.data.frame(usable$Y)
+
+ind <- 1
+for (gene in gene.ls) {
+  
+  # Add back in gene expression
+  add.df <- select(as.data.frame(data), all_of(gene))
+  usable <- cbind(usable, add.df)
+  colnames(usable)[(ind + 2)] <- gene
+  
+  ind <- ind + 1
+}
+
+# downsample
+usable <- downSample(as.matrix(usable[,1:2]), targetNum = 250)
+
+# Perform persistence diagram analysis
+rips <- ripsDiag(usable[,1:2], 
+                 maxdimension = 1, 
+                 maxscale = 5, 
+                 library="Dionysus", 
+                 location=TRUE)
+
+# Rescale gene expression between 0 and 100 for plotting
+col.ls <- c('blue', 'red', 'green',
+            'orange', 'purple')
+
+for (i in 1:length(gene.ls)) {
+  
+  x <- usable[,(i + 2)]
+  usable[,(i + 2)] <- round((100*(x-min(x))/(max(x)-min(x))))
+  rbPal <- colorRampPalette(c('white', col.ls[i]))
+  usable[,(i + 2)] <- rbPal(20)[cut(usable[,(i + 2)], breaks = 20)]
+  
+}
+
+# Transform data into long form data and remove all points
+# which are only white
+usable <- melt(usable, c('V1', 'V2'))
+usable <- subset(usable, value != "#FFFFFF")
+
+# Prepare data for plot
+rd <- rips[["diagram"]]
+oneD <- rd[, 1] == 1 # first col of rd is 'dimension
+duration <- (rd[, 3] - rd[, 2])[oneD]
+
+if(length(duration) > 0) {
+  cyc <- rips$cycleLocation[oneD]
+  target <- max(duration)
+}  
+```
+
+# Subset angleMeans data for only interesting genes
+```{r, subset angleMeans data}
+# Subset data
+gene.ls <- c("FOXP3", "IKZF2", "CTLA4", "IL2RA", "TNFRSF9")
+
+angle.df <- data.frame(matrix(nrow = 0, ncol = length(hm.df[1,])))
+colnames(angle.df) <- colnames(hm.df)
+for(gene in gene.ls) {
+
+  tmp.df <- hm.df[gene, ]
+  angle.df <- rbind(angle.df, tmp.df)
+  
+  
+}
+
+# Prepare data for plotting
+mat <- as.matrix(round(angle.df, digits = 0))
+
+```
+
+# Generate combined loop/void scatterplot and angleMeans circos heatmap
+```{r, combined plot}
+library(circlize)
+library(ComplexHeatmap)
+
+# Set overall layout for figure
+layout(matrix(c(1,1,2,3), 2, 2, byrow = TRUE), heights = c(0.1, 1))
+
+# Plot scatter plot with gene intensities based on angle
+# Setup initial scatterplot parameters
+par(mar = c(0,0,0,0))
+plot(c(0, 1), c(0, 1), ann = F, bty = 'n', 
+     type = 'n', xaxt = 'n', yaxt = 'n')
+title <- "Gene Expression Around Loop"
+text(0.5, 0.5, title, cex = 3, font = 2)
+
+# Plot scatterplot
+par(mai = c(1,1,0,0))
+plot(
+  usable$V1,
+  usable$V2,
+  col = alpha(usable$value, 0.4),
+  pch = 16,
+  cex = 3,
+  cex.axis = 1.5,
+  cex.lab = 1.5,
+  xlab = "t-SNE 1",
+  ylab = "t-SNE 2"
+)
+
+# Add Legend
+legend("bottomleft",
+       cex = 1,
+       legend = c(paste('high FoxP3'), 
+                  paste('high IKZF2'),
+                  paste('high CTLA4'),
+                  paste('high IL2RA'),
+                  paste('high TNFRSF9')),
+       pch = 16,
+       col = c('blue', 
+               'red',
+               'green', 
+               'orange', 
+               'purple'))
+
+# Add loop/void as determined by ripsDiag
+for (j in 1:length(cyc)) {
+  c19 <- cyc[[j]]
+  if (prod(dim(c19)) == 0)
+    next
+  if (duration[j] < target)
+    next
+  colj <- ifelse(duration[j] == target, p34[2], p34[1])
+  for (i in 1:dim(c19)[1]) {
+    lines(c19[i, , 1], c19[i, , 2], col = colj, lwd = 2)
+  }
+}
+
+# Plot circos heatmap of angles and genes
+# Setup initial plot parameters and clear circos jic
+par(cex = 1.5, mai = c(0, 0, 0, 0))
+circos.clear()
+circos.par(track.height = 0.1, 
+           start.degree = 90)
+
+# Create color list
+col.ls <- c("blue", "red", "green", "orange", "purple")
+
+# For loop for each track/gene
+for(i in 1:length(t(angle.df)[1,])) {
+  
+  # If statement to add angle designations on outside of 
+  # first track only
+  if(i == 1) {
+    
+    data <- as.data.frame(t(angle.df)[,i])
+    col <- colorRamp2(c(min(data), max(data)), c("white", col.ls[i]))
+    circos.heatmap(data, rownames.side = "outside", 
+                   cluster = FALSE, col = col, rownames.cex = 1)
+  } else {
+  
+    data <- as.data.frame(t(angle.df)[,i])
+    col <- colorRamp2(c(min(data), max(data)), c("white", col.ls[i]))
+    circos.heatmap(data, cluster = FALSE, col = col)
+  }
+}
+
+# Generate legend
+lgd <- Legend(at = rownames(angle.df), title = "Genes", type = "points",
+              title_position = "topleft", legend_gp = gpar(col = col.ls))
+
+# Draw legend
+draw(lgd, x = unit(0.97, "npc"), y = unit(0.05, "npc"), just = c("right", "bottom"))
+```
