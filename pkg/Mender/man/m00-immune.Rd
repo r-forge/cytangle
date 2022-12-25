@@ -6,10 +6,9 @@
 \docType{data}
 \title{Single Cell Data on T Regulatory (Treg) Cells}
 \description{
-  This data set contains clinical mRNA and protein-antibody data omn T
-  regulatory immune cells. It is a subset of a much larger data set
-  collected from the peripheral blood of patients with a variety of
-  health comnditions.
+  This data set contains mRNA and protein-antibody data on T-regulatory
+  immune cells. It is a subset of a much larger data set collected from
+  the peripheral blood of patients with a variety of health comnditions.
 }
 \usage{
 data(treg)

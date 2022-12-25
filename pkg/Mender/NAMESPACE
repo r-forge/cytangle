@@ -13,6 +13,11 @@ importFrom("stats",
 importFrom("grDevices",
            "colorRampPalette")
 importFrom("Mercator",
-           "downsample", "Mercator")
+           "downsample", "Mercator", "addVisualization")
 importFrom("ClassDiscovery",
            "distanceMatrix", "SamplePCA")
+importFrom("splines", "bs")
+
+exportClasses("ExpoFit", "EBexpo")
+export("ExpoFit", "EBexpo", "cutoff")
+exportMethods("plot", "hist")

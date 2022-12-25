@@ -18,6 +18,6 @@ downSample <- function(dset, targetNum = 100, sigma = 1) {
   targets <- (targetNum - 1 : length(sdense)) / cdf 
   boundary <- targets[which.min(targets - sdense > 0)]
   selector <- boundary/dense > runif(length(dense))
-  keepers <- usable[selector,]
+  keepers <- dset[selector,]
   keepers
 }

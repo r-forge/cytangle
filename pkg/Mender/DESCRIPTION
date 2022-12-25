@@ -1,6 +1,6 @@
 Package: Mender
-Version: 0.0.8
-Date: 2022-12-24
+Version: 0.0.14
+Date: 2022-12-25
 Title: Visualizing Topological Loops and Voids
 Author: Kevin R. Coombes, Jake Reed
 Maintainer: Kevin R. Coombes <krc@silicovore.com>
@@ -14,8 +14,8 @@ Description: Visualizations to explain the results of a topological
   features that help explain the structures found in the Rips
   diagram.
 Depends: R (>= 3.5)
-Imports: methods, graphics, stats, TDA, ClassDiscovery, Mercator
-Suggests: knitr, rmarkdown, Polychrome, igraph, dendextend, ape
+Imports: methods, graphics, stats, TDA, ClassDiscovery, Mercator, splines
+Suggests: knitr, rmarkdown, Polychrome, igraph, dendextend, ape, PCDimension
 License: Artistic-2.0
 URL: http://oompa.r-forge.r-project.org/
 VignetteBuilder: knitr
