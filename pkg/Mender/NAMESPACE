@@ -18,6 +18,10 @@ importFrom("ClassDiscovery",
            "distanceMatrix", "SamplePCA")
 importFrom("splines", "bs")
 
+## cycle significance ny empirical Bayes
 exportClasses("ExpoFit", "EBexpo")
 export("ExpoFit", "EBexpo", "cutoff")
 exportMethods("plot", "hist")
+
+## pick out cycles
+export("getCycle", "showCycle", "cycleSupport", "cycleEdges")

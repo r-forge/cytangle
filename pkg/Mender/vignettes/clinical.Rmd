@@ -257,4 +257,54 @@ which(d1 > 0.05)
 which(d1 > 0.065)
 ```
 
+Let's pick out the most persistent 1-cycle. 
+```{r}
+cyc <- getCycle(ripdiag, 1, 236)
+cyc
+```
+Each row represents an edge, by listing the IDs of the points at either end of
+the line segment. In this case, there are nine edges that link together to form
+a connect loop (or topological circle). 
+
+```{r}
+# recall that W = UMAP visualization
+plot(W, pch = 16, col = "gray")
+cyc <- getCycle(ripdiag, 1, 236)
+showCycle(cyc, W, "purple", lwd=2)
+
+cyc <- getCycle(ripdiag, 1, 123)
+showCycle(cyc, W, "red", lwd=2)
+
+cyc <- getCycle(ripdiag, 1, 249)
+showCycle(cyc, W, "forestgreen", lwd=2)
+
+
+```
+
+```{r}
+# recall that U = MDs visualization
+plot(U, pch = 16, col = "gray")
+cyc <- getCycle(ripdiag, 1, 236)
+showCycle(cyc, U, "purple", lwd=2)
+
+cyc <- getCycle(ripdiag, 1, 123)
+showCycle(cyc, U, "red", lwd=2)
+
+cyc <- getCycle(ripdiag, 1, 249)
+showCycle(cyc, U, "forestgreen", lwd=2)
+```
+
+```{r}
+# recall that V = TSNE visualization
+plot(V, pch = 16, col = "gray")
+cyc <- getCycle(ripdiag, 1, 236)
+showCycle(cyc, V, "purple", lwd=2)
+
+cyc <- getCycle(ripdiag, 1, 123)
+showCycle(cyc, V, "red", lwd=2)
+
+cyc <- getCycle(ripdiag, 1, 249)
+showCycle(cyc, V, "forestgreen", lwd=2)
+```
+
 ## Two-Cycles (Voids)

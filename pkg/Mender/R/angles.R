@@ -1,18 +1,5 @@
-## helper function to get longest persisting cycle
-getLongCycle <- function(rips) {
-  ## Find duration and dimension of persistence
-  RD <- rips$diagram
-  dure <- RD[, 3] - RD[, 2]
-  dimn <- RD[, 1]
-  ## Find 1d cycles and pull out the one with the max duration
-  rd <- RD
-  oneD <- rd[, 1] == 1 # first col of rd is 'dimension'
-  cyc <- rips$cycleLocation[oneD]
-  duration <- (rd[, 3] - rd[, 2])[oneD]
-  target <- max(duration)
-  target_cycle <- cyc[[which(duration == target)]]
-  target_cycle
-}
+## Copright (C) 2022 Kevin R. Coombes, RB McGee, and Jake Reed
+
 ## helper function to get cycle-centroid
 getCentroid <- function(cycle) {
   x <- as.vector(c(cycle[,1,1], cycle[,2,1]))
@@ -25,7 +12,7 @@ getAngles <- function(dset, centroid) {
   atan2(recentered[,1], recentered[,2])
 }
 
-## Function to calculate mean and sd of section of graph starting from
+## Function to calculate mean and SD of section of graph starting from
 ## centroid
 angleMean <- function(dset, rips, lb_angle = 0, ub_angle = 30, incr = 15) {
   # get the longest 1D cycle.
