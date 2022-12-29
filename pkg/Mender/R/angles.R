@@ -12,7 +12,7 @@ getAngles <- function(dset, centroid) {
 
 ## Function to calculate mean and SD of section of graph starting from
 ## centroid
-angleMean <- function(view, rips, cycle = NULL, angleWidth = 20, incr = 15) {
+angleMean <- function(view, rips, cycle = NULL, dset, angleWidth = 20, incr = 15) {
   if (is.null(cycle)) {
     cycle <- getCycle(rips, 1) # longest cycle
   }
@@ -22,7 +22,7 @@ angleMean <- function(view, rips, cycle = NULL, angleWidth = 20, incr = 15) {
   deg <- c(degrees, degrees + 360)
   od <- order(deg)
   deg <- deg[od]
-  magic <- rbind(view, view)[od,]
+  magic <- rbind(dset, dset)[od,]
   partition <- seq(0, 360 - incr, incr)
   GM <- t(sapply(partition, function(center) {
     lb <- center - 10

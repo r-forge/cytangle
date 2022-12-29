@@ -38,6 +38,7 @@ data(Light24)
 suppressMessages( library(igraph) )
 suppressMessages( library(dendextend) )
 suppressMessages( library("ape") )
+library(circlize)
 ```
 Now we fetch the sample clinical data set that is included with the package.
 ```{r CLL}
@@ -214,7 +215,8 @@ par(swap)
 ```
 
 ## Visualizing Features
-In any of the "scatter plot views" (e.g., MDS, UMAP, t-SNE) from Mercator, we may want to overlay different colors to repesent differnt clinical features
+In any of the "scatter plot views" (e.g., MDS, UMAP, t-SNE) from Mercator, we may want to
+overlay different colors to represent different clinical features.
 ```{r views}
 U <- mercury@view[["mds"]]
 V <- mercury@view[["tsne"]]$Y
@@ -223,7 +225,8 @@ W <- mercury@view[["umap"]]$layout
 
 ```{r fig10, fig.width = 9, fig.cap = .tag(10, "UMAP visualizations with clinical features.")}
 featSex <- Feature(clinical[,"Sex"], "Sex", c("pink", "skyblue"), c("Female", "Male"))
-featRai <- Feature(clinical[,"CatRAI"], "Fai Stage", c("green", "magenta"), c("High", "Low"))
+featRai <- Feature(clinical[,"CatRAI"], "Rai Stage", c("green", "magenta"), c("High", "Low"))
+featAge <- Feature(clinical[,"AgeAtDx"], "Age at Diagnosis", c("white", "purple"), c("High", "Low"))
 opar <- par(mfrow = c(1,2))
 plot(W, main = "UMAP; Sex", xlab = "U1", ylab = "U2")
 points(featSex, W, pch = 16, cex = 1.4)
@@ -308,8 +311,131 @@ par(opar)
 rm(opar)
 ```
 
-```{r recycle, eval = FALSE}
-poof <- Mender:::angleMean(W, ripdiag, cyc1@index)
+```{r recycle}
+poof <- Mender:::angleMean(W, ripdiag, cyc1@index, clinical)
+poof[is.na(poof)] <- 0
+angle.df <- poof[, c("AgeAtDx", "Sex", "mutation.status", "Light.chain.subtype", "CatRAI", "CatB2M")]
+col.ls <- c("red", "green", "blue", "orange", "purple", "brown")
+opar <- par(cex = 1.5, mai = c(0, 0, 0, 0))
+circos.clear()
+circos.par(track.height = 0.08, 
+           start.degree = 90)
+## For loop for each track/gene
+for(i in 1:length(angle.df[1,])) {
+  ## If statement to add angle designations on outside of 
+  ## first track only
+  cat(i, "\n", file = stderr())
+  if(i == 1) {
+    data <- as.data.frame(angle.df[,i])
+    col <- colorRamp2(c(min(data), max(data)), c("white", col.ls[i]))
+    circos.heatmap(data, rownames.side = "outside", 
+                   cluster = FALSE, col = col, rownames.cex = 1)
+  } else {
+    data <- as.data.frame(angle.df[,i])
+    col <- colorRamp2(c(min(data), max(data)), c("white", col.ls[i]))
+    circos.heatmap(data, cluster = FALSE, col = col)
+  }
+}
+par(opar)
+```
+
+```{r}
+angle.df <- poof[, c("LogB2M", "LogLDH", "LogWBC", "Hemoglobin", "Platelets", "Prolymphocytes")]
+opar <- par(cex = 1.5, mai = c(0, 0, 0, 0))
+circos.clear()
+circos.par(track.height = 0.08, 
+           start.degree = 90)
+## For loop for each track/gene
+for(i in 1:length(angle.df[1,])) {
+  ## If statement to add angle designations on outside of 
+  ## first track only
+  if(i == 1) {
+    data <- as.data.frame(angle.df[,i])
+    col <- colorRamp2(c(min(data), max(data)), c("white", col.ls[i]))
+    circos.heatmap(data, rownames.side = "outside", 
+                   cluster = FALSE, col = col, rownames.cex = 1)
+  } else {
+    data <- as.data.frame(angle.df[,i])
+    col <- colorRamp2(c(min(data), max(data)), c("white", col.ls[i]))
+    circos.heatmap(data, cluster = FALSE, col = col)
+  }
+}
+par(opar)
+```
+
+
+```{r}
+angle.df <- poof[, c("CatWBC", "CatCD38", "Hypogammaglobulinemia", "Massive.Splenomegaly", "Matutes", "Prolymphocytes")]
+opar <- par(cex = 1.5, mai = c(0, 0, 0, 0))
+circos.clear()
+circos.par(track.height = 0.08, 
+           start.degree = 90)
+## For loop for each track/gene
+for(i in 1:length(angle.df[1,])) {
+  ## If statement to add angle designations on outside of 
+  ## first track only
+  if(i == 1) {
+    data <- as.data.frame(angle.df[,i])
+    col <- colorRamp2(c(min(data), max(data)), c("white", col.ls[i]))
+    circos.heatmap(data, rownames.side = "outside", 
+                   cluster = FALSE, col = col, rownames.cex = 1)
+  } else {
+    data <- as.data.frame(angle.df[,i])
+    col <- colorRamp2(c(min(data), max(data)), c("white", col.ls[i]))
+    circos.heatmap(data, cluster = FALSE, col = col)
+  }
+}
+par(opar)
+```
+
+```{r}
+angle.df <- poof[, c("stat17", "stat12", "stat13", "stat11", "mutation.status", "CatRAI")]
+opar <- par(cex = 1.5, mai = c(0, 0, 0, 0))
+circos.clear()
+circos.par(track.height = 0.08, 
+           start.degree = 90)
+## For loop for each track/gene
+for(i in 1:length(angle.df[1,])) {
+  ## If statement to add angle designations on outside of 
+  ## first track only
+  if(i == 1) {
+    data <- as.data.frame(angle.df[,i])
+    col <- colorRamp2(c(min(data), max(data)), c("white", col.ls[i]))
+    circos.heatmap(data, rownames.side = "outside", 
+                   cluster = FALSE, col = col, rownames.cex = 1)
+  } else {
+    data <- as.data.frame(angle.df[,i])
+    col <- colorRamp2(c(min(data), max(data)), c("white", col.ls[i]))
+    circos.heatmap(data, cluster = FALSE, col = col)
+  }
+}
+par(opar)
+```
+
+```{r}
+angle.df <- poof[, c("mutation.status", "CatCD38", "CatB2M", "CatRAI", "Massive.Splenomegaly", "Hypogammaglobulinemia")]
+col.lo <- c("green",  "cyan", "blue",   "#dddddd",   "#dddddd", "#dddddd")
+col.hi <- c("magenta", "red" , "yellow", "black", "brown", "purple")
+opar <- par(cex = 1.5, mai = c(0, 0, 0, 0))
+circos.clear()
+circos.par(track.height = 0.08, 
+           start.degree = 90)
+## For loop for each track/gene
+for(i in 1:length(angle.df[1,])) {
+  ## If statement to add angle designations on outside of 
+  ## first track only
+  if(i == 1) {
+    data <- as.data.frame(angle.df[,i])
+    col <- colorRamp2(c(min(data), max(data)), c(col.lo[i], col.hi[i]))
+    circos.heatmap(data, rownames.side = "outside", 
+                   cluster = FALSE, col = col, rownames.cex = 1)
+  } else {
+    data <- as.data.frame(angle.df[,i])
+    col <- colorRamp2(c(min(data), max(data)), c(col.lo[i], col.hi[i]))
+    circos.heatmap(data, cluster = FALSE, col = col)
+  }
+}
+par(opar)
 ```
 
 ## Two-Cycles (Voids)
