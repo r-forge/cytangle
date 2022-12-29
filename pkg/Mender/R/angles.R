@@ -1,11 +1,9 @@
-## Copright (C) 2022 Kevin R. Coombes, RB McGee, and Jake Reed
-
 ## helper function to get cycle-centroid
-getCentroid <- function(cycle) {
-  x <- as.vector(c(cycle[,1,1], cycle[,2,1]))
-  y <- as.vector(c(cycle[,1,2], cycle[,2,2]))
-  c(x = mean(x), y = mean(y))
+getCentroid <- function(cycle, view) {
+  pts <- cycleSupport(cycle, view)
+  apply(pts, 2, mean)
 }
+
 ## helper function to compute angles of data points around centroid
 getAngles <- function(dset, centroid) {
   recentered <- sweep(dset, 2, centroid, "-") # centroid now at (0,0)
@@ -14,29 +12,54 @@ getAngles <- function(dset, centroid) {
 
 ## Function to calculate mean and SD of section of graph starting from
 ## centroid
-angleMean <- function(dset, rips, lb_angle = 0, ub_angle = 30, incr = 15) {
-  # get the longest 1D cycle.
-  target_cycle <- getLongCycle(rips)
-  ## Pull out x and y coordinates from cycle and create centroid
-  centroid <- getCentroid(target_cycle)
-  ## Find angles with respect to centroid for all points
-  radians <- getAngles(dset, centroid)
-  alpha_v <- 180 + radians*180/pi
-  ## Assign angles to dset data frame
-  dset$angle <- alpha_v
-  ## For loop calculating mean and sd of different angles
-  result.df <- data.frame(matrix(nrow = 0, ncol = 4))
-  colnames(result.df) <- c("AngleSpread", "UpperBound", "Mean", "SD")
-  lb <- lb_angle
-  for(ub in seq(ub_angle, 360, incr)) {
-    angle_spread <- ub - lb
-    set <- subset(dset, angle > lb & angle < ub)
-    m.gene <- mean(set[, 3])
-    sd.gene <- sd(set[, 3])
-    result.row <- data.frame(AngleSpread = angle_spread, UpperBound = ub, 
-                             Mean = m.gene, SD = sd.gene)
-    result.df <- rbind(result.df, result.row)
-    lb <- lb + incr
+angleMean <- function(view, rips, cycle = NULL, angleWidth = 20, incr = 15) {
+  if (is.null(cycle)) {
+    cycle <- getCycle(rips, 1) # longest cycle
   }
-  return(result.df)
+  ctr <- getCentroid(cycle, view)
+  theta <- getAngles(view, ctr)
+  degrees <- theta*180/pi
+  deg <- c(degrees, degrees + 360)
+  od <- order(deg)
+  deg <- deg[od]
+  magic <- rbind(view, view)[od,]
+  partition <- seq(0, 360 - incr, incr)
+  GM <- t(sapply(partition, function(center) {
+    lb <- center - 10
+    ub <- center + 10
+    set <- subset(magic, deg > lb & deg < ub)
+    m.gene <- apply(set, 2, mean, na.rm = TRUE)
+    m.gene
+  }))
+  rownames(GM) <- partition
+  GM
+}
+
+if (FALSE) {
+  angle.df <- GM[, pal <- c("Ki-67", "PCNA", "CycB", "pRb", "CycA", "CD99")]
+  opar <- par(cex = 1.5, mai = c(0, 0, 0, 0))
+  circos.clear()
+  circos.par(track.height = 0.08, 
+             start.degree = 90)
+  ## For loop for each track/gene
+  for(i in 1:length(angle.df[1,])) {
+    ## If statement to add angle designations on outside of 
+    ## first track only
+    if(i == 1) {
+      data <- as.data.frame(angle.df[,i])
+      col <- colorRamp2(c(min(data), max(data)), c("white", col.ls[i]))
+      circos.heatmap(data, rownames.side = "outside", 
+                     cluster = FALSE, col = col, rownames.cex = 1)
+    } else {
+      data <- as.data.frame(angle.df[,i])
+      col <- colorRamp2(c(min(data), max(data)), c("white", col.ls[i]))
+      circos.heatmap(data, cluster = FALSE, col = col)
+    }
+  }
+  ## Generate legend
+  lgd <- Legend(at = colnames(angle.df), title = "Genes", type = "points",
+                title_position = "topleft", legend_gp = gpar(col = col.ls))
+  ## Draw legend
+  draw(lgd, x = unit(0.97, "npc"), y = unit(0.05, "npc"), just = c("right", "bottom"))
+  par(opar)
 }

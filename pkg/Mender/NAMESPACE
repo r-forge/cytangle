@@ -6,10 +6,10 @@ import(methods)
 import(TDA)
 
 importFrom("graphics",
-           "abline", "hist", "legend", "lines", "points")
+           "abline", "hist", "legend", "lines", "points", "par")
 importFrom("stats",
            "dexp", "lm", "optimize", "predict", "runif", "sd",
-           "dgamma", "optim")
+           "dgamma", "optim","density", "loess")
 importFrom("grDevices",
            "colorRampPalette")
 importFrom("Mercator",
@@ -17,11 +17,18 @@ importFrom("Mercator",
 importFrom("ClassDiscovery",
            "distanceMatrix", "SamplePCA")
 importFrom("splines", "bs")
+importFrom("circlize",
+           "circlize", "colorRamp2")
 
 ## cycle significance ny empirical Bayes
 exportClasses("ExpoFit", "EBexpo")
 export("ExpoFit", "EBexpo", "cutoff")
-exportMethods("plot", "hist")
+exportMethods("plot", "hist", "lines", "points")
 
 ## pick out cycles
 export("getCycle", "showCycle", "cycleSupport", "cycleEdges")
+
+exportClasses("Cycle", "Feature")
+
+export("Cycle", "Feature", "colorFeature")
+

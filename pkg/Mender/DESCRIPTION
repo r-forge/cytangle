@@ -1,12 +1,12 @@
 Package: Mender
-Version: 0.0.16
-Date: 2022-12-26
+Version: 0.0.23
+Date: 2022-12-29
 Title: Visualizing Topological Loops and Voids
 Author: Kevin R. Coombes, Jake Reed
 Maintainer: Kevin R. Coombes <krc@silicovore.com>
 Description: Visualizations to explain the results of a topological
   data analysis (TDA). The goal of TDA is to identify persistent
-  topological structures, such as loops (topoligical circles) and
+  topological structures, such as loops (topological circles) and
   voids (topological spheres), in data sets. The output of an analysis
   using the TDA package in R is a "Rips diagram" (named after the
   mathematician  Elihuya Rips). The goal of Mender is to "repair" these
@@ -14,7 +14,8 @@ Description: Visualizations to explain the results of a topological
   features that help explain the structures found in the Rips
   diagram.
 Depends: R (>= 3.5)
-Imports: methods, graphics, stats, TDA, ClassDiscovery, Mercator, splines
+Imports: methods, graphics, stats, TDA, ClassDiscovery, Mercator,
+  splines, circlize
 Suggests: knitr, rmarkdown, Polychrome, igraph, dendextend, ape, PCDimension
 License: Artistic-2.0
 URL: http://oompa.r-forge.r-project.org/
