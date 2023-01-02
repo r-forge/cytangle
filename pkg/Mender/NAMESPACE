@@ -28,7 +28,7 @@ exportMethods("plot", "hist", "lines", "points")
 ## pick out cycles
 export("getCycle", "showCycle", "cycleSupport", "cycleEdges")
 
-exportClasses("Cycle", "Feature")
+exportClasses("Cycle", "Feature", "LoopCircos")
 
-export("Cycle", "Feature", "colorFeature")
+export("Cycle", "Feature", "angleMeans", "LoopCircos")
 

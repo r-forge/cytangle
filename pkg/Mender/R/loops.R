@@ -1,9 +1,5 @@
-## Copright (C) 2022 Kevin R. Coombes, RB McGee, and Jake Reed
+## Copyright (C) 2022 Kevin R. Coombes, RB McGee, and Jake Reed
 
-setClass("Cycle",
-         slots = c(index = "matrix",
-                   dimension = "numeric",
-                   color = "character"))
 Cycle <- function(rips, dimen, J, color) {
   index = getCycle(rips, dimen, J)
   new("Cycle",
@@ -81,26 +77,6 @@ showCycle <- function(cycle, view, col = "black", ...) {
   })
   invisible(cycle)
 }
-
-setClass("ColoredFeature",
-         slots = c(feature = "vector",
-                   colorScheme = "character",
-                   symbol = "vector"))
-
-setClass("ListOfFeatures",
-         slots = c(contents = "list"))
-setValidity("ListOfFeatures", function(object) {
-  if (is.null(object@contents)) return(TRUE)
-  return(all(sapply(object@contents , inherits, what = "ColoredFeature")))
-})
-
-setClass("TDACycle",
-         slots = c(cycle = "matrix",
-                   view = "matrix",
-                   feature = "ListOfFeatures"
-                   ))
-
-setMethod("length", "TDACycle", function(x) length(x@feature))
 
 addFeature <- function(object, feature) {
   if(!inherits(object, "TDACycle")) {

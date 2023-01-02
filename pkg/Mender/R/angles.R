@@ -12,7 +12,7 @@ getAngles <- function(dset, centroid) {
 
 ## Function to calculate mean and SD of section of graph starting from
 ## centroid
-angleMean <- function(view, rips, cycle = NULL, dset, angleWidth = 20, incr = 15) {
+angleMeans <- function(view, rips, cycle = NULL, dset, angleWidth = 20, incr = 15) {
   if (is.null(cycle)) {
     cycle <- getCycle(rips, 1) # longest cycle
   }
@@ -34,6 +34,36 @@ angleMean <- function(view, rips, cycle = NULL, dset, angleWidth = 20, incr = 15
   rownames(GM) <- partition
   GM
 }
+
+LoopCircos <- function(cycle, angles, colors) {
+  new("LoopCircos",
+      cycle,
+      angles = angles,
+      colors = colors)
+}
+
+setMethod("image", "LoopCircos", function(x, ...) {
+  opar <- par(cex = 1.5, mai = c(0, 0, 0, 0))
+  on.exit(par(opar))
+  circos.clear()
+  ## Should probably compute the parameters
+  circos.par(track.height = 0.08, start.degree = 90)
+  ## For each clinical feature/gene/what6ever
+  for(i in 1:length(angle.df[1,])) {
+    cat(i, "\n", file = stderr())
+    data <- as.data.frame(angle.df[,i])
+    col <- colorRamp2(range(data, na.rm = TRUE), x@colors[[i]])
+    args <- list(mat = data, cluster = FALSE, col = col)
+    ## If statement to add angle designations on outside of 
+    ## first track only
+    if (i == 1) {
+      args$rownames.side = "outside"
+      args$rownames.cex = 1
+    }
+    do.call(circos.heatmap, args)
+  }
+  invisible(x)
+})
 
 if (FALSE) {
   angle.df <- GM[, pal <- c("Ki-67", "PCNA", "CycB", "pRb", "CycA", "CD99")]
