@@ -1,6 +1,6 @@
 Package: Mender
-Version: 0.0.25
-Date: 2023-01-01
+Version: 0.0.28
+Date: 2023-01-03
 Title: Visualizing Topological Loops and Voids
 Author: Kevin R. Coombes, Jake Reed
 Maintainer: Kevin R. Coombes <krc@silicovore.com>

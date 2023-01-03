@@ -18,7 +18,8 @@ importFrom("ClassDiscovery",
            "distanceMatrix", "SamplePCA")
 importFrom("splines", "bs")
 importFrom("circlize",
-           "circlize", "colorRamp2")
+           "circlize", "colorRamp2",
+           "circos.clear", "circos.par", "circos.heatmap")
 
 ## cycle significance ny empirical Bayes
 exportClasses("ExpoFit", "EBexpo")
