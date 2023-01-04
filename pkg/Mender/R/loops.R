@@ -78,13 +78,3 @@ showCycle <- function(cycle, view, col = "black", ...) {
   invisible(cycle)
 }
 
-addFeature <- function(object, feature) {
-  if(!inherits(object, "TDACycle")) {
-    stop("Bad type: ", class(object))
-  }
-  feats <- append(object@feature, feature)
-  object
-}
-
-setMethod("plot", c("TDACycle", "missing"), function(x, y, ...) {
-})

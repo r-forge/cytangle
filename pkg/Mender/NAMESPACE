@@ -33,3 +33,5 @@ exportClasses("Cycle", "Feature", "LoopCircos")
 
 export("Cycle", "Feature", "angleMeans", "LoopCircos")
 
+export("disentangle")
+
