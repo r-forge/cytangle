@@ -149,29 +149,3 @@ setMethod("plot", c("EBexpo", "missing"), function(x, prior, post = c(0.5, 0.8, 
   invisible(x)
 })
 
-if(FALSE) {
-pd <- probDiff(prior)
-cutoff <- function(target) {
-  X0[min(which(pd > target))]
-}
-pp <- c(0.5, 0.75, 0.8, 0.85, 0.9, 0.95, 0.99)
-cuts <- sapply(pp, cutoff)
-data.frame(PostProb=pp, Cut=cuts)
-
-fl <- function(i) {
-  lines(c(0, cuts[i], cuts[i]),
-        c(pp[i], pp[i], 0), col="gray")
-}
-
-#png(file="postprob.png", width=3.5*300, height=3.5*300, res=200, bg="white")
-par(mai=c(0.9, 0.9, 0.6, 0.2))
-plot(X0, pd, type='l', lwd=2, xaxs='i',
-     xlab="Duration",
-     ylab="Probability(Different | Duration)")
-abline(h=0)
-fl(1)
-fl(3)
-fl(6)
-mtext("B", side=2, line=2, at=1.1, las=2, font=2, cex=1.3)
-#dev.off()
-}
