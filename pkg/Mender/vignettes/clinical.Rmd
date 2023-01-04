@@ -368,3 +368,7 @@ vd <- getCycle(ripdiag, 2)
 mds <- cmdscale(daisydist, k = 3)
 support <- cycleSupport(vd, mds)
 ```
+
+```{r cleanup}
+rm(list = ls())
+```

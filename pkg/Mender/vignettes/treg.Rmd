@@ -96,3 +96,7 @@ plot(ag.obj, ylim=c(0, 30))
 ```{r SI}
 sessionInfo()
 ```
+
+```{r cleanup}
+rm(list = ls())
+```

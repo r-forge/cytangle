@@ -364,3 +364,7 @@ vd <- getCycle(AML10.node287.rips, 2)
 mds <- cmdscale(amldist, k = 3)
 support <- cycleSupport(vd, mds)
 ```
+
+```{r cleanup}
+rm(list = ls())
+```

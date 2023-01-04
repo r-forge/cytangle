@@ -24,7 +24,7 @@ importFrom("circlize",
 ## cycle significance ny empirical Bayes
 exportClasses("ExpoFit", "EBexpo")
 export("ExpoFit", "EBexpo", "cutoff")
-exportMethods("plot", "hist", "lines", "points")
+exportMethods("plot", "hist", "lines", "points", "image")
 
 ## pick out cycles
 export("getCycle", "cycleSupport")
