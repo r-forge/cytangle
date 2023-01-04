@@ -18,22 +18,22 @@ data(treg)
   \describe{
     \item{\code{dset}}{A numerical data matrix with 538 rows amd 769
       columns. Each column represents a single cell from one of 61
-      samples that were assayed by (mixed=-omics) single cell
-      sequencing. Each row rpresents one of the features that was
+      samples that were assayed by (mixed-omics) single cell
+      sequencing. Each row represents one of the features that was
       measured in the assay. Of these, 51 are antibodies that were
       tagged with an RNA barcode to identify them; their names all end
       with the string \code{pAbO}. The remaining 487 features are mRNA
       measurements, named by their official gene symbol at the time the
-      experiment was performed. Each column represnet s a different
+      experiment was performed. Each column represents a different
       single cell.}
     \item{\code{treg}}{A numerical data matrix with 538 rows and 255
       columns. This matrix is a strict subset of the \code{dset}
-      matrix. It was produced using the \code{downsample} from the
-      \code{\link{Mercator}} package, which was in turn inspired by a
-      similar rotine used inthe SPADE algorithm by Peng Qiu. A key point
-      of the algorithm is to make sampling less likely from the densest
-      part of the distribution in order to preserve rare cell types in
-      the population.}
+      matrix. It was produced using the \code{downsample} function from
+      the \code{\link{Mercator}} package, which was in turn inspired by
+      a similar routine used in the SPADE algorithm by Peng Qiu. A key
+      point of the algorithm is to make sampling less likely from the
+      densest part of the distribution in order to preserve rare cell
+      types in the population.}
     \item{\code{rip}}{This object  is a "Rips diagram". It was produced
       by running the the \code{\link{ripsDiag}} function from the
       \code{\link{TDA}} R package on the \code{trag} subset of single cells.}
@@ -52,6 +52,12 @@ data(treg)
   Jake Reed \email{hreed@augusta.edu}}
 
 \references{
+  Qiu P, Simonds EF, Bendall SC, Gibbs KD Jr, Bruggner RV, Linderman MD,
+  Sachs K, Nolan GP, Plevritis SK. Extracting a cellular hierarchy from
+  high-dimensional cytometry data with SPADE. Nat Biotechnol. 2011 Oct
+  2;29(10):886-91. doi: 10.1038/nbt.1991.
+
+
 }
 \keyword{datasets}
 

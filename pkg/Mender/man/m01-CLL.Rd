@@ -6,8 +6,8 @@
 \docType{data}
 \title{Chronic Lymphocytic Leukemia Clinical Data}
 \description{
-  This data set contains 29 columns of deidentified clinical data on 266
-  patients with chronic lymphocytic leukemia.
+  Contains 29 columns of deidentified clinical data on 266 patients with
+  chronic lymphocytic leukemia (CLL).
 }
 \usage{
 data(CLL)
@@ -17,13 +17,13 @@ data(CLL)
   \describe{
     \item{\code{clinical}}{A numerical data matrix with 266 rows
       (patients) amd 29 columns (clinical features). Patients were newly
-      diagnosed with CLL and previousoly untreated at the time the
-      climnical measurements were recorded.} 
-    \item{\code{daisydist}}{A distance matrix , stored as a \code{diat}
+      diagnosed with CLL and previously untreated at the time the
+      climnical measurements were recorded.}
+    \item{\code{daisydist}}{A distance matrix , stored as a \code{dist}
       objectl, recording distances between the 266 CLL
-      patients. Disatnces were computed using teh \code{\link{daisy}}
-      function of Kaufmann and Rooseeuw, as iomplemenrted in the
-      \code{cluster R package.}}
+      patients. Distances were computed using the \code{\link{daisy}}
+      function of Kaufmann and Rooseeuw, as implemented in the
+      \code{cluster} R package.}
     \item{\code{ripDiag}}{This object  is a "Rips diagram". It was produced
       by running the the \code{\link{ripsDiag}} function from the
       \code{\link{TDA}} R package on the \code{daisydist} distance matrix.}
@@ -32,11 +32,11 @@ data(CLL)
 \source{
   Data were collected in the clinical of Dr. Michael Keating at the
   University of Texas M.D. Anderson Cancer Center to accompany patient
-  samples sent tot he laboratory of Dr. Lynne Abruzzo. Various subsets
-  of the data have been reported previously; see the refernces for some
-  of teh publications. Computation of the daisy distance was performed
+  samples sent to the laboratory of Dr. Lynne Abruzzo. Various subsets
+  of the data have been reported previously; see the references for some
+  of the publications. Computation of the daisy distance was performed
   by Caitlen E. Coombes, whose Master's Thesis also showed that this was
-  the most appropraite method when dealing with heterogeneous cl;inncal
+  the most appropriate method when dealing with heterogeneous clinical
   data. Computation of the topological data analysis (TDA) using the
   Rips diagram was performed by Jake Reed.
 }

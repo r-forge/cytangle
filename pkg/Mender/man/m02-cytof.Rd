@@ -1,6 +1,6 @@
 \name{cytof-data}
 \alias{cytof-data}
-\alias{AML1-.node287}
+\alias{AML10.node287}
 \alias{AML10.node287.rips}
 \alias{Arip}
 \docType{data}
@@ -13,25 +13,25 @@
 data(cytof)
 }
 \format{ Note that there are three distinct objects included in the data
-  set: \code{clinical}, \code{daisydist}, and \code{ripDiag}.
+  set: \code{AML10.node287}, \code{AML10,node287.rips}, and \code{Arip}.
   \describe{
     \item{\code{AML10.node287}}{A numerical data matrix with 214 rows
-      (single cells) amd 18 columns (antobody-protein amrkers). Values
+      (single cells) amd 18 columns (antibody-protein markers). Values
       were obtained using mass cytometry applied to a sample collected
-      from a patioent with AML.} 
+      from a patient with acute myeloid leukemia (AML).} 
     \item{\code{AML10.node287.rips}}{This object  is a
-      "Rips diagram". It was produced by running the the
+      "Rips diagram". It was produced by running the
       \code{\link{ripsDiag}} function from the \code{\link{TDA}} R
       package on the \code{AML10.node287} data matrix.}
     \item{\code{Arip}}{This object  is a "Rips diagram". It was produced
-      by running the the \code{\link{ripsDiag}} function from the
+      by running the \code{\link{ripsDiag}} function from the
       \code{\link{TDA}} R package on the Euclidean distance matrix
       between the single cells.}
   }
 }
 \source{
-  Data were collected by Dr. Greg Behbehani whle working in the
-  laboratory of Dr. Garry Nolan at Stanfird University. This data set is
+  Data were collected by Dr. Greg Behbehani while working in the
+  laboratory of Dr. Garry Nolan at Stanford University. This data set is
   a tiny subset of the full data set, which was described previously in
   the paper by Behbehani et al
 }

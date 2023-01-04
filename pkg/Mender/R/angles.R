@@ -49,9 +49,9 @@ setMethod("image", "LoopCircos", function(x, ...) {
   ## Should probably compute the parameters
   circos.par(track.height = 0.08, start.degree = 90)
   ## For each clinical feature/gene/what6ever
-  for(i in 1:length(angle.df[1,])) {
+  for(i in 1:length(x@angles[1,])) {
     cat(i, "\n", file = stderr())
-    data <- as.data.frame(angle.df[,i])
+    data <- as.data.frame(x@angles[,i])
     col <- colorRamp2(range(data, na.rm = TRUE), x@colors[[i]])
     args <- list(mat = data, cluster = FALSE, col = col)
     ## If statement to add angle designations on outside of 
@@ -64,32 +64,3 @@ setMethod("image", "LoopCircos", function(x, ...) {
   }
   invisible(x)
 })
-
-if (FALSE) {
-  angle.df <- GM[, pal <- c("Ki-67", "PCNA", "CycB", "pRb", "CycA", "CD99")]
-  opar <- par(cex = 1.5, mai = c(0, 0, 0, 0))
-  circos.clear()
-  circos.par(track.height = 0.08, 
-             start.degree = 90)
-  ## For loop for each track/gene
-  for(i in 1:length(angle.df[1,])) {
-    ## If statement to add angle designations on outside of 
-    ## first track only
-    if(i == 1) {
-      data <- as.data.frame(angle.df[,i])
-      col <- colorRamp2(c(min(data), max(data)), c("white", col.ls[i]))
-      circos.heatmap(data, rownames.side = "outside", 
-                     cluster = FALSE, col = col, rownames.cex = 1)
-    } else {
-      data <- as.data.frame(angle.df[,i])
-      col <- colorRamp2(c(min(data), max(data)), c("white", col.ls[i]))
-      circos.heatmap(data, cluster = FALSE, col = col)
-    }
-  }
-  ## Generate legend
-  lgd <- Legend(at = colnames(angle.df), title = "Genes", type = "points",
-                title_position = "topleft", legend_gp = gpar(col = col.ls))
-  ## Draw legend
-  draw(lgd, x = unit(0.97, "npc"), y = unit(0.05, "npc"), just = c("right", "bottom"))
-  par(opar)
-}
