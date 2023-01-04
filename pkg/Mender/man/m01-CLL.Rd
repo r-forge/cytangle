@@ -30,14 +30,14 @@ data(CLL)
   }
 }
 \source{
-  Data were collected in the clinical of Dr. Michael Keating at the
+  Data were collected in the clinic of Dr. Michael Keating at the
   University of Texas M.D. Anderson Cancer Center to accompany patient
   samples sent to the laboratory of Dr. Lynne Abruzzo. Various subsets
   of the data have been reported previously; see the references for some
-  of the publications. Computation of the daisy distance was performed
-  by Caitlen E. Coombes, whose Master's Thesis also showed that this was
+  publications. Computation of the daisy distance was performed by
+  Caitlen E. Coombes, whose Master's Thesis also showed that this was 
   the most appropriate method when dealing with heterogeneous clinical
-  data. Computation of the topological data analysis (TDA) using the
+  data of mixed type. Computation of the topological data analysis (TDA) using the
   Rips diagram was performed by Jake Reed.
 }
 \author{Kevin R. Coombes \email{krc@silicovore.com},

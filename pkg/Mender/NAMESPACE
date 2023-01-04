@@ -27,7 +27,7 @@ export("ExpoFit", "EBexpo", "cutoff")
 exportMethods("plot", "hist", "lines", "points")
 
 ## pick out cycles
-export("getCycle", "showCycle", "cycleSupport", "cycleEdges")
+export("getCycle", "cycleSupport")
 
 exportClasses("Cycle", "Feature", "LoopCircos")
 
