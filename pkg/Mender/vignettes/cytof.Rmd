@@ -8,7 +8,7 @@ output:
 vignette: >
   %\VignetteIndexEntry{Mender: A Mass Cytometry Example}
   %\VignetteKeywords{TDA, topologicla data analysis, c;inical data}
-  %\VignetteDepends{Mender,igraph,Polychrome,Mercator,ClassDiscovery,dendextend,ape}
+  %\VignetteDepends{Mender,igraph,Polychrome,Mercator,ClassDiscovery,ape}
   %\VignettePackage{Mender}
   %\VignetteEngine{knitr::rmarkdown}
 ---
@@ -36,7 +36,6 @@ library(Polychrome)
 data(Dark24)
 data(Light24)
 suppressMessages( library(igraph) )
-suppressMessages( library(dendextend) )
 suppressMessages( library("ape") )
 suppressPackageStartupMessages( library(circlize) )
 ```
@@ -67,20 +66,6 @@ plot(diag, main = "Rips Diagram")
 par(opar)
 rm(opar)
 ```
-
-```{r fig02, fig.width = 12, fig.cap = .tag(2, "Landscape, silhouette, and lambda-cluster plots of the Rips diagram, from TDA.")}
-L <- TDA::landscape(diag, KK = 1)
-S <- TDA::silhouette(diag)
-#crt <- TDA::clusterTree(amldist, k = 5, dist = "arbitrary")
-
-opar <- par(mfrow = c(1, 3))
-plot(L, type = "l", main = "Landscape")
-plot(S, type = "l", main = "Silhouette")
-#plot(crt, type = "lambda",main = "Lambda Cluster Tree")
-par(opar)
-rm(L, S, opar)
-```
-
 
 # Mercator Visualizations of the Underlying Data and Distance Matrix
 Now we use our `Mercator` package to view the underlying data.
@@ -154,17 +139,7 @@ There are a variety of community-finding algorithms that we can apply. (Communit
 in graph theory are similar to clusters in other machine learning areas of study.)
 "Edge-betweenness" seems  to work best.
 ```{r keg}
-# #keg <- cluster_fluid_communities(G, 12) # 12, as requested, though with comlpaints
-#keg <- cluster_leading_eigen(G)    # undirected
-#keg <- cluster_fast_greedy(G)      # undirected
-#keg <- cluster_louvain(G)          # undirected
-#keg <- cluster_leiden(G)           # undirected
-#keg <- cluster_optimal(G)          # too slow
-# keg <- cluster_label_prop(G)       # 177 (terrible!)
-# keg <- cluster_infomap(G)          # 34
-# keg <- cluster_walktrap(G)         # 24
-# keg <- cluster_spinglass(G)        # 21
-keg <- cluster_edge_betweenness(G) # 20
+keg <- cluster_edge_betweenness(G)
 table(membership(keg)) 
 pal <- Dark24[membership(keg)]
 ```
@@ -184,38 +159,12 @@ plot(G2, layout = L)
 par(opar)
 ```
 
-```{r fig07, fig.width = 8, fig.cap = .tag(7, "Dendrogram realization, using the dendextend package.")}
-D <- as.dendrogram(H)
-labels_colors(D) <- colset[order.dendrogram(D)]
-plot(D, main = "Dendextend/Dendrogram")
-```
-
 ```{r fig08, fig.width=7, fig.height = 7, fig.cap = .tag(8, "Cladogram realization, from the ape package.")}
 P <- as.phylo(H)
 opar <- par(mai = c(0.01, 0.01, 1.0, 0.01))
 plot(P, type = "u", tip.color = colset, cex = 1.2, main = "Ape/Cladogram")
 par(opar)
 rm(opar)
-```
-
-
-We can visualize the `r K` clusters on the original data.
-```{r fig09, fig.width=10, fig.height = 10, fig.cap = .tag(9, "Mercator visualizations of TDA-iGraph clusters.")}
-K = 10
-venus <- recluster(mercury, K = K)
-newc <- cutree(H, k = K)
-names(newc) <- attr(venus@distance,"Labels")
-venus <- setClusters(venus, newc)
-venus@palette <- Light24
-
-swap <- invertColors()
-opar <- par(mfrow = c(2,2), cex = 1.2)
-plot(venus, view = "hclust")
-plot(venus, view = "mds", main = "MDS")
-plot(venus, view = "tsne", main = "t-SNE")
-plot(venus, view = "umap", main = "UMAP")
-par(opar)
-par(swap)
 ```
 
 ## Visualizing Features
@@ -233,7 +182,7 @@ featCD99 <- Feature(AML10.node287[,"CD99"], "CD99", c("green", "magenta"), c("Lo
 opar <- par(mfrow = c(1,2))
 plot(W, main = "UMAP; Ki-67", xlab = "U1", ylab = "U2")
 points(featKi67, W, pch = 16, cex = 1.4)
-plot(W, main = "UMAP; Rai Stage", xlab = "U1", ylab = "U2")
+plot(W, main = "UMAP; CD99", xlab = "U1", ylab = "U2")
 points(featCD99, W, pch = 16, cex = 1.4)
 par(opar)
 rm(opar)

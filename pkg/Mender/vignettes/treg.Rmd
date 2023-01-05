@@ -6,7 +6,7 @@ output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Mender: Regulatory T Cells}
   %\VignetteKeywords{TDA, topological data analysis, regulatory T cells}
-  %\VignetteDepends{Mender,igraph,Polychrome,Mercator,ClassDiscovery,dendextend,ape}
+  %\VignetteDepends{Mender,igraph,Polychrome,Mercator,ClassDiscovery,ape}
   %\VignettePackage{Mender}
   %\VignetteEngine{knitr::rmarkdown}
 ---
@@ -36,7 +36,6 @@ library(Mercator)
 library(igraph)
 library(ClassDiscovery)
 library(PCDimension)
-library(dendextend)
 library("ape")
 ```
 Now we fetch the sample data set that is included with the package.
@@ -154,7 +153,7 @@ Note that the Fruchterman-Reingold layout gives the most informative structure.
 
 ## Community Structure
 There are a variety of community-finding algorithms that we can apply. (Communities
-in grpah theory are similar to clusters in other machine learning areas of study.)
+in graph theory are similar to clusters in other machine learning areas of study.)
 "Edge-betweenness" seems  to work best.
 ```{r keg}
 keg <- cluster_edge_betweenness(G) # 19
@@ -177,12 +176,6 @@ plot(G2, layout = L)
 par(opar)
 ```
 
-```{r fig07, fig.width = 8, fig.cap = .tag(7, "Dendrogram realization, using the dendextend package.")}
-D <- as.dendrogram(H)
-labels_colors(D) <- colset[order.dendrogram(D)]
-plot(D, main = "Dendextend/Dendrogram")
-```
-
 ```{r fig08, fig.width=7, fig.height = 7, fig.cap = .tag(8, "Cladogram realization, from the ape package.")}
 P <- as.phylo(H)
 opar <- par(mai = c(0.01, 0.01, 1.0, 0.01))
@@ -191,23 +184,6 @@ par(opar)
 rm(opar)
 ```
 
-We can visualize the `r K` clusters on the original data.
-```{r fig09, fig.width=10, fig.height = 10, fig.cap = .tag(9, "Mercator visualizations of TDA-iGraph clusters.")}
-venus <- recluster(M, K = K)
-newc <- cutree(H, k = K)
-names(newc) <- attr(venus@distance,"Labels")
-venus <- setClusters(venus, newc)
-venus@palette <- Light24
-
-swap <- invertColors()
-opar <- par(mfrow = c(2,2), cex = 1.2)
-plot(venus, view = "hclust")
-plot(venus, view = "mds", main = "MDS")
-plot(venus, view = "tsne", main = "t-SNE")
-plot(venus, view = "umap", main = "UMAP")
-par(opar)
-par(swap)
-```
 
 ## Visualizing Features
 In any of the "scatter plot views" (e.g., MDS, UMAP, t-SNE) from Mercator, we may want to
@@ -224,7 +200,7 @@ CTLA4 <- Feature(treg["CTLA4", ], "CTLA4", c("green", "magenta"), c("Low", "High
 opar <- par(mfrow = c(1,2))
 plot(W, main = "UMAP; FOXP3", xlab = "U1", ylab = "U2")
 points(FOXP3, W, pch = 16, cex = 1.4)
-plot(W, main = "UMAP; Rai Stage", xlab = "U1", ylab = "U2")
+plot(W, main = "UMAP; CTLA4", xlab = "U1", ylab = "U2")
 points(CTLA4, W, pch = 16, cex = 1.4)
 par(opar)
 rm(opar)

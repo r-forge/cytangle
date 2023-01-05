@@ -1,7 +1,7 @@
 \name{treg-data}
 \alias{treg-data}
 \alias{treg}
-\alias{dset}
+\alias{tmat}
 \alias{rip}
 \docType{data}
 \title{Single Cell Data on T Regulatory (Treg) Cells}

@@ -16,7 +16,7 @@ Description: Visualizations to explain the results of a topological
 Depends: R (>= 3.5)
 Imports: methods, graphics, stats, TDA, ClassDiscovery, Mercator,
   splines, circlize
-Suggests: knitr, rmarkdown, Polychrome, igraph, dendextend, ape, PCDimension
+Suggests: knitr, rmarkdown, Polychrome, igraph, ape, PCDimension
 License: Artistic-2.0
 URL: http://oompa.r-forge.r-project.org/
 VignetteBuilder: knitr
