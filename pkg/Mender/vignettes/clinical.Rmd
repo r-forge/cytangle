@@ -1,13 +1,13 @@
 ---
-title: "Mender: A Clinical Data Set Example"
+title: "Mender: CLL Clinical Data"
 author: "Kevin R. Coombes and Jake Reed"
 data: "`r Sys.Date()`"
 output: 
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{Mender: A Clinical Data Set Example}
-  %\VignetteKeywords{TDA, topologicla data analysis, c;inical data}
+  %\VignetteIndexEntry{Mender: CLL Clinical Data}
+  %\VignetteKeywords{TDA, topological data analysis, clinical data, mixed-type data}
   %\VignetteDepends{Mender,igraph,Polychrome,Mercator,ClassDiscovery,dendextend,ape}
   %\VignettePackage{Mender}
   %\VignetteEngine{knitr::rmarkdown}

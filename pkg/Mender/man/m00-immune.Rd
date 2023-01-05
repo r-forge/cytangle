@@ -14,9 +14,9 @@
 data(treg)
 }
 \format{ Note that there are three distinct objects
-  included in the data set: \code{dset}, \code{treg}, and \code{rip}.
+  included in the data set: \code{treg}, \code{tmat}, and \code{rip}.
   \describe{
-    \item{\code{dset}}{A numerical data matrix with 538 rows amd 769
+    \item{\code{treg}}{A numerical data matrix with 538 rows and 255
       columns. Each column represents a single cell from one of 61
       samples that were assayed by (mixed-omics) single cell
       sequencing. Each row represents one of the features that was
@@ -25,15 +25,18 @@ data(treg)
       with the string \code{pAbO}. The remaining 487 features are mRNA
       measurements, named by their official gene symbol at the time the
       experiment was performed. Each column represents a different
-      single cell.}
-    \item{\code{treg}}{A numerical data matrix with 538 rows and 255
-      columns. This matrix is a strict subset of the \code{dset}
-      matrix. It was produced using the \code{downsample} function from
-      the \code{\link{Mercator}} package, which was in turn inspired by
-      a similar routine used in the SPADE algorithm by Peng Qiu. A key
-      point of the algorithm is to make sampling less likely from the
-      densest part of the distribution in order to preserve rare cell
-      types in the population.}
+      single cell. This matrix is a subset of a more complete data set
+      of T regulatory cells (Tregs). It was produced using the
+      \code{downsample} function from the \code{\link{Mercator}}
+      package, which was in turn inspired by a similar routine used in
+      the SPADE algorithm by Peng Qiu. A key point of the algorithm is
+      to make sampling less likely from the densest part of the
+      distribution in order to preserve rare cell types in the
+      population.}
+    \item{\code{tmat}}{A distamnce matrix, stored as a
+      \code{\link{dist}} object, produced using Pearson correlation as a
+      measure of distance between sigle-cell vectors in the \code{treg}
+      data set.}
     \item{\code{rip}}{This object  is a "Rips diagram". It was produced
       by running the the \code{\link{ripsDiag}} function from the
       \code{\link{TDA}} R package on the \code{trag} subset of single cells.}

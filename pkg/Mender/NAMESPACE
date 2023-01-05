@@ -21,17 +21,21 @@ importFrom("circlize",
            "circlize", "colorRamp2",
            "circos.clear", "circos.par", "circos.heatmap")
 
-## cycle significance ny empirical Bayes
+exportMethods("plot", "hist", "lines", "points", "image")
+
+## Rewrite Rips diagrams using index-offfstes instead of
+## hard-wired coordinates
+export("disentangle")
+
+## cycle significance by empirical Bayes
 exportClasses("ExpoFit", "EBexpo")
 export("ExpoFit", "EBexpo", "cutoff")
-exportMethods("plot", "hist", "lines", "points", "image")
 
 ## pick out cycles
 export("getCycle", "cycleSupport")
 
+## objects for primary plotting routines
 exportClasses("Cycle", "Feature", "LoopCircos")
+export("Cycle", "Feature", "LoopCircos", "angleMeans")
 
-export("Cycle", "Feature", "angleMeans", "LoopCircos")
-
-export("disentangle")
 

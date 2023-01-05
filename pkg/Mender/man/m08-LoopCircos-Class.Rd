@@ -22,21 +22,26 @@ angleMeans(view, rips, cycle = NULL, dset, angleWidth = 20, incr = 15)
 \S4method{image}{LoopCircos}(x, ...)
 }
 \arguments{
-  \item{values}{A numeric vector.}
-  \item{name}{A character vector of length one.}
-  \item{colors}{A character vector of length at least two, containing
+  \item{cycle}{In the \code{LoopCircos} function, an object of the
+    \code{\link{Cycle}} class. In the \code{angleMeans} function, a
+    "simple" cycle, meaning one element of the \code{cycleLocation} part
+    of a Rips diagram.} 
+  \item{angles}{A matrix where columns are features, rows are angles,
+    and the value is the mean expression of that feature in a sector
+    around that central angle. These are almost always constructed using
+    the \code{angleMeans} function.}
+  \item{colors}{A list of character vectors, each of length two, containing
     the names or hexadecimal representations of colors used to create a
-    color ramp to display the feature.}
-  \item{meaning}{A character vector of length two containing the
-    interpretations of the low and high extreme values of the
-    feature. Note that this works perfectly well for binary factors
-    represented as numeric 0-1 vectors.}
-  \item{x}{A \code{LoopCircos} object.}
-  \item{y}{A (layout) matrix with coordinates showing where to plot
-    each point in the feature.}
+    color ramp to display the feature. The list should be the same
+    length as the number of features to be displayed.}
   \item{view}{ A (layout) matrix with coordinates showing where to plot
-    each point in the feature.}
-  \item{pch}{A number; the graphical plotting character parameter \code{pch}.}
+    each point in the feature while computing means in sectors.}
+  \item{rips}{A Rips \code{diagram} object.}
+  \item{dset}{The numeric matrix from which Featuers are drawn.}
+  \item{angleWidth}{A numeric vector of length one; the width (in
+    degrees) of each sector.}
+  \item{incr}{A numeric vector; the increment (in degeres)  between sector centers.}
+  \item{x}{A \code{LoopCircos} object.}
   \item{\dots}{The usual set of additional graphical parameters. }
 }
 \section{Slots}{
@@ -53,11 +58,18 @@ angleMeans(view, rips, cycle = NULL, dset, angleWidth = 20, incr = 15)
   }
 }
 \value{
+  The \code{angleMeans} function computes the mean expression of each
+  numeric feature in a two-dimensional sector swept out around the
+  centroid of the support of a cycle. It returns these values as a
+  matrix, with each row corresponding to the angle (in degrees) around
+  the centroid of the cycle.
+
   The \code{LoopCircos} function constructs and returns an object of the
   \code{LoopCircos} class
 
   The \code{image} method returns (invisibly) the LoopCircos
   object that was its first argument.
+
 }
 \seealso{
   \code{\link{Cycle}}
