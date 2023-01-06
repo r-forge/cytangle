@@ -283,24 +283,30 @@ image(annote)
 ## Two-Cycles (Voids)
 Now we want to determine if there are significant "voids" (empty interiors of spheres) in
 the data, and, if so, how many?
-```{r d2}
+```{r fig12, fig.width=12, fig.cap = .tag(12, "Empirical Bayes detection of significant two-cycles.")}
 d2 <- persistence[diag[, "dimension"] == 2]
 ef <- ExpoFit(d2) # should be close to log(2)/median? 
-plot(ef)
 eb <- EBexpo(d2, 200)
+opar <- par(mfrow = c(1, 3))
+plot(ef)
 hist(eb)
 plot(eb, prior = 0.75)
+par(opar)
+rm(opar)
 sum(d2 > cutoff(0.8, 0.75, eb)) # posterior 80%, prior 0.56
 sum(d2 > cutoff(0.95, 0.75, eb)) # posterior 90%, prior 0.56
 cutoff(0.95, 0.75, eb)
 sum(d2 > 0.032) # post 90%
-which(d2 > 0.032)
+which(d2 > 0.034)
 ```
 
-```{r}
-vd <- getCycle(ripdiag, 2)
+```{r as.is = TRUE}
+vd <- Cycle(ripdiag, 2, 95, "purple")
 mds <- cmdscale(daisydist, k = 3)
-support <- cycleSupport(vd, mds)
+voidPlot(vd, mds)
+voidFeatures(featMU, mds, radius = 0.011) # need to increase radius when you overlay one sphere on another
+rgl::rglwidget()
+#htmlwidgets::saveWidget(rglwidget(), "mywidget.html")
 ```
 
 ```{r cleanup}

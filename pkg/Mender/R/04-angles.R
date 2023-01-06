@@ -50,7 +50,7 @@ setMethod("image", "LoopCircos", function(x, ...) {
   circos.par(track.height = 0.08, start.degree = 90)
   ## For each clinical feature/gene/what6ever
   for(i in 1:length(x@angles[1,])) {
-    cat(i, "\n", file = stderr())
+#    cat(i, "\n", file = stderr())
     data <- as.data.frame(x@angles[,i])
     col <- colorRamp2(range(data, na.rm = TRUE), x@colors[[i]])
     args <- list(mat = data, cluster = FALSE, col = col)
