@@ -41,5 +41,5 @@ export("getCycle", "cycleSupport")
 exportClasses("Cycle", "Feature", "LoopCircos")
 export("Cycle", "Feature", "LoopCircos", "angleMeans")
 
-export("voidPlot", "voidFeatures")
+export("voidPlot", "voidFeature")
 

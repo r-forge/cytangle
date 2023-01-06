@@ -304,7 +304,7 @@ which(d2 > 0.034)
 vd <- Cycle(ripdiag, 2, 95, "purple")
 mds <- cmdscale(daisydist, k = 3)
 voidPlot(vd, mds)
-voidFeatures(featMU, mds, radius = 0.011) # need to increase radius when you overlay one sphere on another
+voidFeature(featMU, mds, radius = 0.011) # need to increase radius when you overlay one sphere on another
 rgl::rglwidget()
 #htmlwidgets::saveWidget(rglwidget(), "mywidget.html")
 ```
