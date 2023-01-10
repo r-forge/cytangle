@@ -1,5 +1,6 @@
+## 00-classes.R
 ## Copyright (C) 2022 Kevin R. Coombes, RB McGee, and Jake Reed
-
+## LICENSE: Perl Artistic License 2.0
 
 setClass("Feature",
          slots = c(name = "character",
@@ -18,4 +19,12 @@ setClass("LoopCircos",
          slots = c(angles = "matrix",
                    colors = "list")
          )
+
+setClass("Projection",
+         slots = c(phi = "numeric",
+                   psi = "numeric",
+                   displayphi = "numeric",
+                   displaypsi = "numeric",
+                   value = "matrix",
+                   feature = "Feature"))
 

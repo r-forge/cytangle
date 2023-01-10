@@ -43,3 +43,6 @@ export("Cycle", "Feature", "LoopCircos", "angleMeans")
 
 export("voidPlot", "voidFeature")
 
+exportClasses("Projection")
+export("Projection")
+

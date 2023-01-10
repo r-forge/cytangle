@@ -1,4 +1,6 @@
+## 02-loops.R
 ## Copyright (C) 2022 Kevin R. Coombes, RB McGee, and Jake Reed
+## LICENSE: Perl Artistic License 2.0
 
 Cycle <- function(rips, dimen, J, color) {
   index = getCycle(rips, dimen, J)

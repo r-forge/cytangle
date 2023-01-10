@@ -1,3 +1,7 @@
+## 04-angles.R
+## Copyright (C) 2022 Kevin R. Coombes, RB McGee, and Jake Reed
+## LICENSE: Perl Artistic License 2.0
+
 ## helper function to get cycle-centroid
 getCentroid <- function(cycle, view) {
   pts <- cycleSupport(cycle, view)

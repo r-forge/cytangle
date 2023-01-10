@@ -1,8 +1,8 @@
 Package: Mender
-Version: 0.2.1
-Date: 2023-01-06
+Version: 0.2.3
+Date: 2023-01-07
 Title: Visualizing Topological Loops and Voids
-Author: Kevin R. Coombes, Jake Reed
+Author: Kevin R. Coombes, Jake Reed, RB McGee
 Maintainer: Kevin R. Coombes <krc@silicovore.com>
 Description: Visualizations to explain the results of a topological
   data analysis (TDA). The goal of TDA is to identify persistent
