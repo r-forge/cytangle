@@ -21,8 +21,8 @@ importFrom("circlize",
            "circlize", "colorRamp2",
            "circos.clear", "circos.par", "circos.heatmap")
 importFrom("rgl",
-           "rgl.open", "rgl.bg", "rgl.viewpoint",
-           "open3d", "axes3d", "spheres3d", "lines3d", "title3d")
+           "open3d", "bg3d", "view3d", "axes3d",
+           "spheres3d", "lines3d", "title3d")
 
 exportMethods("plot", "hist", "lines", "points", "image")
 

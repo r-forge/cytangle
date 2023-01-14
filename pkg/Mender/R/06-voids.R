@@ -13,9 +13,9 @@ voidPlot <- function(cycle, view, feature = NULL, radius = 0.01, ...) {
     colors <- feature@colRamp(feature@values)
   }
   open3d(windowRect=c(100, 100, 900, 900))
-  rgl.bg(color="white")
+  bg3d(color="white")
   axes3d(col='black')
-  rgl.viewpoint(theta=-40, phi=35)
+  view3d(theta=-40, phi=35)
   spheres3d(view[,1], view[,2], view[,3], radius=radius,
             alpha=1, shininess=50, col = colors)
   for (J in 1:nrow(left)) {
