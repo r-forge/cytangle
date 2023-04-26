@@ -16,7 +16,7 @@ gammaFit <- function(edata, resn = 200) {
   sigma <- sd(edata)
   shape <- mu^2/sigma^2
   rate <- mu/sigma^2
-  h0 <- hist(edata, breaks = 123, prob = TRUE, plot = FALSE)
+  h0 <- hist(edata, breaks = 123, plot = FALSE)
   X0 <- h0$mids
   pdf <- h0$density
   ## Compute the crude recip parameter estimate

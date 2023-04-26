@@ -32,7 +32,7 @@ export("disentangle")
 
 ## cycle significance by empirical Bayes
 exportClasses("ExpoFit", "EBexpo")
-export("ExpoFit", "EBexpo", "cutoff")
+export("ExpoFit", "EBexpo", "cutoff", "gammaFit")
 
 ## pick out cycles
 export("getCycle", "cycleSupport")
