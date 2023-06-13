@@ -25,6 +25,7 @@ importFrom("rgl",
            "spheres3d", "lines3d", "title3d")
 
 exportMethods("plot", "hist", "lines", "points", "image")
+export("tailHisto")
 
 ## Rewrite Rips diagrams using index-offfstes instead of
 ## hard-wired coordinates

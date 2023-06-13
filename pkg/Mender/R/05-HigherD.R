@@ -149,3 +149,21 @@ setMethod("plot", c("EBexpo", "missing"), function(x, prior, post = c(0.5, 0.8, 
   invisible(x)
 })
 
+### Extract a sub-histogram from the tail of the distibution
+tailHisto <- function(H, target) {
+  L <- length(H$breaks)
+  L1 <- L - 1
+  start <- which(H$breaks > target)
+  if (length(start) == 0) {
+    stop("The 'target' is bigger than all breaks.\n")
+  }
+  start <- start[1]
+  awkward <- structure(list(breaks = H$breaks[start:L],
+                            counts = H$counts[start:L1],
+                            density = H$density[start:L1],
+                            mids = H$mids[start:L1],
+                            xname = H$xname,
+                            equidist = H$equidist),
+                       class="histogram")
+  awkward
+}
