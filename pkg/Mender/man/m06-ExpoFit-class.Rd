@@ -10,8 +10,8 @@ The \code{ExpoFit} Class
   An \code{ExpoFit} object represents a robust fit to an exponential
   distribution, in a form that can conveniently be used as part of an
   Empirical Bayes approach to decompose the distributions of cycle
-  presistence or duration for a topological data analysis perfiormed
-  using teh \code{TDA} package.
+  presistence or duration for a topological data analysis performed
+  using the \code{TDA} package.
 }
 \usage{
 ExpoFit(edata, resn = 200)
@@ -19,8 +19,9 @@ ExpoFit(edata, resn = 200)
 }
 \arguments{
   \item{edata}{A numeric vector; the observed data that we think comes
-    from an exponential distribution.}
-  \item{resn}{A numeric vector; the resolution used to estimate a histogream.}
+    mainly from an exponential distribution.}
+  \item{resn}{A numeric vector of length 1; the resolution (number of
+    breaks) used to estimate a histogram.}
   \item{x}{An \code{ExpoFit} object.}
   \item{y}{Ignored.}
   \item{\dots}{The usual set of graphical parameters. }
@@ -33,12 +34,12 @@ ExpoFit(edata, resn = 200)
       \code{\link{hist}} function applied to the supplied \code{edata}.}
     \item{\code{X0}:}{A numeric vector containing the midpoints of the
       breaks in the histogram object.}
-    \item{\code{pdf}:}{The empirical density funciton extracted from the
+    \item{\code{pdf}:}{The empirical density function extracted from the
       histogram object.}
     \item{\code{mu}:}{The observed mean of the putative exponential
       distribution.}
     \item{\code{lambda}:}{The robustly estimated parameter of the
-      exponential distribution. orinignall crudely repesented by the
+      exponential distribution. Originally crudely repesented by the
       reciprocal of the mean.}
   }
 }

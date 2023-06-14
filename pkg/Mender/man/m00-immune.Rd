@@ -33,13 +33,13 @@ data(treg)
       to make sampling less likely from the densest part of the
       distribution in order to preserve rare cell types in the
       population.}
-    \item{\code{tmat}}{A distamnce matrix, stored as a
+    \item{\code{tmat}}{A distance matrix, stored as a
       \code{\link{dist}} object, produced using Pearson correlation as a
       measure of distance between sigle-cell vectors in the \code{treg}
       data set.}
     \item{\code{rip}}{This object  is a "Rips diagram". It was produced
       by running the the \code{\link{ripsDiag}} function from the
-      \code{\link{TDA}} R package on the \code{trag} subset of single cells.}
+      \code{\link{TDA}} R package on the \code{treg} subset of single cells.}
   }
 }
 \source{
@@ -59,8 +59,6 @@ data(treg)
   Sachs K, Nolan GP, Plevritis SK. Extracting a cellular hierarchy from
   high-dimensional cytometry data with SPADE. Nat Biotechnol. 2011 Oct
   2;29(10):886-91. doi: 10.1038/nbt.1991.
-
-
 }
 \keyword{datasets}
 

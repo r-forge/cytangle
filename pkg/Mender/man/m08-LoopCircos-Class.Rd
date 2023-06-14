@@ -11,7 +11,7 @@ The \code{LoopCircos} Class
   A \code{LoopCircos} object represents a one-dimensional cycle (a
   loop, or topogical eequivalent of a circle), along with a set of
   features that vary around the loop and can be plotted in a "circos"
-  plot to help explsin why the loop exists. The \code{LoopCircos} class
+  plot to help explain why the loop exists. The \code{LoopCircos} class
   inherits from the \code{\link{Cycle}} class, so you can think of it as
   a cycle object with extra information (namely, the explanatory
   features).
@@ -46,8 +46,8 @@ angleMeans(view, rips, cycle = NULL, dset, angleWidth = 20, incr = 15)
 }
 \section{Slots}{
   \describe{
-    \item{\code{angles}:}{}
-    \item{\code{colors}:}{}
+    \item{\code{angles}:}{A matrix of angle means.}
+    \item{\code{colors}:}{A list of color-pairs for displayign features.}
   }
 }
 \section{Methods}{
@@ -72,7 +72,7 @@ angleMeans(view, rips, cycle = NULL, dset, angleWidth = 20, incr = 15)
 
 }
 \seealso{
-  \code{\link{Cycle}}
+  \code{\link{Cycle}}, \code{\link{LoopFeature}}, \code{\link{ripsDiag}}
 }
 \author{Kevin R. Coombes <krc@silicovore.com>}
 \examples{

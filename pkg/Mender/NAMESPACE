@@ -6,7 +6,8 @@ import(methods)
 import(TDA)
 
 importFrom("graphics",
-           "abline", "hist", "legend", "lines", "points", "par")
+           "abline", "hist", "legend", "lines", "points",
+           "par", "mtext", "title")
 importFrom("stats",
            "dexp", "lm", "optimize", "predict", "runif", "sd",
            "dgamma", "optim","density", "loess")
@@ -33,7 +34,8 @@ export("disentangle")
 
 ## cycle significance by empirical Bayes
 exportClasses("ExpoFit", "EBexpo")
-export("ExpoFit", "EBexpo", "cutoff", "gammaFit")
+export("ExpoFit", "EBexpo", "cutoff")
+#export("gammaFit")
 
 ## pick out cycles
 export("getCycle", "cycleSupport")
@@ -46,4 +48,7 @@ export("voidPlot", "voidFeature")
 
 exportClasses("Projection")
 export("Projection")
+
+exportClasses("LoopFeature")
+export("LoopFeature")
 

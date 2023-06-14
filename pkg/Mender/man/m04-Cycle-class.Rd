@@ -7,7 +7,7 @@
 \alias{getCycle}
 \alias{cycleSupport}
 \title{
-\code{Cycle} Objects For Visualizing Topological Data Anal;ysis Results
+\code{Cycle} Objects For Visualizing Topological Data Analysis Results
 }
 \description{
   The \code{Cycle} object represents a cycle found by performing
@@ -25,7 +25,8 @@ cycleSupport(cycle, view)
   \item{rips}{A Rips \code{diagram} from the \code{TDA} package.}
   \item{dimen}{An integer; the dimension of the cycle.}
   \item{J}{An integer; the index locating the cycle in the
-    \code{cycleLocation} portion of the Rips diagram..}
+    \code{cycleLocation} portion of the Rips diagram. If \code{NULL},
+    then looks for the most persistent cycle.}
   \item{color}{A character vector of length one; the color in which to
     display the cycle.}
   \item{x}{A \code{Cycle} object.}
@@ -75,6 +76,7 @@ cycleSupport(cycle, view)
   of the points contained in the cycle.
 }
 \seealso{
+  \code{\link{TDA}}, \code{\link{ripsDiag}}
 }
 \author{Kevin R. Coombes <krc@silicovore.com>}
 \examples{

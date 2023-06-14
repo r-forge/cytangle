@@ -18,9 +18,9 @@ data(CLL)
     \item{\code{clinical}}{A numerical data matrix with 266 rows
       (patients) amd 29 columns (clinical features). Patients were newly
       diagnosed with CLL and previously untreated at the time the
-      climnical measurements were recorded.}
-    \item{\code{daisydist}}{A distance matrix , stored as a \code{dist}
-      objectl, recording distances between the 266 CLL
+      clinical measurements were recorded.}
+    \item{\code{daisydist}}{A distance matrix, stored as a \code{dist}
+      object, recording pairwise distances between the 266 CLL
       patients. Distances were computed using the \code{\link{daisy}}
       function of Kaufmann and Rooseeuw, as implemented in the
       \code{cluster} R package.}
@@ -35,7 +35,7 @@ data(CLL)
   samples sent to the laboratory of Dr. Lynne Abruzzo. Various subsets
   of the data have been reported previously; see the references for some
   publications. Computation of the daisy distance was performed by
-  Caitlen E. Coombes, whose Master's Thesis also showed that this was 
+  Caitlin E. Coombes, whose Master's Thesis also showed that this was 
   the most appropriate method when dealing with heterogeneous clinical
   data of mixed type. Computation of the topological data analysis (TDA) using the
   Rips diagram was performed by Jake Reed.

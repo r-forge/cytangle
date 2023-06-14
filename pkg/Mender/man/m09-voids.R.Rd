@@ -7,9 +7,9 @@
 }
 \description{
   Voids are two-dimensional cycles and should be thought of as the
-  topological equivalnets of (the surface) of a sphere. These are
-  typically displayed as a point cloud in space, with wire-fframe edges
-  outlining te component simplices.
+  topological equivalents of (the surface) of a sphere. These are
+  typically displayed as a point cloud in space, with wire-frame edges
+  outlining the component (triangular) simplices.
 }
 \usage{
 voidPlot(cycle, view, feature = NULL, radius = 0.01, ...)
@@ -18,9 +18,9 @@ voidFeature(feature, view, radius = 0.01, ...)
 \arguments{
   \item{cycle}{An object of the \code{\link{Cycle}} class.}
   \item{view}{A matrix (with three columns, x, y, and, z) specifying the
-    coorindates to be used to display the data.}
+    coordinates to be used to display the data.}
   \item{feature}{An object of the \code{\link{Feature}} class.}
-  \item{radius}{The radius of spheres used to diplaty the points in
+  \item{radius}{The radius of spheres used to display the points in
     three dimensions.}
   \item{\dots}{Additional graphical parameters.}
 }
@@ -38,12 +38,10 @@ voidFeature(feature, view, radius = 0.01, ...)
   using the \code{voidFeature} function.
 
   In an interactive session, everything is displayed in an OpenGL window,
-  where the grpah can be manipulated with a mouse. Programmatically, you
+  where the graph can be manipulated with a mouse. Programmatically, you
   can use the \code{rgl::rglwidget} function to write out the code for
   an interactive HTML display, and you can save the widget to a file
   using the \code{htmlwidgets::saveWidget} function.
-}
-\references{
 }
 \author{Kevin R. Coombes <krc@silicovore.com>}
 \examples{

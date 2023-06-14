@@ -9,11 +9,11 @@
 The \code{EBexpo} Class
 }
 \description{
-  The \code{EBexpo} object represents the results of an Empiricaol Bayes
-  approach to estimate an distribution as a mixture of a (more or less)
-  known exponential distributionalomng with a completely unknonw
-  "ihntersting" distribution. The basic method was described by Efron
-  and Tibshirani with an application to differential experssion in
+  The \code{EBexpo} object represents the results of an Empirical Bayes
+  approach to estimate a distribution as a mixture of a (more or less)
+  known exponential distribution along with a completely unknown
+  "interesting" distribution. The basic method was described by Efron
+  and Tibshirani with an application to differential expression in
   microarray data.
 }
 \usage{
@@ -24,7 +24,7 @@ cutoff(target, prior, object)
 }
 \arguments{
   \item{edata}{A numeric vector; the observed data that we think comes
-    partilly from an exponential distribution.}
+    mainly from an exponential distribution.}
   \item{resn}{A numeric vector; the resolution used to estimate a histogream.}
   \item{x}{An \code{EBexpo} object.}
   \item{xlab}{A character vector; the label for the x-axis.}
@@ -32,7 +32,7 @@ cutoff(target, prior, object)
   \item{main}{A charcter vector; the plot title.}
   \item{\dots}{The usual set of graphical parameters. }
   \item{prior}{A numeric vector of length 1; the prior probability of an
-    observed data point coming from the known exopnential distribution.}
+    observed data point coming from the known exponential distribution.}
   \item{post}{The posterior probabilities to display in the plot.}
   \item{target}{The target posterior probability.}
   \item{object}{An \code{EBexpo} object.}
@@ -41,15 +41,15 @@ cutoff(target, prior, object)
   \describe{
     \item{\code{expo}:}{An \code{\link{ExpoFit}} object.}
     \item{\code{theoretical.pdf}:}{A numerical vector representing the
-      desnity funciton of the putative exponential distribution
+      density funciton of the putative exponential distribution
       component of the mixture.. }
-    \item{\code{unravel}:}{A numeric vector; the observed emirical
-      distribtuion of the complete mixture.}
+    \item{\code{unravel}:}{A numeric vector; the observed empirical
+      distribution of the complete mixture.}
   }
 }
 \section{Methods}{
   \describe{
-    \item{plot{EBexpo,matrix}(x, prior, post = c(0.5, 0.8, 0.9), ...):}{
+    \item{plot(x, prior, post = c(0.5, 0.8, 0.9), ...):}{
       Produce a plot of a \code{EBexpo} object.
     }
     \item{hist(x, xlab="", ylab="Prob(Interesting | X)", main="", ...):}{

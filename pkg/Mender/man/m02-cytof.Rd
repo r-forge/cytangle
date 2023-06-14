@@ -33,7 +33,7 @@ data(cytof)
   Data were collected by Dr. Greg Behbehani while working in the
   laboratory of Dr. Garry Nolan at Stanford University. This data set is
   a tiny subset of the full data set, which was described previously in
-  the paper by Behbehani et al
+  the paper by Behbehani et al.
 }
 \author{Kevin R. Coombes \email{krc@silicovore.com},
   RB McGee \email{mcgee@sholycross.edu},

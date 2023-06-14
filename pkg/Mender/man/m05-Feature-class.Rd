@@ -42,7 +42,7 @@ Feature(values, name, colors, meaning, ...)
     \item{\code{name}:}{A character vector of length one; the name of
       the feature..}
     \item{\code{values}:}{A numeric vector of the values of this feature. }
-    \item{\code{meaning}:}{A charcter vector of length two containing the
+    \item{\code{meaning}:}{A character vector of length two containing the
     interpretations of the low and high extreme values of the
     feature. Note that this works perfectly well for binary factors
     represented as numeric 0-1 vectors. }
@@ -67,8 +67,6 @@ Feature(values, name, colors, meaning, ...)
 
   The \code{plot} and \code{points} methods return (invisibly) the Feature
   object that was their first argument.
-}
-\seealso{
 }
 \author{Kevin R. Coombes <krc@silicovore.com>}
 \examples{

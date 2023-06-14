@@ -30,8 +30,6 @@ disentangle(rips, dataset)
   the original data set, and find the index (i.e., row number) of that
   point.
 }
-\references{
-}
 \author{Kevin R. Coombes <krc@silicovore.com>}
 \examples{
 data(cytof)
