@@ -18,9 +18,10 @@ getAngles <- function(dset, centroid) {
 ## centroid
 angleMeans <- function(view, rips, cycle = NULL, dset, angleWidth = 20, incr = 15) {
   if (is.null(cycle)) {
-    cycle <- getCycle(rips, 1) # longest cycle
+    cycle <- new("Cycle")
+    cycle@index <- getCycle(rips, 1) # longest cycle
   }
-  ctr <- getCentroid(cycle, view)
+  ctr <- getCentroid(cycle@index, view)
   theta <- getAngles(view, ctr)
   degrees <- theta*180/pi
   deg <- c(degrees, degrees + 360)
@@ -29,10 +30,11 @@ angleMeans <- function(view, rips, cycle = NULL, dset, angleWidth = 20, incr = 1
   magic <- rbind(dset, dset)[od,]
   partition <- seq(0, 360 - incr, incr)
   GM <- t(sapply(partition, function(center) {
-    lb <- center - 10
-    ub <- center + 10
+    lb <- center - angleWidth/2
+    ub <- center + angleWidth/2
     set <- subset(magic, deg > lb & deg < ub)
-    m.gene <- apply(set, 2, mean, na.rm = TRUE)
+    ifelse(dim(set)[1] == 0, m.gene <- rep(0, dim(set)[2]),
+           m.gene <- apply(set, 2, mean, na.rm = TRUE))
     m.gene
   }))
   rownames(GM) <- partition

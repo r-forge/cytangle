@@ -266,7 +266,7 @@ rm(opar)
 ```
 
 ```{r fig.width = 8, fig.height = 8, fig.cap = .tag(11, "Circos plot of features varying around the most persistent cycle.")}
-poof <- angleMeans(W, ripdiag, cyc1@index, clinical)
+poof <- angleMeans(W, ripdiag, cyc1, clinical)
 poof[is.na(poof)] <- 0
 angle.df <- poof[, c("mutation.status", "CatB2M", "CatRAI", "CatCD38",
                      "Massive.Splenomegaly", "Hypogammaglobulinemia")]

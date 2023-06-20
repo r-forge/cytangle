@@ -23,9 +23,8 @@ angleMeans(view, rips, cycle = NULL, dset, angleWidth = 20, incr = 15)
 }
 \arguments{
   \item{cycle}{In the \code{LoopCircos} function, an object of the
-    \code{\link{Cycle}} class. In the \code{angleMeans} function, a
-    "simple" cycle, meaning one element of the \code{cycleLocation} part
-    of a Rips diagram.} 
+    \code{\link{Cycle}} class. In the \code{angleMeans} function, an 
+    object of the \code{\link{Cycle}} class.} 
   \item{angles}{A matrix where columns are features, rows are angles,
     and the value is the mean expression of that feature in a sector
     around that central angle. These are almost always constructed using
@@ -79,7 +78,7 @@ angleMeans(view, rips, cycle = NULL, dset, angleWidth = 20, incr = 15)
 data(CLL)
 cyc1 <- Cycle(ripdiag, 1, 236, "forestgreen")
 V <- cmdscale(daisydist)
-poof <- angleMeans(V, ripdiag, cyc1@index, clinical)
+poof <- angleMeans(V, ripdiag, cyc1, clinical)
 poof[is.na(poof)] <- 0
 angle.df <- poof[, c("mutation.status", "CatCD38", "CatB2M", "CatRAI",
                      "Massive.Splenomegaly", "Hypogammaglobulinemia")]

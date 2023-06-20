@@ -265,7 +265,7 @@ rm(opar)
 ```
 
 ```{r fig.width = 8, fig.height = 8}
-poof <- angleMeans(W, AML10.node287.rips, cyc3@index, AML10.node287)
+poof <- angleMeans(W, AML10.node287.rips, cyc3, AML10.node287)
 poof[is.na(poof)] <- 0
 angle.df <- poof[, c("Ki-67", "CD99", "pRb", "PCNA",
                      "CycA", "CycB")]

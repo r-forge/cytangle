@@ -16,6 +16,14 @@ indexCycles <- function(cycle, dataset) {
     check <- paste(X, collapse = "|")
     which(input == check)
   })
+  indexes <- unlist(dex)
+  len <- length(indexes)
+  cols <- dim(dex)[2]
+  ifelse(cols < 2, 
+         dex <- matrix(indexes, ncol = cols, 
+                       nrow = len),
+         dex <- matrix(indexes, ncol = N2, 
+                       nrow = len/2))
   return(dex)
 }
 
