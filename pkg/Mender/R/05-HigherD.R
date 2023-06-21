@@ -99,24 +99,6 @@ setMethod("hist", "EBexpo", function(x, xlab="", ylab="Prob(Interesting | X)", m
   invisible(x)
 })
 
-tailHisto <- function(H, target, xname = "Duration") {
-  L <- length(H$breaks)
-  L1 <- L - 1
-  start <- which(H$breaks > target)
-  if (length(start) == 0) {
-    stop("'tartget' is bigger than all breaks.\n")
-  }
-  start <- start[1]
-  awkward <- structure(list(breaks = H$breaks[start:L],
-                            counts = H$counts[start:L1],
-                            density = H$density[start:L1],
-                            mids = H$mids[start:L1],
-                            xname = xname,
-                            equidist = TRUE),
-                       class="histogram")
-  awkward
-}
-
 
 ### posterior probability of difference (p0 = prior)
 probDiff <- function(p0, object) {1 - p0*object@theoretical.pdf/object@unravel}

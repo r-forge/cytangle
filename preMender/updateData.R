@@ -1,6 +1,8 @@
 load("AML10-tubeA-node287.Rda")
 load("isotopes.Rda")
+dim(tempMat) # 214 x 56
 AML10.node287 <- tempMat[, Atarget]
+dim(AML10.node287) # 214 x 18
 rm(AMat, BMat, Atarget, Btarget, clusmark, onA, onB, tempMat)
 
 load("AML10-tubeA-node287-rips.Rda")
