@@ -53,9 +53,11 @@ setMethod("plot", c("LoopFeature", "character"), function(x, y, ...) {
   if (missing(y) | (length(y) == 1 && y == "all")) y <- colnames(x@fitted)
   for (N in y) {
     rg <- range(c(x@data[,N], x@fitted[,N]), na.rm = TRUE)
-    plot(x@data[,N], pch = 16, main = N, ylim = rg)
-    title(sub = round(x@RSS[N], 3))
-    points(x@fitted[, N], type = "b")
+    steps <- 360/nrow(x@data)
+    degrees <- seq(0, 345, steps)
+    plot(degrees, x@fitted[,N], type = "b", main = N, ylim = rg)
+    points(degrees, x@data[, N], pch = 16)
+    title(sub = paste("kappa =", round(x@Kstat[N], 3)))
   }
   invisible(x)
 })
