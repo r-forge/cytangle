@@ -34,7 +34,7 @@ LoopFeature <- function(circMeans) {
     diff(range(X, na.rm = TRUE))
   })
   V <- apply(circMeans, 2, sd, na.rm=TRUE)^2
-  Kstat <- RSS/V
+  Kstat <- (RSS/nrow(fitted))/V
   new("LoopFeature",
       data = circMeans,
       fitted = fitted,
@@ -55,7 +55,8 @@ setMethod("plot", c("LoopFeature", "character"), function(x, y, ...) {
     rg <- range(c(x@data[,N], x@fitted[,N]), na.rm = TRUE)
     steps <- 360/nrow(x@data)
     degrees <- seq(0, 345, steps)
-    plot(degrees, x@fitted[,N], type = "b", main = N, ylim = rg)
+    plot(degrees, x@fitted[,N], type = "b", main = N,
+         ylim = rg, ylab = "Mean Value")
     points(degrees, x@data[, N], pch = 16)
     title(sub = paste("kappa =", round(x@Kstat[N], 3)))
   }

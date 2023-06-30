@@ -14,16 +14,19 @@ indexCycles <- function(cycle, dataset) {
   input <- apply(dataset, 1, paste, collapse = "|")
   dex <- apply(cycle, c(1, 2), function(X) {
     check <- paste(X, collapse = "|")
-    which(input == check)
+    w <- which(input == check)
+    if (length(w) > 1)
+      w <- min(w)
+    w
   })
-  indexes <- unlist(dex)
-  len <- length(indexes)
-  cols <- dim(dex)[2]
-  ifelse(cols < 2, 
-         dex <- matrix(indexes, ncol = cols, 
-                       nrow = len),
-         dex <- matrix(indexes, ncol = N2, 
-                       nrow = len/2))
+#  indexes <- unlist(dex)
+#  len <- length(indexes)
+#  cols <- dim(dex)[2]
+#  ifelse(cols < 2, 
+#         dex <- matrix(indexes, ncol = cols, 
+#                       nrow = len),
+#         dex <- matrix(indexes, ncol = N2, 
+#                       nrow = len/2))
   return(dex)
 }
 
