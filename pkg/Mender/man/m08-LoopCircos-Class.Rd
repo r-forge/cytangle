@@ -19,7 +19,7 @@ The \code{LoopCircos} Class
 \usage{
 LoopCircos(cycle, angles, colors)
 angleMeans(view, rips, cycle = NULL, dset, angleWidth = 20, incr = 15)
-\S4method{image}{LoopCircos}(x, ...)
+\S4method{image}{LoopCircos}(x, na.col = "grey", ...)
 }
 \arguments{
   \item{cycle}{In the \code{LoopCircos} function, an object of the
@@ -41,6 +41,8 @@ angleMeans(view, rips, cycle = NULL, dset, angleWidth = 20, incr = 15)
     degrees) of each sector.}
   \item{incr}{A numeric vector; the increment (in degeres)  between sector centers.}
   \item{x}{A \code{LoopCircos} object.}
+  \item{na.col}{A character string; the color in which to plot missing
+    (\code{NA}) data.}
   \item{\dots}{The usual set of additional graphical parameters. }
 }
 \section{Slots}{

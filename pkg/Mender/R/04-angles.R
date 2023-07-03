@@ -33,8 +33,7 @@ angleMeans <- function(view, rips, cycle = NULL, dset, angleWidth = 20, incr = 1
     lb <- center - angleWidth/2
     ub <- center + angleWidth/2
     set <- subset(magic, deg > lb & deg < ub)
-    ifelse(dim(set)[1] == 0, m.gene <- rep(0, dim(set)[2]),
-           m.gene <- apply(set, 2, mean, na.rm = TRUE))
+    m.gene <- apply(set, 2, mean, na.rm = TRUE)
     m.gene
   }))
   rownames(GM) <- partition
@@ -48,7 +47,7 @@ LoopCircos <- function(cycle, angles, colors) {
       colors = colors)
 }
 
-setMethod("image", "LoopCircos", function(x, ...) {
+setMethod("image", "LoopCircos", function(x, na.col = "grey", ...) {
   opar <- par(cex = 1.5, mai = c(0, 0, 0, 0))
   on.exit(par(opar))
   circos.clear()
@@ -59,7 +58,7 @@ setMethod("image", "LoopCircos", function(x, ...) {
 #    cat(i, "\n", file = stderr())
     data <- as.data.frame(x@angles[,i])
     col <- colorRamp2(range(data, na.rm = TRUE), x@colors[[i]])
-    args <- list(mat = data, cluster = FALSE, col = col)
+    args <- list(mat = data, cluster = FALSE, col = col, na.col = na.col)
     ## If statement to add angle designations on outside of 
     ## first track only
     if (i == 1) {

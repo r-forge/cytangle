@@ -20,37 +20,37 @@ Type 'q()' to quit R.
 > view <- cmdscale(daisydist)
 > circular <- angleMeans(view, ripdiag, NULL, clinical)
 > lf <- LoopFeature(circular)
-> sort(lf@Kstat)
+> round(sort(lf@Kstat), 4)
                     CatB2M                  Rai.Stage 
-                 0.1139952                  0.1263975 
+                    0.1140                     0.1264 
                     CatRAI                     LogB2M 
-                 0.1264755                  0.1346696 
+                    0.1265                     0.1347 
 Serum.beta.2.microglobulin                 Hemoglobin 
-                 0.1502163                  0.2552953 
+                    0.1502                     0.2553 
        Light.chain.subtype            mutation.status 
-                 0.2989740                  0.3152571 
+                    0.2990                     0.3153 
                     LogLDH                     stat11 
-                 0.3335114                  0.3404090 
+                    0.3335                     0.3404 
      Hypogammaglobulinemia                     Dohner 
-                 0.3603002                  0.3658254 
+                    0.3603                     0.3658 
               Zap70Protein                  Serum.LDH 
-                 0.3944554                  0.4134538 
+                    0.3945                     0.4135 
                    CatCD38                     Purity 
-                 0.4304868                  0.4546255 
+                    0.4305                     0.4546 
                     stat13          White.blood.count 
-                 0.5932126                  0.7431754 
+                    0.5932                     0.7432 
                     CatWBC                     stat17 
-                 0.7617906                  0.7661036 
+                    0.7618                     0.7661 
                  Platelets                        Sex 
-                 0.7720847                  0.7828417 
+                    0.7721                     0.7828 
       Massive.Splenomegaly             Prolymphocytes 
-                 0.7930592                  0.8035306 
+                    0.7931                     0.8035 
                    AgeAtDx                     stat12 
-                 0.8472172                  0.8695629 
+                    0.8472                     0.8696 
                     LogWBC                       Race 
-                 0.8773743                  0.9088714 
+                    0.8774                     0.9089 
                    Matutes 
-                 0.9184286 
+                    0.9184 
 > opar <- par(mai = c(0.82, 0.2, 0.82, 1.82))
 > image(lf, main = "Clinical Factors in CLL")
 > par(opar)
@@ -64,4 +64,4 @@ Serum.beta.2.microglobulin                 Hemoglobin
 > 
 > proc.time()
    user  system elapsed 
-   2.07    0.43    2.51 
+   2.46    0.40    2.93 
