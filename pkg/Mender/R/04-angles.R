@@ -52,7 +52,9 @@ setMethod("image", "LoopCircos", function(x, na.col = "grey", ...) {
   on.exit(par(opar))
   circos.clear()
   ## Should probably compute the parameters
-  circos.par(track.height = 0.08, start.degree = 90)
+  th <- 0.5 / dim(x@angles)[2]
+  circos.par(track.height = th, start.degree = 90,
+    circle.margin = 0.1)
   ## For each clinical feature/gene/what6ever
   for(i in 1:length(x@angles[1,])) {
 #    cat(i, "\n", file = stderr())
