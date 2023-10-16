@@ -15,9 +15,6 @@ indexCycles <- function(cycle, dataset) {
   dex <- apply(cycle, c(1, 2), function(X) {
     check <- paste(X, collapse = "|")
     w <- which(input == check)
-    if (length(w) > 1)
-      w <- min(w)
-    w
   })
 #  indexes <- unlist(dex)
 #  len <- length(indexes)
@@ -25,7 +22,7 @@ indexCycles <- function(cycle, dataset) {
 #  ifelse(cols < 2, 
 #         dex <- matrix(indexes, ncol = cols, 
 #                       nrow = len),
-#         dex <- matrix(indexes, ncol = N2, 
+#         dex <- matrix(indexes, ncol = cols, 
 #                       nrow = len/2))
   return(dex)
 }
