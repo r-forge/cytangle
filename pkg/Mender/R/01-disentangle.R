@@ -4,8 +4,8 @@
 
 indexCycles <- function(cycle, dataset) {
   L <- length(dim(cycle))
-  if (L == 2) return(cycle)
-  ## Now we have to convert the data-set coordinates to indicies
+##  if (L == 2) return(cycle)
+  ## Now we have to convert the data-set coordinates to indices
   N1 <- ncol(dataset)
   N2 <- dim(cycle)[3]
   if (N1 != N2) {
@@ -15,6 +15,8 @@ indexCycles <- function(cycle, dataset) {
   dex <- apply(cycle, c(1, 2), function(X) {
     check <- paste(X, collapse = "|")
     w <- which(input == check)
+    if (length(w) > 1) w <- w[1]
+    w
   })
 #  indexes <- unlist(dex)
 #  len <- length(indexes)

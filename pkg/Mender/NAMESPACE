@@ -10,7 +10,7 @@ importFrom("graphics",
            "par", "mtext", "title")
 importFrom("stats",
            "dexp", "lm", "optimize", "predict", "runif", "sd",
-           "dgamma", "optim","density", "loess")
+           "dgamma", "optim","density", "loess", "ecdf", "p.adjust")
 importFrom("grDevices",
            "colorRampPalette")
 importFrom("Mercator",
