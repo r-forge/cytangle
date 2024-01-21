@@ -1,4 +1,4 @@
-library(Mender)
+library(RPointCloud)
 data(cytof)
 
 fixed <- disentangle(Arip, AML10.node287)

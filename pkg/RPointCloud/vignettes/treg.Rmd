@@ -1,13 +1,13 @@
 ---
-title: "Mender: Regulatory T Cells"
+title: "RPointCloud: Regulatory T Cells"
 author: "Kevin R. Coombes"
 data: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Mender: Regulatory T Cells}
+  %\VignetteIndexEntry{RPointCloud: Regulatory T Cells}
   %\VignetteKeywords{TDA, topological data analysis, regulatory T cells}
-  %\VignetteDepends{Mender,igraph,Polychrome,Mercator,ClassDiscovery,ape}
-  %\VignettePackage{Mender}
+  %\VignetteDepends{RPointCloud,igraph,Polychrome,Mercator,ClassDiscovery,ape}
+  %\VignettePackage{RPointCloud}
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
@@ -20,10 +20,10 @@ options(width=96)
                                  cap)
 ```
 # Introduction
-We want to illustrate the `Mender` package (Version `r packageVersion("Mender")`)
+We want to illustrate the `RPointCloud` package (Version `r packageVersion("RPointCloud")`)
 with a single-cell mass cytometry data set. Not surprisingly, we start by loading the package.
-```{r Mender}
-library(Mender)
+```{r RPointCloud}
+library(RPointCloud)
 ```
 We also load a lot of useful packages (some of which will eventually get incorporated
 into the package requirements).

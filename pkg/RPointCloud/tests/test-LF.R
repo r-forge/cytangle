@@ -1,4 +1,4 @@
-library(Mender)
+library(RPointCloud)
 data(CLL)
 view <- cmdscale(daisydist)
 circular <- angleMeans(view, ripdiag, NULL, clinical)

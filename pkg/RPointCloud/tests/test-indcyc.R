@@ -1,4 +1,4 @@
-library(Mender)
+library(RPointCloud)
 library(TDA)
 set.seed(54321)
 theta <- seq(0, 359, by = 8) * pi/180
@@ -22,7 +22,7 @@ duration <- RD[oneD, 3] - RD[oneD,2]
 w <- which.max(duration)
 
 dexter <- disentangle(ripper, joint)
-cyc1 <- Cycle(dexter, 1, 13, "blue") # fails with an error in Mender 0.3.0
+cyc1 <- Cycle(dexter, 1, 13, "blue") # fails with an error in RPointCloud 0.3.0
 ## possibly worse, it gives the wrong answer in 0.3.1 - 0.3.4
 plot(cyc1, joint) # note the awful picture in 0.3.4!!
 

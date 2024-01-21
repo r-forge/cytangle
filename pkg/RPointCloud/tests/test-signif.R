@@ -1,4 +1,4 @@
-library(Mender)
+library(RPointCloud)
 library(TDA)
 set.seed(54321)
 theta <- seq(0, 359, by = 8) * pi/180
@@ -11,9 +11,9 @@ ripper <- ripsDiag(joint, maxdimension=1, maxscale = 3,
                    dist = "euclidean", library = "Dionysus",
                    location = TRUE)
 RD <- ripper$diagram
-gum <- Mender:::process(RD)
-tack <- Mender:::test(gum)
-cb <- Mender:::con_band(RD)
+gum <- RPointCloud:::process(RD)
+tack <- RPointCloud:::test(gum)
+cb <- RPointCloud:::con_band(RD)
 
 set.seed(97531)
 jag <- jitter(joint)
@@ -21,9 +21,9 @@ ripped <- ripsDiag(jag, maxdimension=1, maxscale = 3,
                    dist = "euclidean", library = "Dionysus",
                    location = TRUE)
 RD2 <- ripped$diagram
-gum <- Mender:::process(RD)
-tack <- Mender:::test(gum)
-cb2 <- Mender:::con_band(RD2)
+gum <- RPointCloud:::process(RD)
+tack <- RPointCloud:::test(gum)
+cb2 <- RPointCloud:::con_band(RD2)
 
 exp(cb)
 exp(cb2)
