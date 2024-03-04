@@ -26,28 +26,31 @@ importFrom("rgl",
            "spheres3d", "lines3d", "title3d")
 
 exportMethods("plot", "hist", "lines", "points", "image")
-export("tailHisto")
 
 ## Rewrite Rips diagrams using index-offfstes instead of
 ## hard-wired coordinates
 export("disentangle")
 
-## cycle significance by empirical Bayes
-exportClasses("ExpoFit", "EBexpo")
-export("ExpoFit", "EBexpo", "cutoff")
-#export("gammaFit")
+## objects for primary plotting routines
+exportClasses("Cycle", "Feature", "LoopCircos")
+export("Cycle", "Feature", "LoopCircos")
 
 ## pick out cycles
 export("getCycle", "cycleSupport")
 
-## objects for primary plotting routines
-exportClasses("Cycle", "Feature", "LoopCircos")
-export("Cycle", "Feature", "LoopCircos", "angleMeans")
+## build circos plot
+export("angleMeans")
 
-export("voidPlot", "voidFeature")
+## cycle significance by empirical Bayes
+exportClasses("ExpoFit", "EBexpo")
+export("ExpoFit", "EBexpo")
+export("tailHisto", "cutoff")
+
+#export("gammaFit")
 
 exportClasses("Projection")
 export("Projection")
+export("voidPlot", "voidFeature")
 
 exportClasses("LoopFeature")
 export("LoopFeature")

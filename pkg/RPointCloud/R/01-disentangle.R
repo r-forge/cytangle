@@ -1,5 +1,5 @@
 ## disentangle.R
-## Copyright (C) 2022 Kevin R. Coombes, RB McGee, and Jake Reed
+## Copyright (C) 2022-4 Kevin R. Coombes, RB McGee, and Jake Reed
 ## LICENSE: Perl Artistic License 2.0
 
 indexCycles <- function(cycle, dataset) {
@@ -18,14 +18,6 @@ indexCycles <- function(cycle, dataset) {
     if (length(w) > 1) w <- w[1]
     w
   })
-#  indexes <- unlist(dex)
-#  len <- length(indexes)
-#  cols <- dim(dex)[2]
-#  ifelse(cols < 2, 
-#         dex <- matrix(indexes, ncol = cols, 
-#                       nrow = len),
-#         dex <- matrix(indexes, ncol = cols, 
-#                       nrow = len/2))
   return(dex)
 }
 

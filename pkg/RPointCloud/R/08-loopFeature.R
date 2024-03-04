@@ -1,5 +1,5 @@
 ## 08-loopFeature.R
-## Copyright (C) 2023 Kevin R. Coombes, RB McGee, and Jake Reed
+## Copyright (C) 2023-4 Kevin R. Coombes, RB McGee, and Jake Reed
 ## LICENSE: Perl Artistic License 2.0
 
 setClass("LoopFeature",

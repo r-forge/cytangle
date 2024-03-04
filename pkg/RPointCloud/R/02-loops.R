@@ -1,5 +1,5 @@
 ## 02-loops.R
-## Copyright (C) 2022 Kevin R. Coombes, RB McGee, and Jake Reed
+## Copyright (C) 2022-4 Kevin R. Coombes, RB McGee, and Jake Reed
 ## LICENSE: Perl Artistic License 2.0
 
 Cycle <- function(rips, dimen, J, color) {

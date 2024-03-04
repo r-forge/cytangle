@@ -1,5 +1,5 @@
 ## significance.R
-## Copyright (C) 2022 Kevin R. Coombes, RB McGee, and Jake Reed
+## Copyright (C) 2022-4 Kevin R. Coombes, RB McGee, and Jake Reed
 ## LICENSE: Perl Artistic License 2.0
 ## Need to attribute this code to: https://doi.org/10.1038/s41598-023-37842-2
 

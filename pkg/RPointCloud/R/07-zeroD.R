@@ -1,5 +1,5 @@
 ## zeroD.r
-## Copyright (C) 2022 Kevin R. Coombes and Jake Reed
+## Copyright (C) 2022-4 Kevin R. Coombes and Jake Reed
 ## LICENSE: Perl Artistic License 2.0
 
 gammaSSE <- function(parm, X0, pdf) {
