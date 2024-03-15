@@ -4,7 +4,7 @@
 
 importFrom("XML",
            "getNodeSet", "xmlGetAttr", "xmlNamespace",
-           "xmlParseDoc", "xmlRoot")
+           "xmlParseDoc", "xmlRoot", "xmlParent")
 import("igraph")
 
 #importFrom("graphics", "plot")
@@ -13,7 +13,7 @@ import("igraph")
 
 ## Functions that perform steps in the process to build the final
 ## igraph object.
-export("collectEdges", "collectNodes", "collectGroups")
+export("collectEdges", "collectNodes", "collectGroups", "collectAnchors")
 
 ## objects for primary plotting routines
 #exportClasses("Cycle")

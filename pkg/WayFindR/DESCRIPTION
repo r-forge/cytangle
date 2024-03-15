@@ -1,7 +1,7 @@
 Package: WayFindR
-Version: 0.0.5
+Version: 0.0.6
 Date: 2024-03-15
-Title: Computing graph structures on WikiPathways
+Title: Computing Graph Structures on WikiPathways
 Author: Kevin R. Coombes, Polina Bombina
 Maintainer: Kevin R. Coombes <krc@silicovore.com>
 Description: Converts pathways from WikiPathways GPML format into
