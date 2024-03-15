@@ -25,7 +25,7 @@ collectGroups <- function(xmldoc) {
   rasp <- c(sm = as.character(nsp))   # assign abbreviation to the namespace
 
   ## Don't know how many things we will get, so just define empty structures
-  nodal <- data.frame(GraphID = NA, label = NA, Type = NA)[-1,]
+  nodal <- data.frame(GraphId = NA, label = NA, Type = NA)[-1,]
   edger <- data.frame(Source = NA, Targte = NA, MIM = NA)[-1,]
 
   ## We start by finding all DataNodes that include a GroupRef attribute.
@@ -71,7 +71,7 @@ collectGroups <- function(xmldoc) {
       gcounter <- gcounter + 1
       lbl <- paste("Group", gcounter, sep = "")
     }
-    newn <- data.frame(GraphID = gid,
+    newn <- data.frame(GraphId = gid,
                        label = lbl,
                        Type = xmlGetAttr(group, "Style"))
     rownames(newn) <- newn[,1]
