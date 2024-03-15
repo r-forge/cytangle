@@ -2,17 +2,20 @@
 ### NAMESPACE
 ###
 
-import(methods)
+importFrom("XML",
+           "getNodeSet", "xmlGetAttr", "xmlNamespace",
+           "xmlParseDoc", "xmlRoot")
+import("igraph")
 
-importFrom("graphics", "plot")
+#importFrom("graphics", "plot")
 
-exportMethods("plot")
+#exportMethods("plot")
 
-## Rewrite Rips diagrams using index-offfstes instead of
-## hard-wired coordinates
-export("disentangle")
+## Functions that perform steps in the process to build the final
+## igraph object.
+export("collectEdges", "collectNodes", "collectGroups")
 
 ## objects for primary plotting routines
-exportClasses("Cycle")
+#exportClasses("Cycle")
 
 

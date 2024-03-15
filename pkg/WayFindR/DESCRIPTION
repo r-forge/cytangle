@@ -1,6 +1,6 @@
 Package: WayFindR
-Version: 0.0.0
-Date: 2024-03-14
+Version: 0.0.3
+Date: 2024-03-15
 Title: Computing graph structures on WikiPathways
 Author: Kevin R. Coombes, Polina Bombina
 Maintainer: Kevin R. Coombes <krc@silicovore.com>
@@ -9,7 +9,7 @@ Description: Converts pathways from WikiPathways GPML format into
   resulting graphs and determine which one sinvolve negative feedback
   (inhibition).
 Depends: R (>= 3.5)
-Imports: methods, graphics, igraph
+Imports: XML, igraph
 Suggests: knitr, rmarkdown
 License: Artistic-2.0
 URL: http://oompa.r-forge.r-project.org/
