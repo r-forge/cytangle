@@ -40,14 +40,8 @@ collectGroups <- function(xmldoc) {
     gid <- xmlGetAttr(gref, "GraphId")
     nam <- xmlGetAttr(gref, "TextLabel")
     typ <- xmlGetAttr(gref, "Type")
-    if (typ == "Complex") {
-#      if (gid %in% rownames(nodeInfo)) next
-      ## create an edge to represent the complex
-      edgeCounter <- edgeCounter + 1
-      nedg <- data.frame(Source = gid, Target = nam, MIM = "represents")
-      cat("Complex!\n", file = stderr())
-      rownames(nedg) <- paste("ec", edgeCounter, sep = "")
-      edger <- rbind(edger, nedg)
+    if (typ == "Complex") { # handle this later
+      next
     } else if (typ == "GeneProduct") {
       ## create a "contained" edge
       edgeCounter <- edgeCounter + 1
@@ -63,30 +57,26 @@ collectGroups <- function(xmldoc) {
   groups <- getNodeSet(xmlRoot(mydoc), "/sm:Pathway/sm:Group", rasp)
   gcounter <- 0
   for (group in groups) {
-    gcounter <- gcounter + 1
-    cat(gcounter, "\n", file = stderr())
     gid <- xmlGetAttr(group, "GraphId")
-    newn <- data.frame(GraphID = gid,
-                       label = paste("Group", gcounter, sep = ""),
-                       Type = xmlGetAttr(group, "Style"))
-    rownames(newn) <- newn[,1]
-    newn <- as.matrix(newn)
-    nodal <- rbind(nodal, newn)
-    ## Key point: XML pacakge doesn't know ho to expand variable names,
+    ## See if there is a separate node that contains a name for the complex.
+    ## Key point: XML package doesn't know how to expand variable names,
     ## so you need to do so explicitly, by hand, to build a query.
     query <- paste("/sm:Pathway/sm:DataNode[@GroupRef='", gid,
                    "' and @Type='Complex']", sep = "")
     repr <- getNodeSet(xmlRoot(mydoc), query, rasp)
     if (length(repr) > 0) {
-      ## create an edge to represent the complex
-      edgeCounter <- edgeCounter + 1
-      nedg <- data.frame(Source = xmlGetAttr(repr[[1]], "GraphId"),
-                         Target = gid,
-                         MIM = "represents")
-      cat("Complex!\n", file = stderr())
-      rownames(nedg) <- paste("ec", edgeCounter, sep = "")
-      edger <- rbind(edger, nedg)
+      ## update the node that represent the complex
+      lbl <- xmlGetAttr(repr[[1]], "TextLabel")
+    } else {
+      gcounter <- gcounter + 1
+      lbl <- paste("Group", gcounter, sep = "")
     }
+    newn <- data.frame(GraphID = gid,
+                       label = lbl,
+                       Type = xmlGetAttr(group, "Style"))
+    rownames(newn) <- newn[,1]
+    newn <- as.matrix(newn)
+    nodal <- rbind(nodal, newn)
   }
   list(nodes = nodal, edges = edger)
 }
