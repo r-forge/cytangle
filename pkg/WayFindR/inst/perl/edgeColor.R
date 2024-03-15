@@ -16,7 +16,7 @@ simplifyArrows <- function(V) {
   })
 }
 simpleEdges <- c("contained", "represents",
-                 sort(unique(simplify(arrowTypes))))
+                 sort(unique(simplifyArrows(arrowTypes))))
 edgeTypes <- c("dotted", "twodash",
            "solid", "dotdash",
            "dotdash", "dotdash",
