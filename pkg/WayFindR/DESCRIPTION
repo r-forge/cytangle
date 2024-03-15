@@ -1,0 +1,16 @@
+Package: WayFindR
+Version: 0.0.0
+Date: 2024-03-14
+Title: Computing graph structures on WikiPathways
+Author: Kevin R. Coombes, Polina Bombina
+Maintainer: Kevin R. Coombes <krc@silicovore.com>
+Description: Converts pathways from WikiPathways GPML format into
+  igraph objects in R. Includes tools ro find all cycles in the
+  resulting graphs and determine which one sinvolve negative feedback
+  (inhibition).
+Depends: R (>= 3.5)
+Imports: methods, graphics, igraph
+Suggests: knitr, rmarkdown
+License: Artistic-2.0
+URL: http://oompa.r-forge.r-project.org/
+VignetteBuilder: knitr

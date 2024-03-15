@@ -1,0 +1,18 @@
+###
+### NAMESPACE
+###
+
+import(methods)
+
+importFrom("graphics", "plot")
+
+exportMethods("plot")
+
+## Rewrite Rips diagrams using index-offfstes instead of
+## hard-wired coordinates
+export("disentangle")
+
+## objects for primary plotting routines
+exportClasses("Cycle")
+
+

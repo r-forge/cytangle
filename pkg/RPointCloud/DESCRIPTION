@@ -1,6 +1,6 @@
 Package: RPointCloud
-Version: 0.4.0
-Date: 2024-01-20
+Version: 0.4.1
+Date: 2024-03-04
 Title: Visualizing Topological Loops and Voids
 Author: Kevin R. Coombes, Jake Reed, RB McGee
 Maintainer: Kevin R. Coombes <krc@silicovore.com>

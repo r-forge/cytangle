@@ -1,0 +1,11 @@
+CellularComponent	1
+Complex	159
+Event	58
+GeneProduct	37575
+Key Event	30
+Metabolite	11275
+Other	6
+Pathway	1903
+Protein	9988
+RNA	354
+Rna	1122
