@@ -70,3 +70,22 @@ GPMLtoIgraph <- function(xmldoc) {
                                      vertices = nodes)
   mygraph
 }
+
+nodeLegend <- function(x, graph) {
+  xlate <- c(circle = 16, rectangle = 15)
+  daft <- data.frame(Type =V(graph)$Type,
+                     color = V(graph)$color,
+                     shape = V(graph)$shape)
+  daft <- unique(daft)
+  legend(x, y, legend = daft$Type, col = daft$color,
+         pch = xlate[daft$shape])
+}
+
+edgeLegend <- function(x, graph) {
+  daft <- data.frame(MIM = E(graph)$MIM,
+                     color = E(graph)$color,
+                     lty = E(graph)$lty)
+  daft <- unique(daft)
+  legend(x, legend = daft$MIM, col = daft$color,
+         lty = daft$lty)
+}

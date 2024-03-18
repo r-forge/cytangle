@@ -16,7 +16,8 @@ import("igraph")
 export("collectEdges", "collectNodes", "collectGroups", "collectAnchors")
 
 ## graphj and cycle fjunctions
-export("GPMLtoIgraph", "findCycles", "interpretCycle")
+export("GPMLtoIgraph", "nodeLegend", "edgeLegend")
+export("findCycles", "interpretCycle")
 
 ## objects for primary plotting routines
 #exportClasses("Cycle")
