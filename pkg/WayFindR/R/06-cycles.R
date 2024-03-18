@@ -19,13 +19,12 @@ findCycles <- function(graph) {
   UniqueCycles
 }
 
+## V must be a cycle in the graph
 interpretCycle <- function(v, graph) {
-   genes <- sapply(names(v), function(N) {
-    if (N == "") return("")
-    V(graph)$label[V(graph)$name == N]
-   })
-   arrows <- E(graph)$MIM[v]
-   data.frame(genes, arrows)
+  eid <- get.edge.ids(graph, c(rbind(head(v, -1), v[-1])))
+  arrows <- E(graph)$MIM[eid]
+  genes <- V(graph)$label[v[-length(v)]]
+  data.frame(genes, arrows)
 }
 
 cycleSubgraph <- function(graph, cycles) {

@@ -16,7 +16,7 @@ simplifyArrows <- function(V) {
   })
 }
 
-GPMLtoIgraph <- function(xmldoc) {
+GPMLtoIgraph <- function(xmldoc, returnLists = FALSE) {
   if (inherits(xmldoc, "XMLInternalDocument")) {
     mydoc <- xmldoc
     xmldoc <- "internal"
@@ -68,7 +68,12 @@ GPMLtoIgraph <- function(xmldoc) {
   mygraph <-   graph_from_data_frame(edges,
                                      directed = TRUE,
                                      vertices = nodes)
-  mygraph
+  if (returnLists) {
+    val <- list(graph = mygraph, edges = edges, nodes = nodes)
+  } else {
+    val <- mygraph
+  }
+  val
 }
 
 nodeLegend <- function(x, graph) {
