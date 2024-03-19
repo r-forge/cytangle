@@ -82,6 +82,8 @@ GPMLtoIgraph <- function(xmldoc, returnLists = FALSE, debug = FALSE) {
     stop("WayFindR: Bad edge type: ", odd, "\n")
   }
   edges[,"MIM"] <- simpleEdges
+  edges <- as.data.frame(edges)
+  nodes <- as.data.frame(nodes)
   edges[,"color"] <- edgeColors[simpleEdges]
   edges[,"lty"]   <- edgeTypes[simpleEdges]
   nodes[,"color"] <- nodeColors[as.character(nodes[,"Type"])]
