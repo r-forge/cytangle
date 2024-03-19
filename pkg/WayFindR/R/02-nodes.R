@@ -28,12 +28,17 @@ collectNodes <- function(xmldoc) {
   for (node in nodes) {
     rowcount <- rowcount + 1
     nid <- xmlGetAttr(node, "GraphId")
+    if (is.null(nid)) {
+      warning("Node", rowcount,  "has no GraphId!")
+      nid <- paste("Node", rowcount, sep = "")
+    }
     label <- xmlGetAttr(node, "TextLabel")
     label <- gsub("[\r\n]", "", label)
     type <- xmlGetAttr(node, "Type")
+    if (is.null(type)) type <- "Undefined"
     repl <- c(nid, label, type)
     if (length(repl) != 3) {
-      stop("Bad relacement: ", paste(repl, collapse =", "))
+      stop("Bad replacement: ", paste(repl, collapse =", "))
     }
     nodeInfo[rowcount, ] <- c(nid, label, type)
     R[rowcount] <- nid
