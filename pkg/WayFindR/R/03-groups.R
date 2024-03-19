@@ -44,6 +44,9 @@ collectGroups <- function(xmldoc) {
       gid <- paste("GREF", 1 + edgeCounter, sep = "")
     }
     typ <- xmlGetAttr(gref, "Type")
+    if (is.null(typ)) {
+      typ <- "Complex" #??
+    }
     if (typ == "Complex") { # handle this later
       next
     } else if (typ %in% c("GeneProduct", "Metabolite",
