@@ -32,7 +32,7 @@ GPMLtoIgraph <- function(xmldoc, returnLists = FALSE, debug = FALSE) {
   nodes <- collectNodes(mydoc)
   edges <- collectEdges(mydoc)
   if (nrow(edges) == 0) {
-    stop("Pathway contains NO edges!")
+    stop("WayFindR: Pathway contains NO edges!")
     return(NA)
   }
   groups <- collectGroups(mydoc)
@@ -74,7 +74,7 @@ GPMLtoIgraph <- function(xmldoc, returnLists = FALSE, debug = FALSE) {
   if(any(is.na(simpleEdges))) {
     odd <- paste(unique(names(which(is.na(simpleEdges)))),
                  collapse = ", ")
-    stop("Bad edge type: ", odd, "\n")
+    stop("WayFindR: Bad edge type: ", odd, "\n")
   }
   edges[,"MIM"] <- simpleEdges
   edges[,"color"] <- edgeColors[simpleEdges]

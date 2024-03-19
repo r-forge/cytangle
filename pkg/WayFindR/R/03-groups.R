@@ -40,20 +40,21 @@ collectGroups <- function(xmldoc) {
     gid <- xmlGetAttr(gref, "GraphId")
     nam <- xmlGetAttr(gref, "TextLabel")
     if (is.null(gid)) {
-      warning("Node with label ", nam, " has no GraphId!\n")
+      warning("Groups: Node with label ", nam, " has no GraphId!\n")
       gid <- paste("GREF", 1 + edgeCounter, sep = "")
     }
     typ <- xmlGetAttr(gref, "Type")
     if (typ == "Complex") { # handle this later
       next
-    } else if (typ == "GeneProduct") {
+    } else if (typ %in% c("GeneProduct", "Metabolite",
+                          "Pathway", "Protein", "RNA", "Rna")) {
       ## create a "contained" edge
       edgeCounter <- edgeCounter + 1
       nedg <- data.frame(Source = gid, Target = grf, MIM = "contained")
       rownames(nedg) <- paste("ec", edgeCounter, sep = "")
       edger <- rbind(edger, nedg)
     } else {
-      stop("Unexpected node type (", typ, ") in gref = ", grf,
+      stop("Groups: Unexpected node type (", typ, ") in gref = ", grf,
            " at gid = ", gid, "\n")
     }
   }

@@ -36,7 +36,7 @@ collectEdges <- function(xmldoc) {
     eid <- xmlGetAttr(edge, "GraphId")
     pts <- getNodeSet(edge, "./sm:Graphics/sm:Point", rasp)
     if (length(pts) != 2) { # should be impossible
-      stop("Got wrong number of points (", length(pts),
+      stop("Edges: Got wrong number of points (", length(pts),
            ") in interaction '", eid,
            "' in ", xmldoc, "!\n")
     }
@@ -45,12 +45,12 @@ collectEdges <- function(xmldoc) {
       counter <- counter + 1
       node = xmlGetAttr(point, "GraphRef")
       if (is.null(node)) {
-        stop("Edges: Nodal point has no GraphRewf attribute!\n")
+        stop("Edges: Nodal point has no GraphRef attribute!\n")
       }
       arrow = xmlGetAttr(point, "ArrowHead")
       if (counter == 1) {
         if(!is.null(arrow)) { # may be impossible?
-          stop("Source node has an arrow head!\n")
+          stop("Edges: Source node has an arrow head!\n")
         } else {
           src <- node
         }

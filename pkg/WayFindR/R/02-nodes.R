@@ -29,7 +29,7 @@ collectNodes <- function(xmldoc) {
     rowcount <- rowcount + 1
     nid <- xmlGetAttr(node, "GraphId")
     if (is.null(nid)) {
-      warning("Node ", rowcount,  " has no GraphId!")
+      warning("Nodes: Node ", rowcount,  " has no GraphId!")
       nid <- paste("Node", rowcount, sep = "")
     }
     label <- xmlGetAttr(node, "TextLabel")
@@ -38,7 +38,7 @@ collectNodes <- function(xmldoc) {
     if (is.null(type)) type <- "Undefined"
     repl <- c(nid, label, type)
     if (length(repl) != 3) {
-      stop("Bad replacement: ", paste(repl, collapse =", "))
+      stop("Nodes: Bad replacement: ", paste(repl, collapse =", "))
     }
     nodeInfo[rowcount, ] <- c(nid, label, type)
     R[rowcount] <- nid
