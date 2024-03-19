@@ -59,14 +59,23 @@ GPMLtoIgraph <- function(xmldoc, returnLists = FALSE, debug = FALSE) {
   if (debug) {
     cat("E =", class(edges), "N = ", class(nodes), "\n")
   }
-  
-  any(duplicated(nodes[,"GraphId"]))
-  all(edges[,"Source"] %in% nodes[,"GraphId"])
-  all(edges[,"Target"] %in% nodes[,"GraphId"])
+  if (any(duplicated(nodes[,"GraphId"]))) {
+    warning("Found multiple nodes with same 'GrphId'!")
+  }
+  if (!all(edges[,"Source"] %in% nodes[,"GraphId"])) {
+    warning("found an edge with unknown Source node!")
+  }
+  if (!all(edges[,"Target"] %in% nodes[,"GraphId"])) {
+    warning("Found an edge with unknown Target node!")
+  }
 
   ## Set up colors and linestyles here. Also simplify edge types.
   simpleEdges <- simplifyArrows(edges[,"MIM"])
-  if(any(is.na(simpleEdges))) stop("Bad edge type!")
+  if(any(is.na(simpleEdges))) {
+    odd <- paste(unique(names(which(is.na(simpleEdges)))),
+                 collapse = ", ")
+    stop("Bad edge type: ", odd, "\n")
+  }
   edges[,"MIM"] <- simpleEdges
   edges[,"color"] <- edgeColors[simpleEdges]
   edges[,"lty"]   <- edgeTypes[simpleEdges]
