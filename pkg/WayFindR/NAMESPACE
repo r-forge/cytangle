@@ -7,13 +7,15 @@ importFrom("XML",
            "xmlParseDoc", "xmlRoot", "xmlParent")
 import("igraph")
 
-#importFrom("graphics", "plot")
+importFrom("graphics", "legend")
+importFrom("utils", "head")
 
 #exportMethods("plot")
 
 ## Functions that perform steps in the process to build the final
 ## igraph object.
-export("collectEdges", "collectNodes", "collectGroups", "collectAnchors")
+export("collectEdges", "collectNodes", "collectGroups",
+       "collectAnchors", "collectLabels")
 
 ## graphj and cycle fjunctions
 export("GPMLtoIgraph", "nodeLegend", "edgeLegend")

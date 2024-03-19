@@ -56,17 +56,22 @@ GPMLtoIgraph <- function(xmldoc, returnLists = FALSE, debug = FALSE) {
   if(nrow(links$nodes) > 0) nodes <- rbind(nodes, links$nodes)
   if(nrow(links$edges) > 0) edges <- rbind(edges, links$edges)
 
+  labels <- collectLabels(mydoc)
+  nodes <- rbind(nodes, labels)
+
   if (debug) {
     cat("E =", class(edges), "N = ", class(nodes), "\n")
   }
   if (any(duplicated(nodes[,"GraphId"]))) {
-    warning("Found multiple nodes with same 'GrphId'!")
+    stop("WayFindR: Found multiple nodes with same 'GraphId'!")
   }
   if (!all(edges[,"Source"] %in% nodes[,"GraphId"])) {
-    warning("found an edge with unknown Source node!")
+    stop("WayFindR: found an edge with unknown Source node!")
+    # which(!(edges[,"Source"] %in% nodes[,"GraphId"]))
   }
   if (!all(edges[,"Target"] %in% nodes[,"GraphId"])) {
-    warning("Found an edge with unknown Target node!")
+    stop("WayFindR: Found an edge with unknown Target node!")
+    # which(!(edges[,"Target"] %in% nodes[,"GraphId"]))
   }
 
   ## Set up colors and linestyles here. Also simplify edge types.
@@ -101,7 +106,7 @@ nodeLegend <- function(x, graph) {
                      color = V(graph)$color,
                      shape = V(graph)$shape)
   daft <- unique(daft)
-  legend(x, y, legend = daft$Type, col = daft$color,
+  legend(x, legend = daft$Type, col = daft$color,
          pch = xlate[daft$shape])
 }
 
