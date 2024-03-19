@@ -39,6 +39,10 @@ collectGroups <- function(xmldoc) {
     grf <- xmlGetAttr(gref, "GroupRef")
     gid <- xmlGetAttr(gref, "GraphId")
     nam <- xmlGetAttr(gref, "TextLabel")
+    if (is.null(gid)) {
+      warning("Node with label ", nam, " has no GraphId!\n")
+      gid <- paste("GREF", 1 + edgeCounter, sep = "")
+    }
     typ <- xmlGetAttr(gref, "Type")
     if (typ == "Complex") { # handle this later
       next

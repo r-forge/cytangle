@@ -44,6 +44,9 @@ collectEdges <- function(xmldoc) {
     for (point in pts) {
       counter <- counter + 1
       node = xmlGetAttr(point, "GraphRef")
+      if (is.null(node)) {
+        stop("Edges: Nodal point has no GraphRewf attribute!\n")
+      }
       arrow = xmlGetAttr(point, "ArrowHead")
       if (counter == 1) {
         if(!is.null(arrow)) { # may be impossible?

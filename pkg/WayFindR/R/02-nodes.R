@@ -29,7 +29,7 @@ collectNodes <- function(xmldoc) {
     rowcount <- rowcount + 1
     nid <- xmlGetAttr(node, "GraphId")
     if (is.null(nid)) {
-      warning("Node", rowcount,  "has no GraphId!")
+      warning("Node ", rowcount,  " has no GraphId!")
       nid <- paste("Node", rowcount, sep = "")
     }
     label <- xmlGetAttr(node, "TextLabel")
