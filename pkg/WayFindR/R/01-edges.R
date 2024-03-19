@@ -36,7 +36,9 @@ collectEdges <- function(xmldoc) {
     eid <- xmlGetAttr(edge, "GraphId")
     pts <- getNodeSet(edge, "./sm:Graphics/sm:Point", rasp)
     if (length(pts) != 2) { # should be impossible
-      stop("Got wrong number of points in an interaction in ", xmldoc, "!\n")
+      stop("Got wrong number of points (", length(pts),
+           ") in interaction '", eid,
+           "' in ", xmldoc, "!\n")
     }
     counter <- 0
     for (point in pts) {
@@ -61,6 +63,6 @@ collectEdges <- function(xmldoc) {
   ## Only have empty rows if there were anchors, indicating edges that
   ## point to other edges.
   empty <- apply(edgeList, 1, function(X) any(is.na(X)))
-  edgeList <- edgeList[!empty,]
+  edgeList <- edgeList[!empty,, drop = FALSE]
   edgeList
 }

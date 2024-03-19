@@ -31,6 +31,10 @@ collectNodes <- function(xmldoc) {
     label <- xmlGetAttr(node, "TextLabel")
     label <- gsub("[\r\n]", "", label)
     type <- xmlGetAttr(node, "Type")
+    repl <- c(nid, label, type)
+    if (length(repl) != 3) {
+      stop("Bad relacement: ", paste(repl, collapse =", "))
+    }
     nodeInfo[rowcount, ] <- c(nid, label, type)
     R[rowcount] <- nid
   }

@@ -15,9 +15,9 @@ simplifyArrows <- function(V) {
     ifelse(X %in% names(remap), remap[X], X)
   })
 }
-simpleEdges <- c("contained", "Source",
+simpleEdges <- c("none", "contained", "Source",
                  sort(unique(simplifyArrows(arrowTypes))))
-edgeTypes <- c("dotted", "twodash",
+edgeTypes <- c("solid",  "dotted", "twodash",
            "solid", "dotdash",
            "dotdash", "dotdash",
            "dotted", "dashed",
@@ -25,7 +25,7 @@ edgeTypes <- c("dotted", "twodash",
            "solid", "dotted",
            "dashed", "solid",
            "twodash", "solid")
-edgeColors <- c("gray", "gray",
+edgeColors <- c("gray", "gray", "gray",
            "cornflowerblue", "purple",
            "orange", "forestgreen",
            "brown", "magenta",

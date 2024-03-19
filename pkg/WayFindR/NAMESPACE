@@ -17,7 +17,7 @@ export("collectEdges", "collectNodes", "collectGroups", "collectAnchors")
 
 ## graphj and cycle fjunctions
 export("GPMLtoIgraph", "nodeLegend", "edgeLegend")
-export("findCycles", "interpretCycle")
+export("findCycles", "interpretCycle", "cycleSubgraph")
 
 ## objects for primary plotting routines
 #exportClasses("Cycle")

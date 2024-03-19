@@ -49,7 +49,8 @@ collectGroups <- function(xmldoc) {
       rownames(nedg) <- paste("ec", edgeCounter, sep = "")
       edger <- rbind(edger, nedg)
     } else {
-      stop(" Don't panic; just grab a towel.\n")
+      stop("Unexpected node type (", typ, ") in gref = ", grf,
+           " at gid = ", gid, "\n")
     }
   }
 

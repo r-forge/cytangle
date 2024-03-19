@@ -16,7 +16,7 @@ simplifyArrows <- function(V) {
   })
 }
 
-GPMLtoIgraph <- function(xmldoc, returnLists = FALSE) {
+GPMLtoIgraph <- function(xmldoc, returnLists = FALSE, debug = FALSE) {
   if (inherits(xmldoc, "XMLInternalDocument")) {
     mydoc <- xmldoc
     xmldoc <- "internal"
@@ -31,11 +31,15 @@ GPMLtoIgraph <- function(xmldoc, returnLists = FALSE) {
 
   nodes <- collectNodes(mydoc)
   edges <- collectEdges(mydoc)
+  if (nrow(edges) == 0) {
+    stop("Pathway contains NO edges!")
+    return(NA)
+  }
   groups <- collectGroups(mydoc)
   if(nrow(groups$nodes) > 0) nodes <- rbind(nodes, groups$nodes)
   if(nrow(groups$edges) > 0) edges <- rbind(edges, groups$edges)
   ## We may have duplicated a group/complex node. Let's check.
-  cpx <- nodes[nodes$Type == "Complex",]
+  cpx <- as.data.frame(nodes[nodes[, "Type"] == "Complex",])
   if (any(dup <- duplicated(cpx$label))) {
     ## figure out which duplicate to delete
     for (lbl in cpx$label[dup]) {
@@ -52,24 +56,30 @@ GPMLtoIgraph <- function(xmldoc, returnLists = FALSE) {
   if(nrow(links$nodes) > 0) nodes <- rbind(nodes, links$nodes)
   if(nrow(links$edges) > 0) edges <- rbind(edges, links$edges)
 
-  any(duplicated(nodes$GraphId))
-  all(edges$Source %in% nodes $GraphId)
-  all(edges$Target %in% nodes $GraphId)
+  if (debug) {
+    cat("E =", class(edges), "N = ", class(nodes), "\n")
+  }
+  
+  any(duplicated(nodes[,"GraphId"]))
+  all(edges[,"Source"] %in% nodes[,"GraphId"])
+  all(edges[,"Target"] %in% nodes[,"GraphId"])
 
   ## Set up colors and linestyles here. Also simplify edge types.
-  simpleEdges <- simplifyArrows(edges$MIM)
+  simpleEdges <- simplifyArrows(edges[,"MIM"])
   if(any(is.na(simpleEdges))) stop("Bad edge type!")
-  edges$MIM <- simpleEdges
-  edges$color <- edgeColors[simpleEdges]
-  edges$lty   <- edgeTypes[simpleEdges]
-  nodes$color <- nodeColors[as.character(nodes$Type)]
-  nodes$shape <- nodeShapes[as.character(nodes$Type)]
+  edges[,"MIM"] <- simpleEdges
+  edges[,"color"] <- edgeColors[simpleEdges]
+  edges[,"lty"]   <- edgeTypes[simpleEdges]
+  nodes[,"color"] <- nodeColors[as.character(nodes[,"Type"])]
+  nodes[,"shape"] <- nodeShapes[as.character(nodes[,"Type"])]
 
   mygraph <-   graph_from_data_frame(edges,
                                      directed = TRUE,
                                      vertices = nodes)
   if (returnLists) {
-    val <- list(graph = mygraph, edges = edges, nodes = nodes)
+    val <- list(graph = mygraph,
+                edges = as.data.frame(edges),
+                nodes = as.data.frame(nodes))
   } else {
     val <- mygraph
   }

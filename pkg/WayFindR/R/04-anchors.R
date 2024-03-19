@@ -43,6 +43,10 @@ collectAnchors <- function(xmldoc) {
     ## the target of the one we are working on.
     gid <- xmlGetAttr(edge, "GraphId")
     aid <- xmlGetAttr(anchor, "GraphId")
+    if (length(aid) == 0) {
+      stop("Anchor has no GraphId!") # change to a warning
+      next
+    }
     edgenode <- data.frame(GraphId = aid,
                            label = lbl,
                            Type = "EDGE")
