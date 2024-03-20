@@ -96,10 +96,10 @@ GPMLtoIgraph <- function(xmldoc, returnLists = FALSE, debug = FALSE) {
   needed <- nodes$GraphId %in% uu
   nodes <- nodes[needed, , drop = FALSE]
 
-  if (any(nodes$Type == "Label") {
+  if (any(nodes$Type == "Label")) {
     warning("Pathway uses a 'Label' as source or target of an Edge!\n")
   }
-  if (any(nodes$Type == "Shape") {
+  if (any(nodes$Type == "Shape")) {
     warning("Pathway uses a 'Shape' as source or target of an Edge!\n")
   }
 
