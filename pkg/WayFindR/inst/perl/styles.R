@@ -47,19 +47,21 @@ library(Polychrome)
 data(Light24)
 set.seed(84984)
 pal <- createPalette(20, Light24[c(16,19)], range = c(70,90))
-nodeColors <- pal[c(5, 7, 4, 2, 6, 1, 3, 8, 9, 10, 10, 7, 11)]
+nodeColors <- pal[c(5, 7, 4, 2, 6, 1, 3, 8, 9, 10, 10, 7, 11, 12)]
 nodeColors <- c(colorNames(nodeColors), "gray75", "navajowhite2")
-names(nodeColors) <- c(nodeTypes$Tag, "Group", "Undefined", "EDGE", "Label")
+names(nodeColors) <- c(nodeTypes$Tag, "Group", "Undefined", "Shape", "EDGE", "Label")
 swatch(nodeColors)
 
 nodeTypes <- rbind(nodeTypes, c(Tag = "Group", Count = 0))
 nodeTypes <- rbind(nodeTypes, c(Tag = "Undefined", Count = 0))
+nodeTypes <- rbind(nodeTypes, c(Tag = "Shape", Count = 0))
 nodeTypes <- rbind(nodeTypes, c(Tag = "EDGE", Count = 0))
 nodeTypes <- rbind(nodeTypes, c(Tag = "Label", Count = 0))
 nodeTypes$color <- nodeColors
 nodeShapes <- c("circle", "circle", "circle", "rectangle", "circle",
                 "rectangle", "circle", "circle", "rectangle", "rectangle",
-                "rectangle", "circle", "rectangle", "circle", "rectangle")
+                "rectangle", "circle", "rectangle", "circle", "circle",
+                "rectangle")
 names(nodeShapes) <- names(nodeColors)
 nodeTypes$shape <- nodeShapes
 

@@ -15,9 +15,9 @@ importFrom("utils", "head")
 ## Functions that perform steps in the process to build the final
 ## igraph object.
 export("collectEdges", "collectNodes", "collectGroups",
-       "collectAnchors", "collectLabels")
+       "collectAnchors", "collectLabels", "collectShapes")
 
-## graphj and cycle fjunctions
+## graph and cycle functions
 export("GPMLtoIgraph", "nodeLegend", "edgeLegend")
 export("findCycles", "interpretCycle", "cycleSubgraph")
 

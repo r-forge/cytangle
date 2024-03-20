@@ -57,7 +57,10 @@ GPMLtoIgraph <- function(xmldoc, returnLists = FALSE, debug = FALSE) {
   if(nrow(links$edges) > 0) edges <- rbind(edges, links$edges)
 
   labels <- collectLabels(mydoc)
-  nodes <- rbind(nodes, labels)
+  if (nrow(labels) > 0) nodes <- rbind(nodes, labels)
+
+  shapes <- collectShapes(mydoc)
+  if (nrow(shapes) > 0) nodes <- rbind(nodes, shapes)
 
   if (debug) {
     cat("E =", class(edges), "N = ", class(nodes), "\n")
@@ -88,6 +91,17 @@ GPMLtoIgraph <- function(xmldoc, returnLists = FALSE, debug = FALSE) {
   edges[,"lty"]   <- edgeTypes[simpleEdges]
   nodes[,"color"] <- nodeColors[as.character(nodes[,"Type"])]
   nodes[,"shape"] <- nodeShapes[as.character(nodes[,"Type"])]
+
+  uu <- unique(c(edges$Source, edges$Target))
+  needed <- nodes$GraphId %in% uu
+  nodes <- nodes[needed, , drop = FALSE]
+
+  if (any(nodes$Type == "Label") {
+    warning("Pathway uses a 'Label' as source or target of an Edge!\n")
+  }
+  if (any(nodes$Type == "Shape") {
+    warning("Pathway uses a 'Shape' as source or target of an Edge!\n")
+  }
 
   mygraph <-   graph_from_data_frame(edges,
                                      directed = TRUE,
