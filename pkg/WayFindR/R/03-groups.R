@@ -68,9 +68,12 @@ collectGroups <- function(xmldoc) {
   gcounter <- 0
   for (group in groups) {
     gid <- xmlGetAttr(group, "GraphId")
+    grid <- xmlGetAttr(group, "GroupId")
     if (is.null(gid)) {
-      warning("Groups: This group has no GraphID! Using GroupId instead.\n")
+      warning("Groups: GroupId has no GraphId. Using GroupId.\n")
       gid <- xmlGetAttr(group, "GroupId")
+    } else if (gid != grid) {
+      warning("Groups: GroupId does not match GraphId.\n")
     }
     ## See if there is a separate node that contains a name for the complex.
     ## Key point: XML package doesn't know how to expand variable names,
@@ -87,7 +90,7 @@ collectGroups <- function(xmldoc) {
     }
     sty <- xmlGetAttr(group, "Style")
     if (is.null(sty)) sty <- "Group"
-    newn <- data.frame(GraphId = gid,
+    newn <- data.frame(GraphId = grid,
                        label = lbl,
                        Type = sty)
     rownames(newn) <- newn[,1]
