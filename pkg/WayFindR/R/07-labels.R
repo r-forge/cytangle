@@ -22,6 +22,7 @@ collectLabels <- function(xmldoc) {
   R <- rep(NA, length(labels))
   for (lbl in labels) {
     nid <- xmlGetAttr(lbl, "GraphId")
+    if (is.null(nid)) next
     label <- xmlGetAttr(lbl, "TextLabel")
     label <- gsub("[\r\n]", "", label)
     type <- "Label"
@@ -29,5 +30,6 @@ collectLabels <- function(xmldoc) {
     nick[rowcount, ] <- c(nid, label, type)
     R[rowcount] <- nid
   }
+  nick <- nick[!is.na(nick[,1]),, drop = FALSE]
   nick
 }
