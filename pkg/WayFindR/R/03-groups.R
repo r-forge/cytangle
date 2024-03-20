@@ -74,6 +74,9 @@ collectGroups <- function(xmldoc) {
   edgeCounter <- 0
   for (gref in grefs) {
     grf <- xmlGetAttr(gref, "GroupRef")
+    if (!(grf %in% names(ghash))) {
+      stop("Groups: Refernce to non existent group!\n")
+    }
     gid <- xmlGetAttr(gref, "GraphId")
     nam <- xmlGetAttr(gref, "TextLabel")
     if (is.null(gid)) {
