@@ -28,6 +28,43 @@ collectGroups <- function(xmldoc) {
   nodal <- data.frame(GraphId = NA, label = NA, Type = NA)[-1,]
   edger <- data.frame(Source = NA, Targte = NA, MIM = NA)[-1,]
 
+  ## Now we get the actual group objects
+  ghash <- NULL # map GroupId to GraphId
+  groups <- getNodeSet(xmlRoot(mydoc), "/sm:Pathway/sm:Group", rasp)
+  gcounter <- 0
+  for (group in groups) {
+    gid <- xmlGetAttr(group, "GraphId")
+    grid <- xmlGetAttr(group, "GroupId")
+    if (is.null(gid)) {
+      warning("Groups: GroupId has no GraphId. Using GroupId.\n")
+      gid <- grid
+    } else if (gid != grid) {
+      warning("Groups: GroupId does not match GraphId.\n")
+    }
+    ghash[grid] <- gid
+    ## See if there is a separate node that contains a name for the complex.
+    ## Key point: XML package doesn't know how to expand variable names,
+    ## so you need to do so explicitly, by hand, to build a query.
+    query <- paste("/sm:Pathway/sm:DataNode[@GroupRef='", gid,
+                   "' and @Type='Complex']", sep = "")
+    repr <- getNodeSet(xmlRoot(mydoc), query, rasp)
+    if (length(repr) > 0) {
+      ## update the node that represent the complex
+      lbl <- xmlGetAttr(repr[[1]], "TextLabel")
+    } else {
+      gcounter <- gcounter + 1
+      lbl <- paste("Group", gcounter, sep = "")
+    }
+    sty <- xmlGetAttr(group, "Style")
+    if (is.null(sty)) sty <- "Group"
+    newn <- data.frame(GraphId = gid,
+                       label = lbl,
+                       Type = sty)
+    rownames(newn) <- newn[,1]
+    newn <- as.matrix(newn)
+    nodal <- rbind(nodal, newn)
+  }
+
   ## We start by finding all DataNodes that include a GroupRef attribute.
   ## Most of these consist of gene products or proteins that are part of
   ## the group (indicated by the Type attribute). In some cases, however,
@@ -47,14 +84,14 @@ collectGroups <- function(xmldoc) {
     if (is.null(typ)) {
       typ <- "Complex" #??
     }
-    if (typ == "Complex") { # handle this later
+    if (typ == "Complex") { # Already handed this case
       next
     } else if (typ %in% c("GeneProduct", "Metabolite",
                           "Pathway", "Protein", "RNA", "Rna",
                           "Other", "CellularComponent")) {
       ## create a "contained" edge
       edgeCounter <- edgeCounter + 1
-      nedg <- data.frame(Source = gid, Target = grf, MIM = "contained")
+      nedg <- data.frame(Source = gid, Target = ghash[grf], MIM = "contained")
       rownames(nedg) <- paste("ec", edgeCounter, sep = "")
       edger <- rbind(edger, nedg)
     } else {
@@ -63,39 +100,5 @@ collectGroups <- function(xmldoc) {
     }
   }
 
-  ## Now we get the actual group objects
-  groups <- getNodeSet(xmlRoot(mydoc), "/sm:Pathway/sm:Group", rasp)
-  gcounter <- 0
-  for (group in groups) {
-    gid <- xmlGetAttr(group, "GraphId")
-    grid <- xmlGetAttr(group, "GroupId")
-    if (is.null(gid)) {
-      warning("Groups: GroupId has no GraphId. Using GroupId.\n")
-      gid <- xmlGetAttr(group, "GroupId")
-    } else if (gid != grid) {
-      warning("Groups: GroupId does not match GraphId.\n")
-    }
-    ## See if there is a separate node that contains a name for the complex.
-    ## Key point: XML package doesn't know how to expand variable names,
-    ## so you need to do so explicitly, by hand, to build a query.
-    query <- paste("/sm:Pathway/sm:DataNode[@GroupRef='", gid,
-                   "' and @Type='Complex']", sep = "")
-    repr <- getNodeSet(xmlRoot(mydoc), query, rasp)
-    if (length(repr) > 0) {
-      ## update the node that represent the complex
-      lbl <- xmlGetAttr(repr[[1]], "TextLabel")
-    } else {
-      gcounter <- gcounter + 1
-      lbl <- paste("Group", gcounter, sep = "")
-    }
-    sty <- xmlGetAttr(group, "Style")
-    if (is.null(sty)) sty <- "Group"
-    newn <- data.frame(GraphId = grid,
-                       label = lbl,
-                       Type = sty)
-    rownames(newn) <- newn[,1]
-    newn <- as.matrix(newn)
-    nodal <- rbind(nodal, newn)
-  }
   list(nodes = nodal, edges = edger)
 }
