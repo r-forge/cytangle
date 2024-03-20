@@ -40,7 +40,7 @@ collectGroups <- function(xmldoc) {
     gid <- xmlGetAttr(gref, "GraphId")
     nam <- xmlGetAttr(gref, "TextLabel")
     if (is.null(gid)) {
-      warning("Groups: Node with label ", nam, " has no GraphId!\n")
+      warning("Groups: Node ", nam, " has no GraphId! Creating our own.\n")
       gid <- paste("GREF", 1 + edgeCounter, sep = "")
     }
     typ <- xmlGetAttr(gref, "Type")
@@ -50,7 +50,8 @@ collectGroups <- function(xmldoc) {
     if (typ == "Complex") { # handle this later
       next
     } else if (typ %in% c("GeneProduct", "Metabolite",
-                          "Pathway", "Protein", "RNA", "Rna")) {
+                          "Pathway", "Protein", "RNA", "Rna",
+                          "Other", "CellularComponent")) {
       ## create a "contained" edge
       edgeCounter <- edgeCounter + 1
       nedg <- data.frame(Source = gid, Target = grf, MIM = "contained")

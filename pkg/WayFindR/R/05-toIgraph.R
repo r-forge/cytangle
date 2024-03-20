@@ -66,7 +66,7 @@ GPMLtoIgraph <- function(xmldoc, returnLists = FALSE, debug = FALSE) {
     stop("WayFindR: Found multiple nodes with same 'GraphId'!")
   }
   if (!all(edges[,"Source"] %in% nodes[,"GraphId"])) {
-    stop("WayFindR: found an edge with unknown Source node!")
+    warning("WayFindR: found an edge with unknown Source node!")
     # which(!(edges[,"Source"] %in% nodes[,"GraphId"]))
   }
   if (!all(edges[,"Target"] %in% nodes[,"GraphId"])) {
