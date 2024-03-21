@@ -28,7 +28,7 @@ GPMLtoIgraph <- function(xmldoc, returnLists = FALSE, debug = FALSE) {
   }
   nsp <- xmlNamespace(xmlRoot(mydoc)) # extract the namespace
   rasp <- c(sm = as.character(nsp))   # assign abbreviation to the namespace
-
+  
   nodes <- collectNodes(mydoc)
   edges <- collectEdges(mydoc)
   if (nrow(edges) == 0) {
@@ -61,6 +61,17 @@ GPMLtoIgraph <- function(xmldoc, returnLists = FALSE, debug = FALSE) {
 
   shapes <- collectShapes(mydoc)
   if (nrow(shapes) > 0) nodes <- rbind(nodes, shapes)
+
+  states <- getNodeSet(xmlRoot(mydoc), "/sm:Pathway/sm:State", rasp)
+  stateIds <- sapply(states, function(state) { xmlGetAttr(state, "GraphId")})
+  ends <- c(edges[, "Source"], edges[, "Target"])
+  if (length(states) > 0 & any(stateIds %in% ends)) {
+    stop("WayFindR: Cannot yet handle pathways with 'States'!")
+  }
+  glines <- getNodeSet(xmlRoot(mydoc), "/sm:Pathway/sm:GraphicalLine", rasp)
+  if (length(glines) > 0) {
+    warning("WayFindR: Cannot yet handle pathways with 'GraphicalLines'!")
+  }
 
   if (debug) {
     cat("E =", class(edges), "N = ", class(nodes), "\n")
