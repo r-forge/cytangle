@@ -38,6 +38,10 @@ GPMLtoIgraph <- function(xmldoc, returnLists = FALSE, debug = FALSE) {
   groups <- collectGroups(mydoc, nodes)
   if(nrow(groups$nodes) > 0) nodes <- rbind(nodes, groups$nodes)
   if(nrow(groups$edges) > 0) edges <- rbind(edges, groups$edges)
+  links <- collectAnchors(mydoc)
+  if(nrow(links$nodes) > 0) nodes <- rbind(nodes, links$nodes)
+  if(nrow(links$edges) > 0) edges <- rbind(edges, links$edges)
+
   ## We may have duplicated a group/complex node. Let's check.
   cpx <- as.data.frame(nodes[nodes[, "Type"] == "Complex",])
   if (any(dup <- duplicated(cpx$label))) {
@@ -52,9 +56,6 @@ GPMLtoIgraph <- function(xmldoc, returnLists = FALSE, debug = FALSE) {
       }
     }
   }
-  links <- collectAnchors(mydoc)
-  if(nrow(links$nodes) > 0) nodes <- rbind(nodes, links$nodes)
-  if(nrow(links$edges) > 0) edges <- rbind(edges, links$edges)
 
   labels <- collectLabels(mydoc)
   if (nrow(labels) > 0) nodes <- rbind(nodes, labels)
@@ -93,7 +94,7 @@ GPMLtoIgraph <- function(xmldoc, returnLists = FALSE, debug = FALSE) {
   if(any(is.na(simpleEdges))) {
     odd <- paste(unique(names(which(is.na(simpleEdges)))),
                  collapse = ", ")
-    stop("WayFindR: Bad edge type: ", odd, "\n")
+    stop("WayFindR: Bad edge type (Receptor-Ligand).\n")
   }
   edges[,"MIM"] <- simpleEdges
   edges <- as.data.frame(edges)
@@ -117,6 +118,15 @@ GPMLtoIgraph <- function(xmldoc, returnLists = FALSE, debug = FALSE) {
   mygraph <-   graph_from_data_frame(edges,
                                      directed = TRUE,
                                      vertices = nodes)
+
+  name <- xmlGetAttr(xmlRoot(mydoc), "Name")
+  version <- xmlGetAttr(xmlRoot(mydoc), "Version")
+  pid <- strsplit(version, "_")[[1]][1]
+  author <- xmlGetAttr(xmlRoot(mydoc), "Author")
+  mygraph <- set_graph_attr(mygraph, "Name", name)
+  mygraph <- set_graph_attr(mygraph, "PathID", pid)
+  mygraph <- set_graph_attr(mygraph, "Authors", author)
+  
   if (returnLists) {
     val <- list(graph = mygraph,
                 edges = as.data.frame(edges),

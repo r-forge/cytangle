@@ -5,8 +5,9 @@
 importFrom("XML",
            "getNodeSet", "xmlGetAttr", "xmlNamespace",
            "xmlParseDoc", "xmlRoot", "xmlParent")
-import("igraph")
-
+importFrom("igraph", "E", "V", "all_simple_paths",
+           "get.edge.ids", "graph_from_data_frame",
+           "neighbors", "subgraph", "set_graph_attr")
 importFrom("graphics", "legend")
 importFrom("utils", "head")
 
