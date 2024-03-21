@@ -68,9 +68,9 @@ GPMLtoIgraph <- function(xmldoc, returnLists = FALSE, debug = FALSE) {
   if (length(states) > 0 & any(stateIds %in% ends)) {
     stop("WayFindR: Cannot yet handle pathways with 'States'!")
   }
-  glines <- getNodeSet(xmlRoot(mydoc), "/sm:Pathway/sm:GraphicalLine", rasp)
+  glines <- getNodeSet(xmlRoot(mydoc), "/sm:Pathway/sm:GraphicalLine/sm:Graphics/sm:Anchor", rasp)
   if (length(glines) > 0) {
-    warning("WayFindR: Cannot yet handle pathways with 'GraphicalLines'!")
+    stop("WayFindR: Cannot yet handle pathways with 'Anchors' in 'GraphicalLines'!\n")
   }
 
   if (debug) {
