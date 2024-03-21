@@ -11,7 +11,7 @@
 ## go along with it. In other cases, they sometimes appear to represent
 ## genes with interchangeable roles in the pathway. For example, the
 ## IGF1-AKT pathway includes an anonymous group with SMAD2 and SMAD3.
-collectGroups <- function(xmldoc) {
+collectGroups <- function(xmldoc, allnodes) {
   if (inherits(xmldoc, "XMLInternalDocument")) {
     mydoc <- xmldoc
     xmldoc <- "internal"
@@ -75,13 +75,19 @@ collectGroups <- function(xmldoc) {
   for (gref in grefs) {
     grf <- xmlGetAttr(gref, "GroupRef")
     if (!(grf %in% names(ghash))) {
-      stop("Groups: Refernce to non existent group!\n")
+      stop("Groups: Reference to non existent group!\n")
     }
-    gid <- xmlGetAttr(gref, "GraphId")
     nam <- xmlGetAttr(gref, "TextLabel")
+    gid <- xmlGetAttr(gref, "GraphId")
     if (is.null(gid)) {
-      warning("Groups: Node ", nam, " has no GraphId! Creating our own.\n")
-      gid <- paste("GREF", 1 + edgeCounter, sep = "")
+      warning("Groups: Node ", nam, " has no GraphId! Need to locate one.\n")
+      who <- which(allnodes$label == nam)
+      if (length(who) -- 0) { # should be impossible
+        stop("Groups: Cannot locate node without a graphId!\n")
+      } else if (length(who) > 1) { # might happen, but it's still bad
+        stop("Groups: Two different nodes have the same label!\n")
+      }
+      gid <- allnodes[who, "GraphId"]
     }
     typ <- xmlGetAttr(gref, "Type")
     if (is.null(typ)) {

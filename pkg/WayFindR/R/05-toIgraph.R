@@ -35,7 +35,7 @@ GPMLtoIgraph <- function(xmldoc, returnLists = FALSE, debug = FALSE) {
     stop("WayFindR: Pathway contains NO edges!")
     return(NA)
   }
-  groups <- collectGroups(mydoc)
+  groups <- collectGroups(mydoc, nodes)
   if(nrow(groups$nodes) > 0) nodes <- rbind(nodes, groups$nodes)
   if(nrow(groups$edges) > 0) edges <- rbind(edges, groups$edges)
   ## We may have duplicated a group/complex node. Let's check.
