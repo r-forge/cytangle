@@ -81,8 +81,8 @@ collectGroups <- function(xmldoc, allnodes) {
     gid <- xmlGetAttr(gref, "GraphId")
     if (is.null(gid)) {
       warning("Groups: Node ", nam, " has no GraphId! Need to locate one.\n")
-      who <- which(allnodes$label == nam)
-      if (length(who) -- 0) { # should be impossible
+      who <- which(allnodes[, "label"] == nam)
+      if (length(who) == 0) { # should be impossible
         stop("Groups: Cannot locate node without a graphId!\n")
       } else if (length(who) > 1) { # might happen, but it's still bad
         stop("Groups: Two different nodes have the same label!\n")
