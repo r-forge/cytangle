@@ -1,0 +1,124 @@
+---
+title: 'WayFindR: Computing Graph Metrics on WikiPathways'
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{WayFindR: Computing Graph Metrics on WikiPathways}
+  %\VignetteKeywords{pathways, graphs, cycles}
+  %\VignetteDepends{WayFindR,igraph,XML}
+  %\VignettePackage{WayFindR}
+  %\VignetteEngine{knitr::rmarkdown}output: output:
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction 
+Graph metrics offer quantitative measures that provide insights into the structural properties of pathway graphs, playing a crucial role in understanding the topology of biological networks and revealing key characteristics. 
+Through the integration of WikiPathways and R's igraph package, WayFindR provides a suite of functions to compute various graph metrics, empowering researchers to analyze and interpret pathway structures effectively. 
+In this vignette, we demonstrate how to utilize some of these metrics using  "Factors and pathways influencing insulin-like growth factor (IGF1)-Akt signaling (WP3850)" accessible at https://www.wikipathways.org/pathways/WP3850.html. This GPML file is also integrated into a system file.
+
+
+# Data Preparation
+Firs, we load required libraries:
+```{r}
+library(XML)
+library(igraph)
+library(WayFindR)
+data(edgeColors)
+data(edgeTypes)
+data(nodeColors)
+data(nodeShapes)
+```
+
+Now we are ready to load a GPML file and convert it into an igraph object:
+```{r}
+xmlfile <- system.file("pathways/WP3850.gpml", package = "WayFindR")
+G <- GPMLtoIgraph(xmlfile)
+```
+
+```{r}
+class(G)
+```
+
+# Computing graph metrics on WP3850 pathway
+After obtaining an igraph object, we can utilize functions from the igraph package to compute the structural properties of a graph.
+These metrics provide insights into various aspects of graph structure, and they can be used to analyze and understand the properties of complex networks.
+
+Users have the flexibility to choose which metrics to calculate for their research purposes. However, for the exploration of cycles in graphs, we will concentrate on a selection of global metrics that are potentially intriguing. Our objective is to determine whether any of the computed "graph invariants" on the modified pathway can effectively forecast the presence or quantity of cycles within the pathway.
+
+Specifically, we aim to calculate the following global metrics:
+
+1. Number of vertices
+2. Number of edges
+3. Number of negative interactions (inhibition processes or edges)
+4. Presence/absence of loops
+5. Presence/absence of multiple edges
+6. Presence/absence of Eulerian path or cycle in the input graph
+7. Number of clusters
+8. Density
+9. Radius of the graph
+10. Diameter of the graph
+11. Girth
+12. Global efficiency of the graph
+13. Average path length in the graph
+14. Number of cliques
+15. Reciprocity
+
+
+We refer readers to the `igraph` package tutorial for more detailed explanations of these metrics.
+
+Next, let's create a table summarizing all the metrics of interest.
+
+```{r}
+# Calculate metrics
+daft <- data.frame(nVertices = length(V(G)),
+                   nEdges = length(E(G)),
+                   nNegative = sum(edge_attr(G, "MIM") == "mim-inhibition"),
+                   hasLoop = any_loop(G),
+                   hasMultiple = any_multiple(G),
+                   hasEuler = has_eulerian_cycle(G) | has_eulerian_path(G),
+                   nComponents = count_components(G),
+                   density = edge_density(G),
+                   diameter = diameter(G),
+                   radius = radius(G),
+                   girth = ifelse(is.null(girth(G)), NA, girth(G)$girth),
+                   nTriangles = sum(count_triangles(G)),
+                   efficiency = global_efficiency(G),
+                   meanDistance = mean_distance(G),
+                   cliques = clique_num(G),
+                   reciprocity = reciprocity(G))
+```
+
+We can find cycles and analyze cycle subgraph. 
+Here, '<span style="color: grey;">`nCyVert`</span>' is the number of vertices in the cycle subgraph,
+'<span style="color: grey;">`nCyEdge`</span>' correpsonds to the number of edges in the cycle subgraph,
+'<span style="color: grey;">`nCyNeg`</span>' determines the number of edges in the cycle subgraph  with the attribute "MIM" equal to "mim-inhibition".
+
+```{r}
+cy <- findCycles(G)
+if (length(cy) > 0) {
+  S <- cycleSubgraph(G, cy)
+  sift <- data.frame(nCycles = length(cy),
+                     nCyVert = length(V(S)),
+                     nCyEdge = length(E(S)),
+                     nCyNeg = sum(edge_attr(S, "MIM") == "mim-inhibition"))
+} else {
+  sift <- data.frame(nCycles = 0,
+                     nCyVert = NA,
+                     nCyEdge = NA,
+                     nCyNeg = NA)
+}
+```
+
+Finally, we combine results:
+```{r}
+daft <- cbind(daft, sift)
+daft
+```
+
+
+
+
