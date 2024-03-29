@@ -1,6 +1,6 @@
 Package: WayFindR
-Version: 0.0.60
-Date: 2024-03-21
+Version: 0.0.61
+Date: 2024-03-29xf
 Title: Computing Graph Structures on WikiPathways
 Author: Kevin R. Coombes, Polina Bombina
 Maintainer: Kevin R. Coombes <krc@silicovore.com>
