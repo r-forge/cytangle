@@ -141,17 +141,12 @@ G <- GPMLtoIgraph(xmlfile)
 ```
 
 To visualize and analyze our graph, we can apply the graphopt layout algorithm from the igraph package:
-```{r}
+```{r fig.width = 12, fig.height = 12}
 set.seed(13579)
-L <- igraph::layout_with_graphopt(G)
+L <- igraph::layout_with_graphopt
 plot(G, layout=L)
-
-# Add legend for nodes
 nodeLegend("topleft", G)
-
-# Add legend for edges
 edgeLegend("bottomright", G)
-
 ```
 
 # Finding cycles
@@ -181,12 +176,11 @@ S <- cycleSubgraph(G, cyc)
 
 
 We depict the section of the graph that impacts cycles within the IGF1-AKT wikiPathway.
-```{r}
+```{r fig.width=10, fig.height=10}
+set.seed(93217)
 plot(S)
-# Add legend for nodes
 nodeLegend("topleft", S)
-# Add legend for edges
-edgeLegend("bottomleft", S)
+edgeLegend("bottomright", S)
 
 ```
 
