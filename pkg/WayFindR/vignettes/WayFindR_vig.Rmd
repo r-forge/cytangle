@@ -39,7 +39,7 @@ library(WayFindR)
 
 # Retrieving data structure from GPML file
 Let's explore the basic functionalities of WayFindR using one example file. 
-Initially, we obtain a GPML file from https://www.wikipathways.org/pathways/ pertaining to a pathway that piques our interest. More specifically, we opt for the pathway labeled "Factors and pathways influencing insulin-like growth factor (IGF1)-Akt signaling (WP3850)," accessible at https://www.wikipathways.org/pathways/WP3850.html. This GPML file is integrated into a system file.
+Initially, we obtain a GPML file from https://www.wikipathways.org/ pertaining to a pathway that piques our interest. More specifically, we opt for the pathway labeled "Factors and pathways influencing insulin-like growth factor (IGF1)-Akt signaling (WP3850)," accessible at https://www.wikipathways.org/pathways/WP3850.html. This GPML file is integrated into a system file.
 
 ```{r}
 gpmlFile <- system.file("pathways/WP3850.gpml", package = "WayFindR")

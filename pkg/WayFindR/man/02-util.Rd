@@ -1,4 +1,5 @@
 \name{gpml-utility}
+\alias{gpml-utility}
 \alias{collectEdges}
 \alias{collectNodes}
 \alias{collectAnchors}
@@ -109,4 +110,6 @@ labels <- collectLabels(xmldoc)
 edges <- collectShapes(xmldoc)
 groups <- collectGroups(xmldoc, nodes)
 }
+\keyword{ utility }
 \keyword{ manip }
+\keyword{ graphs }

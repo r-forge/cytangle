@@ -72,4 +72,5 @@ legend("center", legend = names(nodeColors),  cex = 1.5,
        col = nodeColors,  pch = num[nodeShapes])
 }
 \keyword{datasets}
+\keyword{color}
 
