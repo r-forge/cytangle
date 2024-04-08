@@ -1,0 +1,228 @@
+---
+author: "Polina Bombina and Kevin R. Coombes"
+title: "WayFindR: Creating Graph Structures From WikiPathways Files"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{WayFindR: Creating Graph Structures From WikiPathways Files}
+  %\VignetteKeywords{pathways, graphs, cycles}
+  %\VignetteDepends{WayFindR,igraph,XML}
+  %\VignettePackage{WayFindR}
+  %\VignetteEngine{knitr::rmarkdown}output: 
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+Comprehending biological pathways stands as a pivotal endeavor in the realm of life sciences. However, merely possessing visual representations such as PNG or SVG files is insufficient for comprehensive analysis. The WayFindR package is a robust tool meticulously crafted for both biologists and bioinformaticians. Its primary objective is streamlining the intricate task of dissecting cellular pathways. Through seamless integration of WikiPathways (a well-known repository for biological pathways) and R's igraph package, WayFindR bestows users with the capability to transform complex pathway architectures into actionable insights.
+
+From a mathematical perspective, control theory asserts that negative feedback is essential for effective regulation and control of dynamic systems. Negative feedback mechanisms serve as stabilizing forces, ensuring that deviations from desired states are minimized and the system returns to equilibrium. In the context of biological pathways, where intricate networks of molecular interactions govern cellular processes, the concept of negative feedback is paramount.
+
+Biologists rely on understanding the dynamics of biological pathways to elucidate mechanisms underlying disease, identify potential drug targets, and uncover regulatory networks. Negative feedback loops within these pathways play crucial roles in maintaining cellular homeostasis, modulating responses to external stimuli, and preventing excessive or aberrant signaling.
+
+By enabling the conversion of pathway structures into computationally tractable formats and providing tools for analysis, WayFindR facilitates the identification and characterization of negative feedback loops within pathways. This capability is invaluable for deciphering the regulatory logic governing cellular processes and designing interventions to modulate pathway activity.
+
+In essence, by bridging the gap between biological knowledge and mathematical principles, WayFindR empowers researchers to navigate the intricate landscapes of cellular pathways with precision and insight, ultimately advancing our understanding of complex biological systems and paving the way for innovative therapeutic strategies.
+
+# Installation
+The WayFindR package is available from CRAN:
+
+```{r}
+#install.packages("WayFindR")
+#install.packages("WayFindR", repos="http://R-Forge.R-project.org")
+library(WayFindR)
+```
+
+
+# Retrieving data structure from GPML file
+We will explore the functionality of WayFindR using one example file. 
+You can obtain a GPML file by visiting https://www.wikipathways.org/ and 
+selecting a pathway that piques your interest. We previously downloaded the
+pathway named "Factors and pathways influencing insulin-like growth factor
+(IGF1)-Akt signaling (WP3850)," which can be accessed directly at https://www.wikipathways.org/pathways/WP3850.html. We included this GPML file
+in the package, and you can find it as a system file.
+
+```{r gpmlfile}
+gpmlFile <- system.file("pathways/WP3850.gpml", package = "WayFindR")
+```
+
+Functions in `WayFindR` rely on the `XML` R package to parse GPML files. (GPML
+is a "dialect" of the extensible markup language, XML.) You can simly supply
+the file name to the functions, but they also work is you explicitly parse them
+yourself:
+```{r xmlfile}
+xmlfile <- XML::xmlParseDoc(gpmlFile)
+```
+
+We are going to illustrate the use of functions that allow users to explore the
+various types of entities that are present in GPML files. These are useful for
+understanding both how GPML files are defined and how `WayFindR` works. You do 
+not need to use them separately on every file; if you just want to get to the
+resulting `igraph`, you can skip ahead to the section on "Converting pathways
+into igraph objects".
+
+## Edges
+A user can generate a matrix with information about 
+edges from the provided GPML file:
+```{r collectEdges}
+edges <- collectEdges(xmlfile)
+class(edges)
+dim(edges)
+```
+The matrix comprises 46 rows (representing edges) and 3 columns: Source, Target, and MIM (Molecular Interaction Maps). Each edge is identified by a unique ID, such as id2257fd8. These edges are directional, indicating they originate from one node and terminate at another. The Source and Target columns contain labels corresponding to these nodes. The MIM column illustrates the type of interaction occurring between the nodes.
+
+```{r exampleEdges}
+head(edges)
+tail(edges)
+```
+
+## Nodes
+Likewise, users can acquire a matrix of nodes in a similar manner.
+
+```{r collectNodes}
+nodes <- collectNodes(xmlfile)
+class(nodes)
+dim(nodes)
+```
+In the selected pathway, there are a total of 52 nodes. The resulting matrix consists of three columns: GraphId, label, and Type. GraphId correlates to a distinct node ID extracted from the GPML file, while label corresponds to the name of a gene, protein, group, complex or biological process. The Type column contains information regarding the type of node.
+
+```{r exampleNodes}
+head(nodes)
+tail(nodes)
+```
+
+## Groups
+We've already extracted all edges (Interactions) and vertices (DataNodes) from a
+GPML file. Another significant element within a GPML file is referred to as a 
+"Group." In some instances, Groups denote a complex, often associated to a
+separate `DataNode` labeled with the attribute `Type="Complex"`. In other cases, 
+Groups seem to represent genes with interchangeable roles within the pathway.
+For instance, within the IGF1-AKT pathway, there is an anonymous group featuring
+SMAD2 and SMAD3.
+
+```{r collectGroups}
+groups <- collectGroups(xmlfile)
+class(groups)
+names(groups)
+groups$nodes
+groups$edges
+```
+
+The entry "contained" in the MIM column does not come from the MIM standard, the
+`WayFindR` package has invented this edge type to be able to relate  a group to
+its constituent parts.
+
+## Anchors
+The Anchor, which is the fourth and final "semantic" structure outlined in the
+GPML specification, serves a specific purpose. It is used to designate edges 
+(or interactions, or arrows) that act as targets for other edges, instead of 
+the typical nodes (or DataNodes, or vertices). To handle this scenario, `WayFindR`
+modifies the target arrow, originally represented as A -> B, into a two-step 
+arrow, A -> EDGE -> B. Subsequently, we transform the unconventional arrow into
+a simpler, more standardized representation that now points to the newly
+introduced EDGE node.
+
+```{r}
+links <- collectAnchors(xmlfile)
+class(links)
+links$nodes
+links$edges
+```
+
+# Converting Pathways into igraph objects
+The core feature of WayFindR is its ability to convert pathways from WikiPathways
+GPML format into igraph objects. In the preocess, we also define "standard" colors, 
+line types, and shapes to display edges and nodes.
+
+```{r fig.width = 10, fig.height=8}
+data(edgeColors)
+data(edgeTypes)
+data(nodeColors)
+data(nodeShapes)
+if (requireNamespace("Polychrome")) {
+  opar <- par(mfrow = c(2,1))
+  Polychrome::swatch(edgeColors, main = "Edge Types")
+  Polychrome::swatch(nodeColors, main = "Node Types")
+} else {
+  opar <- par(mfrow = c(1,2))
+  plot(0,0, type = "n", xlab="", ylab = "", main = "Edges")
+  legend("center", legend = names(edgeColors),  lwd = 3,
+         col = edgeColors,  lty = edgeTypes)
+  num <- c(rectangle = 15, circle = 16)
+  plot(0,0, type = "n", xlab="", ylab = "", main = "Nodes")
+  legend("center", legend = names(nodeColors),  cex = 1.5,
+         col = nodeColors,  pch = num[nodeShapes])
+}
+par(opar)
+```
+
+## Bundling the Process
+The main function collects all the entities from the GPML file, adds colors and
+styles, and produces an `igraph`.
+```{r main}
+G <- GPMLtoIgraph(xmlfile)
+```
+
+To visualize and analyze our graph, we can apply the graphopt (or any of the
+many other) layout algorithm(s) from the igraph package:
+```{r fig.width = 10, fig.height = 10}
+set.seed(13579)
+L <- igraph::layout_with_graphopt
+plot(G, layout=L)
+nodeLegend("topleft", G)
+edgeLegend("bottomright", G)
+```
+
+# Finding cycles
+Once the pathway is converted, WayFindR provides a suite of tools for 
+in-depth analysis. Let's explore how to find cycles within the pathway graph
+(if they exist).
+
+```{r}
+cyc <- findCycles(G)
+length(cyc)
+cyc
+```
+
+The output consists of a list of cycles extracted from a directed graph. Each 
+cycle is represented as a sequence of vertices, where each vertex is indicated
+by its numerical position within the graph's vertex list. These cycles denote
+closed loops of vertices in the graph, signifying paths that both start and end
+at the same vertex. The WP3850 pathway has 5 cycles. 
+
+
+Furthermore, within WayFindR, there exists a function named "`interpretCycle`"
+designed to interpret a cycle within the context of the associated graph. This
+function takes a cycle and the graph it belongs to as inputs. Its purpose is
+to extract pertinent details from the cycle, including edge ids, arrow types 
+(indicating the edge direction), and labels associated with genes.
+
+```{r}
+lapply(cyc, interpretCycle, graph = G)
+```
+Notice that the cycles in the chosen pathway include only inhibition and stimulation processes.
+
+Finally, we can generate a subgraph from the original graph, containing only the vertices that participate in the specified cycles. 
+
+```{r}
+S <- cycleSubgraph(G, cyc)
+```
+
+
+We depict the section of the graph that impacts cycles within the IGF1-AKT wikiPathway.
+```{r fig.width=10, fig.height=10}
+set.seed(93217)
+plot(S)
+nodeLegend("topleft", S)
+edgeLegend("bottomright", S)
+```
+
+Here, Group1 corresponds to the the pair SMAD2, SMAD3.
+
+
+

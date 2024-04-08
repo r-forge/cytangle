@@ -7,7 +7,7 @@
 \docType{data}
 \title{GPML GraphingR Data}
 \description{
-  Our standard colors and line types (for edges) and shapes (for nodes)
+  Our standard colors, line types (for edges), and shapes (for nodes)
   to display graph features from WikiPathways GPML files.
 }
 \usage{
@@ -43,13 +43,13 @@ data(nodeShapes)
   The situation with edges was slightly more complicated. The pathway
   editor (PathVisio; https://pathvisio.org/) typically used to create
   pathways in WikiPathways supports two different biologically
-  meaningful vocabularies for edges: MMolecular Interaction Maps (MIM;
+  meaningful vocabularies for edges: Molecular Interaction Maps (MIM;
   https://discover.nci.nih.gov/mim/formal_mim_spec.pdf) and System
   Biology Graphical Notation (SBGN; https://sbgn.github.io/), along with
-  a very simple descrption as "Arrows" or "TBars". To simplify things,
-  we converted both the SBGN and simple systems to match the MIM
-  specification. We then defined colors and edge types so we could
-  distinguish different edge type in plots.
+  a very simple descrption as "Arrows" or "TBars". To make things more
+  consistent, we converted both the SBGN and simple systems to match the
+  MIM specification. We then defined colors and edge types so we could
+  distinguish different edge types in plots.
 }
 \author{Kevin R. Coombes \email{krc@silicovore.com},
   Polina Bombina \email{pbombina@augusta.edu}
