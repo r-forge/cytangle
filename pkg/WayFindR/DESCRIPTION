@@ -1,11 +1,13 @@
 Package: WayFindR
-Version: 0.1.1
-Date: 2024-04-08
+Version: 0.1.2
+Date: 2024-04-09
 Title: Computing Graph Structures on WikiPathways
-Author: Kevin R. Coombes, Polina Bombina
-Maintainer: Kevin R. Coombes <krc@silicovore.com>
-Description: Converts pathways from WikiPathways GPML format into
-  igraph objects in R. Includes tools to find all cycles in the
+Authors@R: c(person("Kevin R.", " Coombes", role = c("aut", "cre"),
+                    email = "krc@silicovore.com"),
+             person("Polina", "Bombina", role = c("aut"),
+	            email = "pbombina@augusta.edu"))
+Description: Converts pathways from 'WikiPathways' GPML format into
+  'igraph' objects. Includes tools to find all cycles in the
   resulting graphs and determine which ones involve negative feedback
   (inhibition).
 Depends: R (>= 3.5)
