@@ -10,13 +10,20 @@ importFrom("igraph", "E", "V", "all_simple_paths",
            "neighbors", "subgraph", "set_graph_attr")
 importFrom("graphics", "legend")
 importFrom("utils", "head")
+importFrom("PubChemR", "get_cids", "get_properties")
+importFrom("AnnotationDbi", "select")
+importFrom("org.Hs.eg.db", "org.Hs.eg.db")
 
 #exportMethods("plot")
 
 ## Functions that perform steps in the process to build the final
-## igraph object.
+## igraph object from WikiPAthways GPML files.
 export("collectEdges", "collectNodes", "collectGroups",
        "collectAnchors", "collectLabels", "collectShapes")
+
+## Functions that perform steps in the process to build the final
+## igraph object from KEGG KGML files.
+export("collectEntries", "collectRelations", "collectReactions")
 
 ## graph and cycle functions
 export("GPMLtoIgraph", "nodeLegend", "edgeLegend")
