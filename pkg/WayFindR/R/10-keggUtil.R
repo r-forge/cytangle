@@ -1,9 +1,47 @@
 # (C) Copyright 2024 Kevin R. Coombes and Polina Bombina
 
-cpdcache <- new.env()
+## Original annotation method are slow, using separate HTTP calls
+## to a server for each entry.
+WAYcache <- new.env()
+
+prepAnno <- function(items) {
+  tags <- sapply(items, function(A) {
+    xmlGetAttr(A, "name")
+  })
+  pop <- strsplit(tags, ":")
+  pref <- sapply(pop, function(X) X[1])
+  id <-  sapply(pop, function(X) X[2])
+  cpd <- id[pref == "cpd"]
+  cache <- function(G) {
+    ent <- G$ENTRY
+    lbl <- G$NAME[1]
+    assign(ent, lbl, WAYcache)
+    invisible(ent)
+  }
+  while(length(cpd) > 10) {
+    kg <- keggGet(cpd[1:10])
+    ignore <- sapply(kg, cache)
+    cpd <- cpd[11:length(cpd)]
+  }
+  if (length(cpd) > 0) {
+    kg <- keggGet(cpd)
+    ignore <- sapply(kg, cache)
+  }
+  gly <- id[pref == "gl"]
+  while(length(gly) > 10) {
+    kg <- keggGet(gly[1:10])
+    ignore <- sapply(kg, cache)
+    gly <- gly[11:length(gly)]
+  }
+  if (length(gly) > 0) {
+    kg <- keggGet(gly)
+    ignore <- sapply(kg, cache)
+  }
+}
+
 getIUPAC <- function(cnum) {
-  if (exists(cnum, where = cpdcache)) {
-    label <- cpdcache[[cnum]]
+  if (exists(cnum, where = WAYcache)) {
+    label <- WAYcache[[cnum]]
   } else {
     suppressMessages( ans <- get_cids(cnum) )
     cid <- as.data.frame(ans)[1,2]
@@ -13,10 +51,25 @@ getIUPAC <- function(cnum) {
       ans <- get_properties("IUPACName", cid)
       label <- ans[[1]]$IUPACName
       }
-    assign(cnum, label, envir = cpdcache)
+    assign(cnum, label, envir = WAYcache)
   }
   label
 }
+
+getIUPACAll <- function(cnum) {
+  if (!exists("kgc", where = WAYcache)) {
+    kgc <- keggList("glycan")
+    assign("kgc", kgc, envir = WAYcache)
+  }
+  val <- WAYcache$kgc[cnum]
+  if (is.null(val) || val == "") {
+    val <- cnum
+  } else {
+    val <- strsplit(val, "; ")[[1]][1]
+  }
+  val
+}
+
 
 getGlycan <- function(gnum) {
   kg <- keggGet(gnum)
@@ -29,7 +82,19 @@ getGlycan <- function(gnum) {
   val
 }
 
-collectEntries <- function(xmldoc) {
+getGlycanAll <- function(gnum) {
+  if (!exists("kgl", where = WAYcache)) {
+    kgl <- keggList("glycan")
+    assign("kgl", kgl, envir = WAYcache)
+  }
+  val <- WAYcache$kgl[gnum]
+  if (is.na(val) || val == "") {
+    val <- gnum
+  }
+  val
+}
+
+collectEntries <- function(xmldoc, anno = c("one", "all", "batch")) {
   if (inherits(xmldoc, "XMLInternalDocument")) {
     mydoc <- xmldoc
     xmldoc <- "internal"
@@ -39,10 +104,22 @@ collectEntries <- function(xmldoc) {
     }
     mydoc <- xmlParseDoc(xmldoc)         # read/load the file
   }
+  anno <- match.arg(anno)
+  glyanno <- switch(anno,
+                  all = getGlycanAll,
+                  batch = getGlycan, # pending
+                  one = getGlycan)
+  cpdanno <- switch(anno,
+                  all = getIUPACAll,
+                  batch = getIUPAC, # pending
+                  one = getIUPAC)
 
   ## KGML uses "Entry" for what we want to call a "node" or a
   ## "vertex" in the fina grph.
   entries <- getNodeSet(xmlRoot(mydoc), "/pathway/entry")
+  if (anno == "batch") {
+    prepAnno(entries)
+  }
   ## Allocate space to hold the result
   nodeInfo <- matrix(NA, nrow = length(entries), ncol = 3)
   colnames(nodeInfo) <- c("GraphId", "label", "Type")
@@ -65,15 +142,15 @@ collectEntries <- function(xmldoc) {
       sym <- paste(sel$SYMBOL, collapse = ",")
       subtyp <- paste(unique(sel$GENETYPE), collapse = ",")
       repl <- c(nid, sym, paste(typ, subtyp, sep = "|"))
-      self <- nam
+      self <- nam[1]
     } else if (typ == "compound") {
       ctype <- strsplit(nam, ":")
       key <- ctype[[1]][2] # prefix could be 'cpd' or 'gl' or ...
       tag <- ctype[[1]][1]
       if (tag == "gl") {
-        label <- getGlycan(key)
+        label <- glyanno(key)
       } else { ##if (tag == "cpd")
-        label <- getIUPAC(key)
+        label <- cpdanno(key)
       }
       repl <- c(nid, label, "compound")
       self <- key
@@ -90,7 +167,7 @@ collectEntries <- function(xmldoc) {
         label <- paste("Group", gmark, sep = "")
         repl <- c(nid, label, "group")
       }
-      eslf <- label
+      self <- label
     } else {
       stop("Bad entry type", typ, "\n")
     }
@@ -98,6 +175,7 @@ collectEntries <- function(xmldoc) {
       stop("Nodes: Bad replacement: ", paste(repl, collapse =", "))
     }
     nodeInfo[rowcount, ] <- repl
+    if (length(self) != 1) stop("Wrong replacement length for 'self'!\n")
     R[rowcount] <- self
   }
   while(any(dd <- duplicated(R))) {
