@@ -12,7 +12,7 @@ rm(list = known, envir = WayFindR:::WAYcache)
 tic <- Sys.time()
 entries1 <- collectEntries(xmlfile, anno = "batch")
 toc <- Sys.time()
-toc - tic # ~ ?? seconds
+toc - tic # ~ 53 seconds
 known <- ls(WayFindR:::WAYcache)
 rm(list = known, envir = WayFindR:::WAYcache)
 

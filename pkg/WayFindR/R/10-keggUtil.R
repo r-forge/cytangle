@@ -6,8 +6,7 @@ WAYcache <- new.env()
 
 prepAnno <- function(items) {
   tags <- sapply(items, function(A) {
-    xmlGetAttr(A, "name")
-  })
+    xmlGetAttr(A, "name")  })
   pop <- strsplit(tags, ":")
   pref <- sapply(pop, function(X) X[1])
   id <-  sapply(pop, function(X) X[2])
@@ -62,7 +61,7 @@ getIUPACAll <- function(cnum) {
     assign("kgc", kgc, envir = WAYcache)
   }
   val <- WAYcache$kgc[cnum]
-  if (is.null(val) || val == "") {
+  if (is.na(val) || val == "") {
     val <- cnum
   } else {
     val <- strsplit(val, "; ")[[1]][1]
