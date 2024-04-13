@@ -65,6 +65,7 @@ collectEntries <- function(xmldoc) {
       sym <- paste(sel$SYMBOL, collapse = ",")
       subtyp <- paste(unique(sel$GENETYPE), collapse = ",")
       repl <- c(nid, sym, paste(typ, subtyp, sep = "|"))
+      self <- nam
     } else if (typ == "compound") {
       ctype <- strsplit(nam, ":")
       key <- ctype[[1]][2] # prefix could be 'cpd' or 'gl' or ...
@@ -75,11 +76,13 @@ collectEntries <- function(xmldoc) {
         label <- getIUPAC(key)
       }
       repl <- c(nid, label, "compound")
+      self <- key
       Sys.sleep(1)
     } else if (typ %in% c("map", "ortholog")) {
-      gent <- getNodeSet(entry, "./graphics")[[1]]
-      label <- xmlGetAttr(gent, "name")
+      key <- getNodeSet(entry, "./graphics")[[1]]
+      label <- xmlGetAttr(key, "name")
       repl <- c(nid, label, typ)
+      self <- nam
     } else if (typ == "group") {
       label <- xmlGetAttr(entry, "name")
       if (label == "undefined") { # why??
@@ -87,6 +90,7 @@ collectEntries <- function(xmldoc) {
         label <- paste("Group", gmark, sep = "")
         repl <- c(nid, label, "group")
       }
+      eslf <- label
     } else {
       stop("Bad entry type", typ, "\n")
     }
@@ -94,7 +98,10 @@ collectEntries <- function(xmldoc) {
       stop("Nodes: Bad replacement: ", paste(repl, collapse =", "))
     }
     nodeInfo[rowcount, ] <- repl
-    R[rowcount] <- nid
+    R[rowcount] <- self
+  }
+  while(any(dd <- duplicated(R))) {
+    R[dd] <- paste(R[dd], ".", sep = "")
   }
   rownames(nodeInfo) <- R
   nodeInfo
