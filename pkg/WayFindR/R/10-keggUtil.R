@@ -5,17 +5,28 @@ getIUPAC <- function(cnum) {
   if (exists(cnum, where = cpdcache)) {
     label <- cpdcache[[cnum]]
   } else {
-    ans <- get_cids(cnum)
+    suppressMessages( ans <- get_cids(cnum) )
     cid <- as.data.frame(ans)[1,2]
     if (cid == "No CID") {
       label <- cnum
     } else {
       ans <- get_properties("IUPACName", cid)
       label <- ans[[1]]$IUPACName
-    }
+      }
     assign(cnum, label, envir = cpdcache)
   }
   label
+}
+
+getGlycan <- function(gnum) {
+  kg <- keggGet(gnum)
+  if (length(kg) < 1) {
+    val <- gnum
+  } else {
+    gunk <- kg[[1]]
+    val <- gunk$COMPOSITION
+  }
+  val
 }
 
 collectEntries <- function(xmldoc) {
@@ -57,7 +68,12 @@ collectEntries <- function(xmldoc) {
     } else if (typ == "compound") {
       ctype <- strsplit(nam, ":")
       key <- ctype[[1]][2] # prefix could be 'cpd' or 'gl' or ...
-      label <- getIUPAC(key)
+      tag <- ctype[[1]][1]
+      if (tag == "gl") {
+        label <- getGlycan(key)
+      } else { ##if (tag == "cpd")
+        label <- getIUPAC(key)
+      }
       repl <- c(nid, label, "compound")
       Sys.sleep(1)
     } else if (typ %in% c("map", "ortholog")) {
@@ -143,10 +159,16 @@ collectRelations <- function(xmldoc) {
     rowcount <- rowcount + 1
     src <- xmlGetAttr(relation, "entry1")
     tgt <- xmlGetAttr(relation, "entry2")
-    sub <- getNodeSet(relation, "./subtype")[[1]]
-    subtyp <- xmlGetAttr(sub, "name")
-    extra <-xmlGetAttr(sub, "value")
-    repl <- c(src, tgt, paste(c(typ, subtyp, extra), collapse = "/"))
+    sub <- getNodeSet(relation, "./subtype")
+    if (length(sub) == 0) {
+      val <- typ
+    } else {
+      sub <- sub[[1]]
+      subtyp <- xmlGetAttr(sub, "name")
+      extra <-xmlGetAttr(sub, "value")
+      val <- paste(c(typ, subtyp, extra), collapse = "/")
+    }
+    repl <- c(src, tgt, val)
     if (length(repl) != 3) {
       stop("Edges: Bad replacement: ", paste(repl, collapse =", "))
     }

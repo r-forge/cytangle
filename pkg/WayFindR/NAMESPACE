@@ -5,14 +5,16 @@
 importFrom("XML",
            "getNodeSet", "xmlGetAttr", "xmlNamespace",
            "xmlParseDoc", "xmlRoot", "xmlParent")
-importFrom("igraph", "E", "V", "all_simple_paths",
+importFrom("igraph",
+           "E", "V", "all_simple_paths",
            "get.edge.ids", "graph_from_data_frame",
            "neighbors", "subgraph", "set_graph_attr")
 importFrom("graphics", "legend")
 importFrom("utils", "head")
-importFrom("PubChemR", "get_cids", "get_properties")
-importFrom("AnnotationDbi", "select")
-importFrom("org.Hs.eg.db", "org.Hs.eg.db")
+importFrom("PubChemR", "get_cids", "get_properties") # Annotate KEGG compounds
+importFrom("KEGGREST", "keggGet")                    # Annotate KEGG glycans
+importFrom("AnnotationDbi", "select")                # Annotate KEGG genes
+importFrom("org.Hs.eg.db", "org.Hs.eg.db")           # Annotate KEGG genes
 
 #exportMethods("plot")
 
