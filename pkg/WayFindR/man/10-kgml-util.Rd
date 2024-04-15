@@ -11,7 +11,7 @@ Utility Functions to Parse KGML FIles
   the pathway to a mathematical graph that we can compute on.
 }
 \usage{
-collectEntries(xmldoc)
+collectEntries(xmldoc, anno = c("one", "all", "batch"))
 collectRelations(xmldoc)
 collectReactions(xmldoc)
 }
@@ -22,6 +22,8 @@ collectReactions(xmldoc)
     a file through the \code{\link{xmlParseDoc}} function of the \code{XML}
     package. (All of the functions described here will call
     \code{xmlParseDoc} if it hasn't already been used.)}
+  \item{anno}{Choose a method for analyzing KEGG compounds and
+    glycans. See Details.}
 }
 \details{
   These functions are primarily intended as utility functions that
@@ -31,6 +33,24 @@ collectReactions(xmldoc)
   the KGML files in contexts other than the one we focus on in this
   package.
 
+  We have implemented three different methods for annotating KEGG
+  compounds and glycans in their reaction entities. These are recorded
+  in the KGML pathway files as "C-numbers" (e.g., C12345) or "G-numbers"
+  (e.g., G12345). These serve as identifieers into their local
+  databases, and we want to convert them (usually) to IUPAC names to
+  display on nodes in the final graph. Method "one" makes a separate
+  call to \code{\link{keggGet}} from the \code{KEGGREST} package. Method
+  "batch" makes calls in batches of ten identifiers, using the fact that
+  \code{keggGet} enforces that limit. Method "all" makes a single call
+  using \code{\link{keggLink}} to download the entire database. Note
+  that all three methods cache their results in a package-local
+  environment to avoid repeating the same call. In a profiling test of
+  one moderat sized  pathway, a single invocation of
+  \code{collectEntities} took 54 seconds for method "one", 53 seconds
+  for method "batch", and 47 seconds foir method "all". If you are
+  procesing multiple pathways in one session, we expect that the
+  advantage of the "all" method would be even greater since the results
+  are cached.
 }
 \value{
   The \code{collectReactions} and \code{collectRelations} functions

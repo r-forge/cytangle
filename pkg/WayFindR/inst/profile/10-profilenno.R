@@ -19,10 +19,10 @@ rm(list = known, envir = WayFindR:::WAYcache)
 tic <- Sys.time()
 entries2 <- collectEntries(xmlfile, anno = "all")
 toc <- Sys.time()
-toc - tic # ~ 46 seconds
+toc - tic # ~ 467seconds
 
 
-if (TRUEFALSE) {
+if (FALSE) {
   all(entries1 == entries0)
   brow <- sapply(1:nrow(entries),
                  function(I) all(entries[I,] == entries0[I,]))
