@@ -64,3 +64,13 @@ x <- nchar(V(G)$label)
 rev(V(G)$label[order(x)])[1:10]
 plot(x ~ factor(V(G)$Type))
 summary(gg <- grepl("\\[", V(G)$label))
+
+############################################
+library(WayFindR)
+library(igraph)
+library(RBGL)
+xmlfile <- system.file("pathways/WP3850.gpml", package = "WayFindR")
+G <- WayFindR:::GPMLtoIgraph(xmlfile)
+UG <- as_graphnel(as.undirected(G))
+boyerMyrvoldPlanarityTest(UG)
+CP <- chrobakPayneStraightLineDrawing(UG)
