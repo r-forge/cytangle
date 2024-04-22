@@ -1,40 +1,29 @@
 library(WayFindR)
 library(igraph)
-library(plotrix)
 xmlfile <- system.file("pathways/WP3850.gpml", package = "WayFindR")
 G <- GPMLtoIgraph(xmlfile)
-
-## Function for plotting an elliptical node
-myellipse <- function(coords, v=NULL, params) {
-  vertex.color <- params("vertex", "color")
-  if (length(vertex.color) != 1 && !is.null(v)) {
-    vertex.color <- vertex.color[v]
-  }
-  vertex.size <- 1/150 * params("vertex", "size")
-  if (length(vertex.size) != 1 && !is.null(v)) {
-    vertex.size <- vertex.size[v]
-  }
-
-  vertex.size2 <- 1/150 * params("vertex", "size2")
-  if (length(vertex.size2) != 1 && !is.null(v)) {
-    vertex.size2 <- vertex.size2[v]
-  }
-
-  draw.ellipse(x=coords[,1], y=coords[,2],
-    a = vertex.size, b=vertex.size2, col=vertex.color)
-}
-
-## Register the shape with igraph
-add_shape("ellipse", clip=shapes("rectangle")$clip,
-          plot=myellipse)
 wc <- which(V(G)$shape == "circle")
 G <- set_vertex_attr(G, "shape", index = wc, value = "ellipse")
-windows(10, 10)
+windows(12, 12)
 opar <- par(mai = c(0.02, 0.02, 0.02, 0.02))
-plot(0, 0, type = "n") # strwidth doesn't work until plot has been called
+plot(0,0, type = "n")
 sz <- (strwidth(V(G)$label) + strwidth("oo")) * 92
 G <- set_vertex_attr(G, "size", value = sz)
 G <- set_vertex_attr(G, "size2", value = strheight("I") * 2 * 92)
+set.seed(12345)
+L <- layout_nicely(G)
+L2 <- layout_with_kk(G, coords=L)
+plot(G, layout = L2)
+
+
+resn = 300
+png(file = "igf-layout.png", width = 14*resn, height = 14*resn,
+    res = resn, bg = "white")
+plot(G, layout= L2)
+title("Two=step layout algoriyhm")
+dev.off()
+
+plot(0, 0, type = "n") # strwidth doesn't work until plot has been called
 set.seed(13579)
 L <- igraph::layout_with_graphopt(G)
 tkplot(G, canvas.width=1000, canvas.height = 1000)
@@ -71,6 +60,32 @@ library(igraph)
 library(RBGL)
 xmlfile <- system.file("pathways/WP3850.gpml", package = "WayFindR")
 G <- WayFindR:::GPMLtoIgraph(xmlfile)
-UG <- as_graphnel(as.undirected(G))
-boyerMyrvoldPlanarityTest(UG)
-CP <- chrobakPayneStraightLineDrawing(UG)
+fc <- findCycles(G)
+GN <- as_graphnel(UG <- as.undirected(G))
+boyerMyrvoldPlanarityTest(GN)
+pft <- planarFaceTraversal(GN)
+
+subg <- subgraph(G, unique(pft[[1]]))
+lg <- layout_nicely(subg)
+plot(subg, layout = lg)
+
+nm <- names(V(G))
+up <- unique(pft[[1]])
+sum(!(nm %in% up))
+barf <- nm[!(nm %in% up)]
+subn <- subgraph(G, barf)
+ln <- layout_nicely(subn)
+plot(subn, layout = ln)
+
+mc <- merge_coords(graphs = list(subg, subn),
+                   layouts = list(lg, ln))
+bigG <- disjoint_union(list(subg, subn))
+plot(bigG, layout = mc)
+
+plot(G, layout = mc)
+plot(G, layout = layout_nicely)
+
+if (FALSE) { # these both crash R with exit code 5
+  pco <- planarCanonicalOrdering(GN)
+  CP <- chrobakPayneStraightLineDrawing(GN)
+}

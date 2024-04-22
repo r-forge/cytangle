@@ -15,6 +15,7 @@ importFrom("PubChemR", "get_cids", "get_properties") # Annotate KEGG compounds
 importFrom("KEGGREST", "keggGet", "keggList")        # Annotate KEGG glycans
 importFrom("AnnotationDbi", "select")                # Annotate KEGG genes
 importFrom("org.Hs.eg.db", "org.Hs.eg.db")           # Annotate KEGG genes
+importFrom("DescTools", "DrawEllipse")
 
 #exportMethods("plot")
 
