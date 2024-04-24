@@ -1,24 +1,24 @@
-Arrow
-LigandRound
-LigandSquare
-Receptor
-ReceptorRound
-ReceptorSquare
-SBGN-Catalysis
-SBGN-Inhibition
-SBGN-Production
-TBar
-mim-binding
-mim-branching-left
-mim-branching-right
-mim-catalysis
-mim-cleavage
-mim-conversion
-mim-covalent-bond
-mim-gap
-mim-inhibition
-mim-modification
-mim-necessary-stimulation
-mim-stimulation
-mim-transcription-translation
-mim-translocation
+Arrow	20141
+LigandRound	1
+LigandSquare	3
+Receptor	5
+ReceptorRound	1
+ReceptorSquare	1
+SBGN-Catalysis	49
+SBGN-Inhibition	1
+SBGN-Production	34
+TBar	804
+mim-binding	2740
+mim-branching-left	36
+mim-branching-right	36
+mim-catalysis	5430
+mim-cleavage	57
+mim-conversion	6434
+mim-covalent-bond	5
+mim-gap	14
+mim-inhibition	3074
+mim-modification	312
+mim-necessary-stimulation	193
+mim-stimulation	3651
+mim-transcription-translation	1872
+mim-translocation	25

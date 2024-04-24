@@ -7,7 +7,7 @@ use Cwd;
 
 my $debug = 0;
 my $home = getcwd;
-my $pathwayDir = "HS-WP"; # WikiPathways for Homo Sapiens
+my $pathwayDir = "D:/Projects/WayFindR/HS-WP"; # WikiPathways for Homo Sapiens
 
 my $arrowFile = "allArrows.tsv";
 open(OUTPUT, ">$arrowFile") or die "Unable to create '$arrowFile'!\n";
@@ -77,7 +77,7 @@ unless (-e $typeFile) {
     my @sorted = sort keys(%arrowTypes);
     foreach my $head (@sorted) {
 	print STDOUT "Saw '$head' in total $arrowTypes{$head} times.\n";
-	print TYP "$head\n";
+	print TYP "$head\t$arrowTypes{$head}\n";
     }
     close(TYP);
 }
