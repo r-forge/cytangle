@@ -14,13 +14,58 @@ set.seed(12345)
 L <- layout_nicely(G)
 L2 <- layout_with_kk(G, coords=L)
 plot(G, layout = L2)
-
-
 resn = 300
 png(file = "igf-layout.png", width = 14*resn, height = 14*resn,
     res = resn, bg = "white")
 plot(G, layout= L2)
-title("Two=step layout algoriyhm")
+title("Two=step layout algorithm")
+dev.off()
+
+GN <- as_graphnel(G)
+library(Rgraphviz)
+plot(GN)
+plot(GN, "neato")
+plot(GN, "twopi")
+nl <- buildNodeList(GN)
+
+vertex_attr_names(G)
+vertex_attr(G, "label")
+vertex_attr(G, "color")
+
+nms <- vertex_attr(G, "name")
+lbl <- vertex_attr(G, "label")
+shp <- vertex_attr(G, "shape")
+col <- vertex_attr(G, "color")
+names(lbl) <- names(shp) <- names(col) <- nms
+nAttrs <- list(label = lbl, shape = shp, fillcolor = col)
+
+edge_attr_names(G)
+all(edgeNames(GN) %in% enms)
+enms <- sub("\\|", "~", as_ids(E(G)))
+col <- edge_attr(G, "color")
+lty <- edge_attr(G, "lty")
+arr <- rep("normal", length(enms))
+arr[edge_attr(G, "MIM") == "mim-inhibition"] <- "tee"
+names(col) <- names(lty) <- names(arr) <- enms
+eAttrs <- list(color = col[edgeNames(GN)],
+               lty = lty[edgeNames(GN)],
+               arrowhead = arr[edgeNames(GN)])
+
+plot(GN, nodeAttrs = nAttrs, edgeAttrs = eAttrs,
+     attrs = list(node = list(fixedsize = FALSE),
+                  edge = list(lwd = 3)))
+resn = 300
+png(file = "igf-graphviz.png", width = 14*resn, height = 14*resn,
+    res = resn, bg = "white")
+plot(GN, "dot",  nodeAttrs = nAttrs, edgeAttrs = eAttrs,
+     attrs = list(node = list(fixedsize = FALSE),
+                  edge = list(lwd = 3)))
+title("Rgraphiz layout algorithm")
+par(lwd=3)
+edgeLegend("bottomleft", G)
+par(lwd = 1, cex = 1.3)
+H <- set_vertex_attr(G, "shape", V(G)$shape == "ellipse", "circle")
+nodeLegend("topright", H)
 dev.off()
 
 plot(0, 0, type = "n") # strwidth doesn't work until plot has been called
