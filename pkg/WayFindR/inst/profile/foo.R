@@ -5,7 +5,7 @@ G <- GPMLtoIgraph(xmlfile)
 wc <- which(V(G)$shape == "circle")
 G <- set_vertex_attr(G, "shape", index = wc, value = "ellipse")
 windows(12, 12)
-opar <- par(mai = c(0.02, 0.02, 0.02, 0.02))
+opar <- par(mai = c(0.05, 0.05, 1, 0.05))
 plot(0,0, type = "n")
 sz <- (strwidth(V(G)$label) + strwidth("oo")) * 92
 G <- set_vertex_attr(G, "size", value = sz)
@@ -14,15 +14,23 @@ set.seed(12345)
 L <- layout_nicely(G)
 L2 <- layout_with_kk(G, coords=L)
 plot(G, layout = L2)
+title("Two-step layout algorithm")
+edgeLegend("bottomleft", G)
+nodeLegend("bottomright", G)
+
+
 resn = 300
 png(file = "igf-layout.png", width = 14*resn, height = 14*resn,
     res = resn, bg = "white")
 plot(G, layout= L2)
-title("Two=step layout algorithm")
+title("Two-step layout algorithm")
+edgeLegend("bottomleft", G)
+nodeLegend("bottomright", G)
 dev.off()
 
 GN <- as_graphnel(G)
 library(Rgraphviz)
+RA <- agopenSimple(GN, "fuckoff")
 plot(GN)
 plot(GN, "neato")
 plot(GN, "twopi")
@@ -64,8 +72,7 @@ title("Rgraphiz layout algorithm")
 par(lwd=3)
 edgeLegend("bottomleft", G)
 par(lwd = 1, cex = 1.3)
-H <- set_vertex_attr(G, "shape", V(G)$shape == "ellipse", "circle")
-nodeLegend("topright", H)
+nodeLegend("topright", G)
 dev.off()
 
 plot(0, 0, type = "n") # strwidth doesn't work until plot has been called

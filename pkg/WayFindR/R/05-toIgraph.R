@@ -138,7 +138,7 @@ GPMLtoIgraph <- function(xmldoc, returnLists = FALSE, debug = FALSE) {
 }
 
 nodeLegend <- function(x, graph) {
-  xlate <- c(circle = 16, rectangle = 15)
+  xlate <- c(circle = 16, rectangle = 15, ellipse = 16, roundrect = 15)
   daft <- data.frame(Type =V(graph)$Type,
                      color = V(graph)$color,
                      shape = V(graph)$shape)

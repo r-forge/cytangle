@@ -1,6 +1,6 @@
 Package: WayFindR
-Version: 0.2.11
-Date: 2024-04-22
+Version: 0.2.12
+Date: 2024-04-26
 Title: Computing Graph Structures on WikiPathways
 Authors@R: c(person("Kevin R.", "Coombes", role = c("aut", "cre"),
                     email = "krc@silicovore.com"),
