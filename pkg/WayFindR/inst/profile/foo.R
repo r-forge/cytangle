@@ -1,3 +1,4 @@
+savePMNG <- FALSE
 library(WayFindR)
 library(igraph)
 xmlfile <- system.file("pathways/WP3850.gpml", package = "WayFindR")
@@ -19,61 +20,103 @@ edgeLegend("bottomleft", G)
 nodeLegend("bottomright", G)
 
 
-resn = 300
-png(file = "igf-layout.png", width = 14*resn, height = 14*resn,
-    res = resn, bg = "white")
-plot(G, layout= L2)
-title("Two-step layout algorithm")
-edgeLegend("bottomleft", G)
-nodeLegend("bottomright", G)
-dev.off()
+if (savePNG) {
+  resn = 300
+  png(file = "igf-layout.png", width = 14*resn, height = 14*resn,
+      res = resn, bg = "white")
+  plot(G, layout= L2)
+  title("Two-step layout algorithm")
+  edgeLegend("bottomleft", G)
+  nodeLegend("bottomright", G)
+  dev.off()
+}
 
-GN <- as_graphnel(G)
+if (!requireNamespace("graph")) {
+  BiocManager::install("graph", update = FALSE, ask = FALSE)
+}
+library(graph)
+if (!requireNamespace("Rgraphviz")) {
+  BiocManager::install("Rgraphviz", update = FALSE, ask = FALSE)
+}
+
 library(Rgraphviz)
+GN <- as_graphnel(G)
 RA <- agopenSimple(GN, "fuckoff")
-plot(GN)
-plot(GN, "neato")
-plot(GN, "twopi")
-nl <- buildNodeList(GN)
 
-vertex_attr_names(G)
-vertex_attr(G, "label")
-vertex_attr(G, "color")
+source("11-graphNEL.R")
+gun <- as.graphNEL(G)
+all(gun@nodes == GN@nodes)
+identical(gun@edgeL, GN@edgeL)
+identical(gun@nodeData, GN@nodeData)
+identical(gun@edgeData, GN@edgeData)
+identical(gun@graphData, GN@graphData)
+identical(gun@renderInfo, GN@renderInfo)
+identical(gun@renderInfo@pars, GN@renderInfo@pars)
+identical(gun@renderInfo@nodes, GN@renderInfo@nodes)
+identical(gun@renderInfo@edges, GN@renderInfo@edges)
+identical(gun@renderInfo@graph, GN@renderInfo@graph)
+
+GN@renderInfo
+length(gun@renderInfo@nodes)
+length(GN@renderInfo@nodes)
+
+
+plot(GN)
+plot(gun)
+
 
 nms <- vertex_attr(G, "name")
 lbl <- vertex_attr(G, "label")
 shp <- vertex_attr(G, "shape")
 col <- vertex_attr(G, "color")
-names(lbl) <- names(shp) <- names(col) <- nms
-nAttrs <- list(label = lbl, shape = shp, fillcolor = col)
+fix <- rep(FALSE, length(nms))
+names(lbl) <- names(shp) <- names(col) <- names(fix) <- nms
+nAttrs <- list(label = lbl, shape = shp,
+               fixedsize = fix, fill = col)
+nodeRenderInfo(GN) <- nAttrs
+identical(gun@renderInfo@nodes, GN@renderInfo@nodes)
 
-edge_attr_names(G)
-all(edgeNames(GN) %in% enms)
 enms <- sub("\\|", "~", as_ids(E(G)))
+if (!all(edgeNames(GN) %in% enms)) stop("unknown edge name.")
 col <- edge_attr(G, "color")
 lty <- edge_attr(G, "lty")
-arr <- rep("normal", length(enms))
-arr[edge_attr(G, "MIM") == "mim-inhibition"] <- "tee"
-names(col) <- names(lty) <- names(arr) <- enms
+names(col) <- names(lty) <- enms
 eAttrs <- list(color = col[edgeNames(GN)],
-               lty = lty[edgeNames(GN)],
-               arrowhead = arr[edgeNames(GN)])
+               style = lty[edgeNames(GN)])
+edgeRenderInfo(GN) <- eAttrs
+identical(gun@renderInfo@edges, GN@renderInfo@edges)
+
+L <- layoutGraph(GN)
+
+sapply(slotNames(L), function(S) identical(slot(L, S), slot(GN, S)))
+RG <- GN@renderInfo
+RL <- L@renderInfo
+sapply(slotNames(RL), function(S) identical(slot(RL, S), slot(RG, S)))
+sapply(names(RG@nodes), function(N) identical(RG@nodes[[N]], RL@nodes[[N]]))
+
+renderGraph(L)
 
 plot(GN, nodeAttrs = nAttrs, edgeAttrs = eAttrs,
-     attrs = list(node = list(fixedsize = FALSE),
-                  edge = list(lwd = 3)))
-resn = 300
-png(file = "igf-graphviz.png", width = 14*resn, height = 14*resn,
-    res = resn, bg = "white")
-plot(GN, "dot",  nodeAttrs = nAttrs, edgeAttrs = eAttrs,
-     attrs = list(node = list(fixedsize = FALSE),
-                  edge = list(lwd = 3)))
-title("Rgraphiz layout algorithm")
-par(lwd=3)
-edgeLegend("bottomleft", G)
-par(lwd = 1, cex = 1.3)
-nodeLegend("topright", G)
-dev.off()
+     attrs = list(edge = list(lwd = 3)))
+
+plot(gun, nodeAttrs = nAttrs, edgeAttrs = eAttrs,
+     attrs = list(edge = list(lwd = 3)))
+
+
+if (savePNG) {
+  resn = 300
+  png(file = "igf-graphviz.png", width = 14*resn, height = 14*resn,
+      res = resn, bg = "white")
+  plot(GN, "dot",  nodeAttrs = nAttrs, edgeAttrs = eAttrs,
+       attrs = list(node = list(fixedsize = FALSE),
+                    edge = list(lwd = 3)))
+  title("Rgraphiz layout algorithm")
+  par(lwd=3)
+  edgeLegend("bottomleft", G)
+  par(lwd = 1, cex = 1.3)
+  nodeLegend("topright", G)
+  dev.off()
+}
 
 plot(0, 0, type = "n") # strwidth doesn't work until plot has been called
 set.seed(13579)

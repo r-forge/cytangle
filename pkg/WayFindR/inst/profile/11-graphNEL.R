@@ -7,7 +7,7 @@ as.graphNEL <- function(G) {
   shp <- vertex_attr(G, "shape")
   col <- vertex_attr(G, "color")
   names(lbl) <- names(shp) <- names(col) <- nms
-  nAttrs <- list(label = lbl, shape = shp, fixedsize = FALSE, fillcolor = col)
+  nAttrs <- list(label = lbl, shape = shp, fixedsize = FALSE, fill = col)
   nodeRenderInfo(GN) <- nAttrs
   ## prepare to copy edge attributes from igraph to graphNEL,
   ## which supports color, style, lwd, and arrowhead (ha!)
