@@ -6,9 +6,10 @@ as.graphNEL <- function(G) {
   lbl <- vertex_attr(G, "label")
   shp <- vertex_attr(G, "shape")
   col <- vertex_attr(G, "color")
-  names(lbl) <- names(shp) <- names(col) <- nms
-  nAttrs <- list(label = lbl, shape = shp, fixedsize = FALSE, fill = col)
-  nodeRenderInfo(GN) <- nAttrs
+  fix <- rep(FALSE, length(nms))
+  names(lbl) <- names(shp) <- names(col) <- names(fix) <- nms
+  nAttrs <- list(label = lbl, shape = shp,
+                 fixedsize = fix, fillcolor = col)
   ## prepare to copy edge attributes from igraph to graphNEL,
   ## which supports color, style, lwd, and arrowhead (ha!)
   enms <- sub("\\|", "~", as_ids(E(G)))
@@ -20,13 +21,14 @@ as.graphNEL <- function(G) {
   names(col) <- names(lty) <- enms
   eAttrs <- list(color = col[edgeNames(GN)],
                  style = lty[edgeNames(GN)])
-  edgeRenderInfo(GN) <- eAttrs
   ## graph-wide parameters in graphNEL are:
   ## main, col.main, cex.main, sub, col.sub, cex.sub
-  attrs <- list(main = paste(graph_attr(G, "PathID"),
+  nm <- paste(GN@graphData$PathID, GN@graphData$Name, sep = ": ")
+  nm <- list(main = paste(graph_attr(G, "PathID"),
                              graph_attr(G, "Name"),
                              sep = ": "))
-  graphRenderInfo(GN) <- attrs
-  
-  GN
+  RA <- agopen(GN, name = nm, layout = TRUE, layoutType = "dot", 
+            attrs = list(edge = list(lwd = 3)), 
+            nodeAttrs = nAttrs, edgeAttrs = eAttrs)
+  RA
 }

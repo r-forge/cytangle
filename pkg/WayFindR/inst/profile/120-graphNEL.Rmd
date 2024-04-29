@@ -38,19 +38,20 @@ i, em {color: blue; }
 ```
 
 # Background
-R contains two fundamental ways to deal with mathematical graphs, both of which include interfaces to
-more general suites of algorithms with interfaces from multiple languages:
+R contains two fundamental ways to deal with mathematical graphs, both of which include
+interfaces to more general suites of algorithms with interfaces from multiple languages:
 
-1. The `graph` and `Rgraphviz` packages, from BioConductor, primarily use an S4 class structure known
-   as `grphNEL`. This contains more detailed visualization tools, in terms of the shpe of nodes/vertices
-   and the style of edges.
-2. The `igraph` package uses its own S3 class structure. Its main focus is on a wide variety of graph
-   algorithms from compute science. It has more "graph layout" options than `Rgraphviz`, but fewer
-   node shapes.
+1. The `graph` and `Rgraphviz` packages, from BioConductor, primarily use an S4 class 
+   structure known as `graphNEL`. This contains more detailed visualization tools, in 
+   terms of the shape of nodes/vertices and the style of edges.
+2. The `igraph` package uses its own S3 class structure. Its main focus is on a wide
+   variety of graph algorithms from compute science. It has more "graph layout" options
+   than `Rgraphviz`, but fewer node shapes.
 
-Our work on WikiPathways so far has allowed us to convert WikiPathways from their KGML file format
-to `igraph` classes in R, Here, we want to explore whether we can convert from `igraph` to `graphNEL`
-in order to exploit the wider array of node shapes and other visualization tools.
+Our work on WikiPathways so far has allowed us to convert WikiPathways from their KGML
+file format to `igraph` classes in R, Here, we want to explore whether we can convert 
+from `igraph` to `graphNEL` in order to exploit the wider array of node shapes and other
+visualization tools.
 
 # Getting Started
 We begin, as usual, by loading a collection of potentially useful packages.
@@ -81,7 +82,7 @@ G <- set_vertex_attr(G, "shape", index = wc, value = "ellipse")
 ```
 Now we plot the `igraph` object using our current favorite "two-step layout" method (**Figure 1**). 
 Note that we need to call "plot.new" before we can compute string sizes.
-```{r fig01, fig.width=12, fig.height=12, fig.cap=.tag(1, "WikiPathways human oathway WP3850."), fig.keep='last'}
+```{r fig01, fig.width=12, fig.height=12, fig.cap=.tag(1, "WikiPathways human pathway WP3850."), fig.keep='last'}
 plot(0,0, type = "n")
 opar <- par(mai = c(0.05, 0.05, 1, 0.05))
 sz <- (strwidth(V(G)$label) + strwidth("oo")) * 92
@@ -102,10 +103,14 @@ We use a function from the `igraph` package to convert our graph into the `graph
 ```{r GN}
 GN <- as_graphnel(G)
 slotNames(GN)
+```
+```{r nodeData}
 GN@graphData
 graph_attr(G)
 ```
 The "graph-level" data has been transferred successfully.
+
+## Node Data
 ```{r nodestuff}
 GN@nodes
 slotNames(GN@nodeData)
@@ -113,6 +118,8 @@ GN@nodeData@data[[1]]
 ```
 We see that the node names have been included in the conversion, and the information we want to use to
 display the nodes has been slurped into the `nodeData` slot.
+
+## Edge Data
 ```{r edgestuff}
 head(GN@edgeL, 3)
 slotNames(GN@edgeData)
@@ -128,20 +135,23 @@ here:
 E(G)[1:3]
 ```
 
-Nopw notice that the `renderInfo` slot is a highly structured form of "nothing":
+## Render Info
+Now notice that the `renderInfo` slot is a highly structured form of "nothing":
 ```{r moreGN}
 GN@renderInfo
 ```
 
-Now we can try the simplest possible way to plot the `graphNEL` object (**Figure 2**). Not surprisingly,
-since the display/rendering info has been stuffed into the data annotation slots, it is ignored during rendering.
+## First GraphNEL Plot
+Now we can try the simplest possible way to plot the `graphNEL` object (**Figure 2**).
+Not surprisingly, since the display/rendering info has been stuffed into the data
+annotation slots, it is ignored during rendering. 
 
 ```{r fig02, fig.width=12, fig.height=12, fig.cap=.tag(2,"Simple Rgraphviz plot")}
 plot(GN)
 ```
 
-## 
-
+## Moving Render Info to the Right (?) Place
+First, we structure and port the node attributes.
 ```{r nAttrs}
 nms <- vertex_attr(G, "name")
 lbl <- vertex_attr(G, "label")
@@ -150,10 +160,10 @@ col <- vertex_attr(G, "color")
 fix <- rep(FALSE, length(nms))
 names(lbl) <- names(shp) <- names(col) <- names(fix) <- nms
 nAttrs <- list(label = lbl, shape = shp,
-               fixedsize = fix, fill = col)
+               fixedsize = fix, fillcolor = col)
 nodeRenderInfo(GN) <- nAttrs
 ```
-
+Next, we do the same for the edge attributes.
 ```{r eAttrs}
 enms <- sub("\\|", "~", as_ids(E(G)))
 if (!all(edgeNames(GN) %in% enms)) stop("unknown edge name.")
@@ -162,14 +172,52 @@ lty <- edge_attr(G, "lty")
 names(col) <- names(lty) <- enms
 eAttrs <- list(color = col[edgeNames(GN)],
                style = lty[edgeNames(GN)])
+edgeRenderInfo(GN) <- eAttrs
 ```
 
+IN (**Figure 3**), we use the external attributes to display the plot. 
+```{r fig03, fig.width=12, fig.height=12, fig.cap=.tag(3,"Second (but stupid) Rgraphviz plot.")}
+plot(GN, nodeAttrs = nAttrs, edgeAttrs = eAttrs,
+     attrs = list(edge = list(lwd = 3)))
+par(lwd=3)
+edgeLegend("bottomleft", G)
+par(lwd = 1, cex = 1.3)
+nodeLegend("topright", G)
+```
 
-```{r RA}
-RA <- agopenSimple(GN, "dumb format change")
-class(RA)
-slotNames(RA)
-sapply(slotNames(RA), function(S) {})
+## Other Approaches
+Our objection to **Figure 3** isn't the plot, but the manner in which we need to achieve
+it. The display information is now part of the `renderInfo` slot, but seems to be ignored
+unless you explicitly pass it along tot he plot function. I don't see why a user of the
+`WayFindR` package should have to learn how to do that. There must be a better way.
+
+```{r aargh}
+nm <- paste(GN@graphData$PathID, GN@graphData$Name, sep = ": ")
+aarg <- agopen(GN, name = nm, layout = TRUE, layoutType = "dot", 
+            attrs = list(edge = list(lwd = 3)), 
+            nodeAttrs = nAttrs, edgeAttrs = eAttrs)
+class(aarg)
+```
+
+```{r fig04, fig.width=12, fig.height=12, fig.cap=.tag(4,"Third, more user-friendly, Rgraphviz plot.")}
+plot(aarg)
+```
+
+There is an alternative interface to achieve the same goal.
+```{r fig05, fig.width=12, fig.height=12, fig.cap=.tag(5,"Fourth Rgraphviz plot.")}
+L <- layoutGraph(GN, edgeAttrs = eAttrs, nodeAttrs = nAttrs,
+                 attrs = list(edge = list(lwd = 3)))
+renderGraph(L)
+```
+
+Honestly, I don't understand why using `nodeRenderInfo` and `edgeRenderInfo` to put the 
+information into the graphNEL object doesn't work.
+
+## Make The User Happy
+
+```{r fig06, fig.width=12, fig.height=12, fig.cap=.tag(5,"Hiding Rgraphviz from the user.")}
+source("11-graphNEL.R")
+RA <- as.graphNEL(G)
 plot(RA)
 ```
 
