@@ -8,7 +8,9 @@ importFrom("XML",
 importFrom("igraph",
            "E", "V", "all_simple_paths",
            "get.edge.ids", "graph_from_data_frame",
-           "neighbors", "subgraph", "set_graph_attr")
+           "neighbors", "subgraph", "set_graph_attr",
+           "as_graphnel", "as_ids", "edge_attr",
+           "graph_attr", "vertex_attr")
 importFrom("graphics", "legend")
 importFrom("utils", "head")
 importFrom("PubChemR", "get_cids", "get_properties") # Annotate KEGG compounds
@@ -16,6 +18,8 @@ importFrom("KEGGREST", "keggGet", "keggList")        # Annotate KEGG glycans
 importFrom("AnnotationDbi", "select")                # Annotate KEGG genes
 importFrom("org.Hs.eg.db", "org.Hs.eg.db")           # Annotate KEGG genes
 importFrom("DescTools", "DrawEllipse")
+importFrom("Rgraphviz", "agopen", "edgeNames")
+
 
 #exportMethods("plot")
 
