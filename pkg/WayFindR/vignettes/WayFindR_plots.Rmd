@@ -1,0 +1,113 @@
+---
+author: "Polina Bombina and Kevin R. Coombes"
+title: 'WayFindR: Displaying WikiPathways'
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{WayFindR: Displaying WikiPathways}
+  %\VignetteKeywords{pathways, graphs, cycles}
+  %\VignetteDepends{WayFindR,igraph,XML}
+  %\VignettePackage{WayFindR}
+  %\VignetteEngine{knitr::rmarkdown}output: output:
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction 
+One of the most challenging issues when converting biological pathways to graphs is also a major problem for
+graphs in general: what are the best ways to display the result? In the previous vignettes (Getting Started,
+and Metrics) we included default plots of the graphs, which leave something to be desired. Our initial 
+constructions and plots use rectangles or circles (the only shapes available by default in `igraph`) of a 
+fixed size, so the labels (such as gene names) often extend outside their containers. In addition, many edges
+cross and many nodes overlap, making it harder to visually identify the underlying topological structure of
+the graph that we learned from the pathway.
+
+In this vignette, we want to look at methods that may help achieve better plots.
+
+# Data Preparation
+First, we load the required libraries:
+```{r packs}
+library(WayFindR)
+suppressMessages( library(igraph) )
+```
+
+Now we are ready to load our GPML file and convert it into an igraph object:
+```{r graph}
+xmlfile <- system.file("pathways/WP3850.gpml", package = "WayFindR")
+G <- GPMLtoIgraph(xmlfile)
+class(G)
+```
+
+# Plots
+First, we repeat the original plot of this pathway that we included in the "Getting Started" vignette
+(**Figure 1**).
+
+```{r fig.width = 10, fig.height = 10, fig.cap = "Figure 1: Circles and rectangles; layout with graphopt."}
+set.seed(13579)
+L <- igraph::layout_with_graphopt
+plot(G, layout=L)
+title("WP3850")
+nodeLegend("topleft", G)
+edgeLegend("bottomright", G)
+```
+
+Next, we change circles to ellipses, and try to find sensible sizes so the nodes can contain the labels
+(**Figure 2**). This helps with (mostly) fitting nodes to labels, but it doesn't do anything about layout
+issues.
+```{r fig02, fig.keep='last', fig.width=10, fig.height=10, fig.cap =  "Figure 2: Resized ellipses."}
+wc <- which(V(G)$shape == "circle")
+G <- set_vertex_attr(G, "shape", index = wc, value = "ellipse")
+plot(0,0, type = "n")
+opar <- par(mai = c(0.05, 0.05, 1, 0.05))
+sz <- (strwidth(V(G)$label) + strwidth("oo")) * 92
+G <- set_vertex_attr(G, "size", value = sz)
+G <- set_vertex_attr(G, "size2", value = strheight("I") * 2 * 92)
+set.seed(13579)
+L <- layout_with_graphopt(G)
+plot(G, layout = L)
+title("WP3850")
+edgeLegend("bottomleft", G)
+nodeLegend("bottomright", G)
+par(opar)
+```
+
+Now we use a different method to try to improve the layout (**Figure 3**). First, we compute coordinates
+from the `layout_nicely` algorithm, which mostly avoids edge-crossings when possibly, but doesn't alleviate
+the issue with overlapping nodes. Then we pass those coordinates to one of the "force-directed" layout
+algorithms (in this case, Kamada-Kawai, but several other options are available). The second step
+reduces the overlap problem.
+```{r fig03, fig.width = 10, fig.height=10,  fig.cap =  "Figure 3: Two=step layout."}
+set.seed(12345)
+L <- layout_nicely(G)
+L2 <- layout_with_kk(G, coords=L)
+plot(G, layout = L2)
+title("WP3850")
+edgeLegend("bottomleft", G)
+nodeLegend("bottomright", G)
+par(opar)
+```
+
+Finally, we switch R packages entirely. While `igraph` clearly has a much wider and more useful implementation
+of graph-theoretic algorithms from the computer science world, `Rgraphviz` has a better selection of node shapes
+and a different (though smaller) set of layout algorithms. We have wrapped umuch of the conversion from one
+format to another in our own  "`as.graphNEL`" function. The result (**Figure 4**) clearly does a better job of 
+fitting nodes to labels and avoiding overlaps, but it does have several edge crossings that are undesirable
+
+```{r fig04, fig.width = 10, fig.height=10,  fig.cap =  "Figure 4: Plot after conversion ot graphNEL."}
+GN <- as.graphNEL(G)
+suppressMessages( library(Rgraphviz) )
+plot(GN)
+```
+
+We can also explore different layout algorithms in Rgraphviz.
+```{r fig05, fig.width = 10, fig.height=10,  fig.cap =  "Figure 5: Rgraphviz plot with 'twopi' layout.", warning=FALSE}
+plot(GN, "twopi")
+```
+
+
+
+
