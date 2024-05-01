@@ -111,7 +111,7 @@ cymetrics <- data.frame(nCycles = length(cy),
 cymetrics
 ```
 
-```{r fig.width=8, fig.height=8}
+```{r fig.width=8, fig.height=8, fig.cap = "Figure 1: Example pathway (WP3850) from WikiPathways."}
 set.seed(93217)
 plot(S)
 nodeLegend("topleft", S)
@@ -119,8 +119,7 @@ edgeLegend("bottomright", S)
 
 ```
 
-# Degrees a
-nd Hubs
+# Degrees and Hubs
 In addition to numerous "global" graph metrics, the `igraph` package includes
 tools to compute numerous "local" metrics, which describe the properties of
 individual nodes or edges. In many networks (which, like pathways, can be
@@ -165,11 +164,12 @@ E(G, P = Earg)$MIM
 ```
 
 Now we can plot the subgraph that connects directly to the mTORC1 complex. 
-```{r fig.width=7, fig.height=7, fig.cap="Immediate portion of the pathway aronud the mTORC1 complex."}
+```{r fig.width=7, fig.height=7, fig.cap="Figure 2: Immediate portion of the pathway aronud the mTORC1 complex."}
 B <- adjacent_vertices(G, w, "out")
 subg <- subgraph(G, c(names(w), ids, as_ids(B[[1]])))
 plot(subg, lwd=3)
 ```
+
 We see that five of the inbound arrows are for the genes that are "contained" 
 in the complex, leaving seven arrows rhat have biological meaning for the pathway.
 
@@ -180,8 +180,10 @@ edges. It may be worth looking more closely at that node.
 w <- which(deg == 7)
 V(G)[w]$label
 ```
+
 This time, we get an actual gene, `FoxO`.
-```{r fig.width=7, fig.height=7, fig.cap="Immeduiate portion of the pathway around `FoxO."}
+
+```{r fig.width=7, fig.height=7, fig.cap="Figure 3: Immediate portion of the pathway around `FoxO."}
 B <- adjacent_vertices(G, w, "all")
 subg <- subgraph(G, c(names(w), as_ids(B[[1]])))
 plot(subg, lwd=3)

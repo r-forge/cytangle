@@ -11,7 +11,7 @@ importFrom("igraph",
            "neighbors", "subgraph", "set_graph_attr",
            "as_graphnel", "as_ids", "edge_attr",
            "graph_attr", "vertex_attr")
-importFrom("graphics", "legend")
+importFrom("graphics", "legend", "polygon")
 importFrom("utils", "head")
 importFrom("PubChemR", "get_cids", "get_properties") # Annotate KEGG compounds
 importFrom("KEGGREST", "keggGet", "keggList")        # Annotate KEGG glycans
@@ -36,6 +36,7 @@ export("collectEntries", "collectRelations", "collectReactions")
 export("GPMLtoIgraph", "nodeLegend", "edgeLegend")
 export("findCycles", "interpretCycle", "cycleSubgraph")
 
+export("as.graphNEL")
 ## objects for primary plotting routines
 #exportClasses("Cycle")
 
