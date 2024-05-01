@@ -34,13 +34,13 @@ igraphHexagon <- function(coords, v=NULL, params) {
   if (length(vertex.size2) != 1 && !is.null(v)) {
     vertex.size2 <- vertex.size2[v]
   }
-
-  x <- coords[,1]
-  y <- coords[,2]
-  dx <- vertex.size2/2
-  dy <- vertex.size/2
-  polygon(x = c(x - dx, x + dx, x + dx+dy, x + dx, x - dx, x- dx - dy),
-          y = c(y - dy, t - dy, y, y + dy, y + dy, y),
-          col = vertex.color)
+  mapply(coords[,1], coords[,2], vertex.color, vertex.size, vertex.size2,
+         FUN = function(x, y, bg, W, H) {
+           dx <- W/2
+           dy <- H/2
+           polygon(x = c(x - dx, x + dx, x + dx + dy, x + dx, x - dx, x- dx - dy),
+                   y = c(y - dy, y - dy, y, y + dy, y + dy, y),
+                   col = bg)
+         })
 }
 
