@@ -34,22 +34,35 @@ edgeColors <- c("gray", "gray", "gray",
            "forestgreen", "forestgreen",
            "cornflowerblue", "brown")
 names(edgeTypes) <- names(edgeColors) <- simpleEdges
+library(Polychrome)
+hexed <- gplots::col2hex(unique(edgeColors))
+set.seed(95387)
+cp <- createPalette(20, hexed, range = c(40, 70))
+keggE <- data.frame(name = c("compound", "association", "reversible", "irreversible"),
+                    type = c(rep("dashed", 3),"solid"),
+                    color = c("gold3", "purple", "royalblue1", "royalblue1"))
+x <- keggE$type
+names(x) <- keggE$name
+y <- keggE$color
+names(y) <- keggE$name
+
+edgeTypes <- c(edgeTypes, x)
+edgeColors <- c(edgeColors, y)
+simpleEdges <- c(simpleEdges, keggE$name)
 data.frame(simpleEdges, edgeTypes, edgeColors)
 plot(1, 1, type = "n")
-legend("center", simpleEdges, lwd=4, lty = edgeTypes, col = edgeColors, cex=2)
-
+legend("center", simpleEdges, lwd=4, lty = edgeTypes, col = edgeColors, cex=1.3)
 
 nodeTypes <- read.table("nodeTypes.txt", sep = "\t", header = FALSE)
 colnames(nodeTypes) <- c("Tag", "Count")
 nodeTypes
-
-library(Polychrome)
 data(Light24)
 set.seed(84984)
 pal <- createPalette(20, Light24[c(16,19)], range = c(70,90))
 nodeColors <- pal[c(5, 7, 4, 2, 6, 1, 3, 8, 9, 10, 10, 7, 11, 12)]
-nodeColors <- c(colorNames(nodeColors), "gray75", "navajowhite2")
-names(nodeColors) <- c(nodeTypes$Tag, "Group", "Undefined", "Shape", "EDGE", "Label")
+nodeColors <- c(colorNames(nodeColors), "gray75", "navajowhite2", "bisque3")
+names(nodeColors) <- c(nodeTypes$Tag, "Group", "Undefined",
+                       "Shape", "EDGE", "Label", "Ortholog")
 swatch(nodeColors)
 
 nodeTypes <- rbind(nodeTypes, c(Tag = "Group", Count = 0))
@@ -57,21 +70,23 @@ nodeTypes <- rbind(nodeTypes, c(Tag = "Undefined", Count = 0))
 nodeTypes <- rbind(nodeTypes, c(Tag = "Shape", Count = 0))
 nodeTypes <- rbind(nodeTypes, c(Tag = "EDGE", Count = 0))
 nodeTypes <- rbind(nodeTypes, c(Tag = "Label", Count = 0))
+nodeTypes <- rbind(nodeTypes, c(Tag = "Ortholog", Count = 0))
 nodeTypes$color <- nodeColors
+# should we change circles to ellipses here?
 nodeShapes <- c("circle", "circle", "circle", "rectangle", "circle",
                 "rectangle", "circle", "circle", "rectangle", "rectangle",
                 "rectangle", "circle", "rectangle", "circle", "circle",
-                "rectangle")
+                "rectangle", "hexagon")
 names(nodeShapes) <- names(nodeColors)
 nodeTypes$shape <- nodeShapes
 
-save(nodeShapes, file = "../../data/nodeShapes.rda")
-save(nodeColors, file = "../../data/nodeColors.rda")
-save(edgeTypes,  file = "../../data/edgeTypes.rda")
-save(edgeColors, file = "../../data/edgeColors.rda")
+save(nodeShapes, file = "../pkg/WayFindR/data/nodeShapes.rda")
+save(nodeColors, file = "../pkg/WayFindR/data/nodeColors.rda")
+save(edgeTypes,  file = "../pkg/WayFindR/data/edgeTypes.rda")
+save(edgeColors, file = "../pkg/WayFindR/data/edgeColors.rda")
 
 save(nodeShapes, nodeColors,
      edgeTypes, edgeColors,
-     file = "../../R/sysdata.rda")
+     file = "../pkg/WayFindR/R/sysdata.rda")
 
 
