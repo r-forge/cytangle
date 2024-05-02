@@ -93,7 +93,7 @@ getGlycanAll <- function(gnum) {
   val
 }
 
-collectEntries <- function(xmldoc, anno = c("one", "all", "batch")) {
+collectEntries <- function(xmldoc, anno = c("all", "one", "batch")) {
   if (inherits(xmldoc, "XMLInternalDocument")) {
     mydoc <- xmldoc
     xmldoc <- "internal"
@@ -139,8 +139,8 @@ collectEntries <- function(xmldoc, anno = c("one", "all", "batch")) {
       sel <- suppressMessages(select(org.Hs.eg.db, keys = key,
                                      columns = c("SYMBOL", "GENETYPE")))
       sym <- paste(sel$SYMBOL, collapse = ",")
-      subtyp <- paste(unique(sel$GENETYPE), collapse = ",")
-      repl <- c(nid, sym, paste(typ, subtyp, sep = "|"))
+#      subtyp <- paste(unique(sel$GENETYPE), collapse = ",")
+      repl <- c(nid, sym, typ) #paste(typ, subtyp, sep = "|"))
       self <- nam[1]
     } else if (typ == "compound") {
       ctype <- strsplit(nam, ":")
@@ -247,10 +247,9 @@ collectRelations <- function(xmldoc) {
     if (length(sub) == 0) {
       val <- typ
     } else {
-      sub <- sub[[1]]
-      subtyp <- xmlGetAttr(sub, "name")
-      extra <-xmlGetAttr(sub, "value")
-      val <- paste(c(typ, subtyp, extra), collapse = "/")
+      subtyp <- paste(sapply(sub, function(S) xmlGetAttr(S, "name")),
+                      collapse = ",")
+      val <- paste(c(typ, subtyp), collapse = "|")
     }
     repl <- c(src, tgt, val)
     if (length(repl) != 3) {

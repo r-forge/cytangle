@@ -37,6 +37,7 @@ export("GPMLtoIgraph", "nodeLegend", "edgeLegend")
 export("findCycles", "interpretCycle", "cycleSubgraph")
 
 export("as.graphNEL")
+export("KGMLtoIgraph")
 ## objects for primary plotting routines
 #exportClasses("Cycle")
 

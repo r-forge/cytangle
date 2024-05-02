@@ -11,7 +11,7 @@ Utility Functions to Parse KGML FIles
   the pathway to a mathematical graph that we can compute on.
 }
 \usage{
-collectEntries(xmldoc, anno = c("one", "all", "batch"))
+collectEntries(xmldoc, anno = c("all", "one", "batch"))
 collectRelations(xmldoc)
 collectReactions(xmldoc)
 }
