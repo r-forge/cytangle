@@ -138,9 +138,10 @@ collectEntries <- function(xmldoc, anno = c("all", "one", "batch")) {
       key <- gsub("hsa:", "", nam )
       sel <- suppressMessages(select(org.Hs.eg.db, keys = key,
                                      columns = c("SYMBOL", "GENETYPE")))
-      sym <- paste(sel$SYMBOL, collapse = ",")
-#      subtyp <- paste(unique(sel$GENETYPE), collapse = ",")
-      repl <- c(nid, sym, typ) #paste(typ, subtyp, sep = "|"))
+      sy <- sel$SYMBOL
+      if (length(sy) > 3) sy <- sy[1:3]
+      sym <- paste(sy, collapse = ",")
+      repl <- c(nid, sym, typ)
       self <- nam[1]
     } else if (typ == "compound") {
       ctype <- strsplit(nam, ":")
@@ -156,9 +157,9 @@ collectEntries <- function(xmldoc, anno = c("all", "one", "batch")) {
       Sys.sleep(1)
     } else if (typ %in% c("map", "ortholog")) {
       key <- getNodeSet(entry, "./graphics")[[1]]
-      label <- xmlGetAttr(key, "name")
+      label <- sub("^TITLE:", "", xmlGetAttr(key, "name"))
       repl <- c(nid, label, typ)
-      self <- nam
+      self <- sub("ko:", "", nam[1])
     } else if (typ == "group") {
       label <- xmlGetAttr(entry, "name")
       if (label == "undefined") { # why??
@@ -171,10 +172,10 @@ collectEntries <- function(xmldoc, anno = c("all", "one", "batch")) {
       stop("Bad entry type", typ, "\n")
     }
     if (length(repl) != 3) {
-      stop("Nodes: Bad replacement: ", paste(repl, collapse =", "))
+      stop("Entries: Bad replacement: ", paste(repl, collapse =", "))
     }
     nodeInfo[rowcount, ] <- repl
-    if (length(self) != 1) stop("Wrong replacement length for 'self'!\n")
+    if (length(self) > 1) stop("Entries: Bad name")
     R[rowcount] <- self
   }
   while(any(dd <- duplicated(R))) {

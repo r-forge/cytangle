@@ -26,7 +26,7 @@ edgeTypes <- c("solid",  "dotted", "twodash",
            "dashed", "solid",
            "twodash", "solid")
 edgeColors <- c("gray", "gray", "gray",
-           "cornflowerblue", "purple",
+           "cornflowerblue", "gold3",
            "orange", "forestgreen",
            "brown", "magenta",
            "cyan", "black",
@@ -38,9 +38,9 @@ library(Polychrome)
 hexed <- gplots::col2hex(unique(edgeColors))
 set.seed(95387)
 cp <- createPalette(20, hexed, range = c(40, 70))
-keggE <- data.frame(name = c("compound", "association", "reversible", "irreversible"),
-                    type = c(rep("dashed", 3),"solid"),
-                    color = c("gold3", "purple", "royalblue1", "royalblue1"))
+keggE <- data.frame(name = c("pathway", "compound", "reversible", "irreversible"),
+                    type = c("dotted", "dashed", "dashed","solid"),
+                    color = c("cyan", "royalblue1", "purple", "purple"))
 x <- keggE$type
 names(x) <- keggE$name
 y <- keggE$color
