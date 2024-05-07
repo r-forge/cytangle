@@ -83,7 +83,10 @@ KGMLtoIgraph <- function(xmldoc, returnLists = FALSE, debug = FALSE) {
 
   uu <- unique(c(edges$Source, edges$Target))
   needed <- nodes$GraphId %in% uu
-  nodes <- nodes[needed, , drop = FALSE]
+  if (any(!needed)) {
+    nodes <- nodes[needed, , drop = FALSE]
+    warning("KGML: Some nodes have no edge connections!\n")
+  }
 
   mygraph <-   graph_from_data_frame(edges,
                                      directed = TRUE,

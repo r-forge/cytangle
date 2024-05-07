@@ -154,7 +154,6 @@ collectEntries <- function(xmldoc, anno = c("all", "one", "batch")) {
       }
       repl <- c(nid, label, "compound")
       self <- key
-      Sys.sleep(1)
     } else if (typ %in% c("map", "ortholog")) {
       key <- getNodeSet(entry, "./graphics")[[1]]
       label <- sub("^TITLE:", "", xmlGetAttr(key, "name"))
