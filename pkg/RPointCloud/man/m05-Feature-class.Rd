@@ -47,7 +47,7 @@ Feature(values, name, colors, meaning, ...)
     feature. Note that this works perfectly well for binary factors
     represented as numeric 0-1 vectors. }
     \item{\code{colRamp}:}{A function created using the
-      \code{\link{colorRamp2}} function from the \code{\link{circlize}}
+      \code{\link[circlize]{colorRamp2}} function from the \code{\link[circlize]{circlize}}
       package.}
   }
 }

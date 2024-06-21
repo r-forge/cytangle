@@ -73,7 +73,7 @@ angleMeans(view, rips, cycle = NULL, dset, angleWidth = 20, incr = 15)
 
 }
 \seealso{
-  \code{\link{Cycle}}, \code{\link{LoopFeature}}, \code{\link{ripsDiag}}
+  \code{\link{Cycle}}, \code{\link{LoopFeature}}, \code{\link[TDA]{ripsDiag}}
 }
 \author{Kevin R. Coombes <krc@silicovore.com>}
 \examples{

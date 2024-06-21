@@ -76,7 +76,7 @@ cycleSupport(cycle, view)
   of the points contained in the cycle.
 }
 \seealso{
-  \code{\link{TDA}}, \code{\link{ripsDiag}}
+  \code{\link[TDA]{TDA}}, \code{\link[TDA]{ripsDiag}}
 }
 \author{Kevin R. Coombes <krc@silicovore.com>}
 \examples{

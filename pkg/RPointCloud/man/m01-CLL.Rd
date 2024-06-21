@@ -21,12 +21,12 @@ data(CLL)
       clinical measurements were recorded.}
     \item{\code{daisydist}}{A distance matrix, stored as a \code{dist}
       object, recording pairwise distances between the 266 CLL
-      patients. Distances were computed using the \code{\link{daisy}}
+      patients. Distances were computed using the \code{\link[cluster]{daisy}}
       function of Kaufmann and Rooseeuw, as implemented in the
       \code{cluster} R package.}
     \item{\code{ripDiag}}{This object  is a "Rips diagram". It was produced
-      by running the the \code{\link{ripsDiag}} function from the
-      \code{\link{TDA}} R package on the \code{daisydist} distance matrix.}
+      by running the the \code{\link[TDA]{ripsDiag}} function from the
+      \code{\link[TDA]{TDA}} R package on the \code{daisydist} distance matrix.}
   }
 }
 \source{

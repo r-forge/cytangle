@@ -29,7 +29,7 @@ voidFeature(feature, view, radius = 0.01, ...)
   first argument.
 }
 \details{
-  The 3D displays are implemented using the \code{\link{rgl}}
+  The 3D displays are implemented using the \code{\link[rgl]{rgl}}
   package. The \code{voidPlot} function adds a wire-frame two-cycle
   to the 3d scatter plot of the underlying data. If a feature is
   present, then the point are colored by the expression lecvel of that
@@ -49,7 +49,7 @@ data(CLL)
 featRai <- Feature(clinical[,"CatRAI"], "Rai Stage", c("green", "magenta"), c("High", "Low"))
 vd <- Cycle(ripdiag, 2, 95, "blue")
 mds <- cmdscale(daisydist, k = 3)
-voidPlot(vd, mds)
-voidFeature(featRai, mds, radius = 0.011)
+\dontrun{voidPlot(vd, mds)}
+\dontrun{voidFeature(featRai, mds, radius = 0.011)}
 }
 \keyword{ graphics }

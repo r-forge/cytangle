@@ -21,11 +21,11 @@ data(cytof)
       from a patient with acute myeloid leukemia (AML).} 
     \item{\code{AML10.node287.rips}}{This object  is a
       "Rips diagram". It was produced by running the
-      \code{\link{ripsDiag}} function from the \code{\link{TDA}} R
+      \code{\link[TDA]{ripsDiag}} function from the \code{\link[TDA]{TDA}} R
       package on the \code{AML10.node287} data matrix.}
     \item{\code{Arip}}{This object  is a "Rips diagram". It was produced
-      by running the \code{\link{ripsDiag}} function from the
-      \code{\link{TDA}} R package on the Euclidean distance matrix
+      by running the \code{\link[TDA]{ripsDiag}} function from the
+      \code{\link[TDA]{TDA}} R package on the Euclidean distance matrix
       between the single cells.}
   }
 }

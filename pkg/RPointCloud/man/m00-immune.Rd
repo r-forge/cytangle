@@ -27,7 +27,7 @@ data(treg)
       experiment was performed. Each column represents a different
       single cell. This matrix is a subset of a more complete data set
       of T regulatory cells (Tregs). It was produced using the
-      \code{downsample} function from the \code{\link{Mercator}}
+      \code{downsample} function from the \code{\link[Mercator]{Mercator}}
       package, which was in turn inspired by a similar routine used in
       the SPADE algorithm by Peng Qiu. A key point of the algorithm is
       to make sampling less likely from the densest part of the
@@ -38,8 +38,8 @@ data(treg)
       measure of distance between sigle-cell vectors in the \code{treg}
       data set.}
     \item{\code{rip}}{This object  is a "Rips diagram". It was produced
-      by running the the \code{\link{ripsDiag}} function from the
-      \code{\link{TDA}} R package on the \code{treg} subset of single cells.}
+      by running the the \code{\link[TDA]{ripsDiag}} function from the
+      \code{\link[TDA]{TDA}} R package on the \code{treg} subset of single cells.}
   }
 }
 \source{

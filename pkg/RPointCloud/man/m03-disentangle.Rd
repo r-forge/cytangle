@@ -4,7 +4,7 @@
 Disentangling Rips Diagrams From Their Initial Data Coordinates
 }
 \description{
-The \code{\link{ripsDiag}} function in the \code{TDA} package produces
+The \code{\link[TDA]{ripsDiag}} function in the \code{TDA} package produces
 very different results depending on whether you invoke it on a data
 matrix (expressed in terms of specific data coordinates) or a distance
 matrix (expressed as abstract indices). This function converts the
