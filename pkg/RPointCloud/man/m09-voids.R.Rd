@@ -49,7 +49,7 @@ data(CLL)
 featRai <- Feature(clinical[,"CatRAI"], "Rai Stage", c("green", "magenta"), c("High", "Low"))
 vd <- Cycle(ripdiag, 2, 95, "blue")
 mds <- cmdscale(daisydist, k = 3)
-\dontrun{voidPlot(vd, mds)}
-\dontrun{voidFeature(featRai, mds, radius = 0.011)}
+\donttest{voidPlot(vd, mds)}
+\donttest{voidFeature(featRai, mds, radius = 0.011)}
 }
 \keyword{ graphics }

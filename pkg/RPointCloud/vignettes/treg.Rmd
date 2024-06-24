@@ -13,7 +13,7 @@ vignette: >
 
 ```{r opts, echo=FALSE}
 knitr::opts_chunk$set(fig.width=8, fig.height=5)
-options(width=96)
+oopt <- options(width=96)
 .format <- knitr::opts_knit$get("rmarkdown.pandoc.to")
 .tag <- function(N, cap ) ifelse(.format == "html",
                                  paste("Figure", N, ":",  cap),
@@ -208,5 +208,6 @@ rm(opar)
 
 
 ```{r cleanup}
-rm(list = ls())
+options(oopt)
+#rm(list = ls())
 ```
