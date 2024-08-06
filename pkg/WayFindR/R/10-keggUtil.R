@@ -42,13 +42,14 @@ getIUPAC <- function(cnum) {
   if (exists(cnum, where = WAYcache)) {
     label <- WAYcache[[cnum]]
   } else {
-    suppressMessages( ans <- get_cids(cnum) )
-    cid <- as.data.frame(ans)[1,2]
-    if (cid == "No CID") {
+    suppressMessages( ans <- CIDs(get_cids(cnum)) )
+    if (ncol(ans) < 2) {
       label <- cnum
     } else {
+      cid <- as.data.frame(ans)[1,2]
       ans <- get_properties("IUPACName", cid)
-      label <- ans[[1]]$IUPACName
+      R <- as.data.frame(retrieve(ans))
+      label <- R$IUPACName
       }
     assign(cnum, label, envir = WAYcache)
   }
