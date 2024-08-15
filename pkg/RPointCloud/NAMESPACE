@@ -10,7 +10,8 @@ importFrom("graphics",
            "par", "mtext", "title")
 importFrom("stats",
            "dexp", "lm", "optimize", "predict", "runif", "sd",
-           "dgamma", "optim","density", "loess", "ecdf", "p.adjust")
+           "dgamma", "optim","density", "loess", "ecdf", "p.adjust",
+           "approx", "quantile")
 importFrom("grDevices",
            "colorRampPalette")
 importFrom("Mercator",
@@ -24,8 +25,11 @@ importFrom("circlize",
 importFrom("rgl",
            "open3d", "bg3d", "view3d", "axes3d",
            "spheres3d", "lines3d", "title3d")
+importFrom("ClassComparison", "MultiWilcoxonTest", "probDiff", "cutoffSignificant")
+importMethodsFrom("ClassComparison", "cutoffSignificant")
+importFrom("fitdistrplus", "fitdist")
 
-exportMethods("plot", "hist", "lines", "points", "image")
+exportMethods("plot", "hist", "lines", "points", "image", "cutoffSignificant")
 
 ## Rewrite Rips diagrams using index-offfstes instead of
 ## hard-wired coordinates
