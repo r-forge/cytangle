@@ -137,6 +137,11 @@ setMethod("plot", c("EBexpo", "missing"),
   invisible(x)
 })
 
+setMethod("hist", "EBexpo", function(x, ...) {
+  callNextMethod(x, ...)
+  invisible(x)
+})
+
 ### Extract a sub-histogram from the tail of the distibution
 tailHisto <- function(H, target) {
   L <- length(H$breaks)

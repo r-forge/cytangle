@@ -1,0 +1,12 @@
+###
+### NAMESPACE
+###
+
+import(methods)
+import(TDA)
+import(RPointCloud)
+
+importFrom("graphics", "legend")
+importFrom("stats", "approx", "density", "ecdf", "lm", "loess",
+           "p.adjust", "predict", "quantile", "sd")
+importFrom("fitdistrplus", "fitdist")

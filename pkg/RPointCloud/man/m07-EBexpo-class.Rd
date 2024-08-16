@@ -22,7 +22,7 @@ cutoff(target, prior, object)
 \S4method{plot}{EBexpo,missing}(x, prior = 1, significance = c(0.5, 0.8, 0.9),
                  ylim = c(-0.5, 1), xlab = "Duration",
                  ylab = "Probability(Interesting | Duration)", ...)
-\S4method{hist}{EBexpo}(x, xlab="", ylab="Prob(Interesting | X)", ...)
+\S4method{hist}{EBexpo}(x, ...)
 }
 \arguments{
   \item{edata}{A numeric vector; the observed data that we think comes
@@ -62,8 +62,8 @@ cutoff(target, prior, object)
     \item{plot(x, prior, post = c(0.5, 0.8, 0.9), ...):}{
       Produce a plot of a \code{EBexpo} object.
     }
-    \item{hist(x, xlab="", ylab="Prob(Interesting | X)", main="", ...):}{
-      Produce a histogram of teh observed distibution, with overlays.
+    \item{hist(x, ...):}{
+      Produce a histogram of the observed distibution, with overlays.
     }
   }
 }
