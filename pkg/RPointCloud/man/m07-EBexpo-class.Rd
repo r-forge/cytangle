@@ -42,16 +42,21 @@ cutoff(target, prior, object)
 }
 \section{Slots}{
   \describe{
-    \item{\code{xvals}:}{Inherited from \code{\link{MultiWilcoxonTest}}}
+    \item{\code{xvals}:}{Inherited from
+      \code{\link[ClassComparison]{MultiWilcoxonTest}}} 
     \item{\code{statistics}:}{Inherited from
-      \code{\link{MultiWilcoxonTest}}, Here, these are the same a the
-      \code{edata} slot from an \code{link{ExpoFit}} object.}
-    \item{\code{pdf}:}{Inherited from \code{\link{MultiWilcoxonTest}}}
-    \item{\code{theoretical.pdf}:}{Inherited from \code{\link{MultiWilcoxonTest}}}
-    \item{\code{unravel}:}{Inherited from \code{\link{MultiWilcoxonTest}}}
+      \code{\link[ClassComparison]{MultiWilcoxonTest}}, Here, these are
+      the same a the \code{edata} slot from an \code{link{ExpoFit}} object.}
+    \item{\code{pdf}:}{Inherited from
+      \code{\link[ClassComparison]{MultiWilcoxonTest}}} 
+    \item{\code{theoretical.pdf}:}{Inherited from
+      \code{\link[ClassComparison]{MultiWilcoxonTest}}} 
+    \item{\code{unravel}:}{Inherited from
+      \code{\link[ClassComparison]{MultiWilcoxonTest}}} 
     \item{\code{groups}:}{Inherited from
-      \code{\link{MultiWilcoxonTest}}, but not used}
-    \item{\code{call}:}{Inherited from \code{\link{MultiWilcoxonTest}}}
+      \code{\link[ClassComparison]{MultiWilcoxonTest}}, but not used}
+    \item{\code{call}:}{Inherited from
+      \code{\link[ClassComparison]{MultiWilcoxonTest}}} 
     \item{\code{h0}:}{See \code{\link{ExpoFit}}}
     \item{\code{lambda}:}{See \code{\link{ExpoFit}}}
     \item{\code{mu}:}{See \code{\link{ExpoFit}}}
