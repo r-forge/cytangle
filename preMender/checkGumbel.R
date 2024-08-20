@@ -8,28 +8,33 @@ if (!requireNamespace("dgumbel")) {
 }
 library(dgumbel)
 
-library(RPointCloud)
+library(EBGLIDE)
 
-RPointCloud:::dgumbel
-RPointCloud:::dlgumbel
+EBGLIDE:::dgumbel
+EBGLIDE:::dlgumbel
 args(gumbel::dgumbel)
 args(dgumbel::dgumbel)
-x <- seq(-4, 2, length = 100)
-rp <- RPointCloud:::dgumbel(x, 0, 1)
+x <- seq(-5, 5, length = 500)
+rp <- EBGLIDE:::dgumbel(x, 0, 1)
 g <- dgumbel::dgumbel(x, 0, 1)
 summary(g - rp) # equal to 15 decimal places
-lrp <- RPointCloud:::dlgumbel(x)
+lrp <- EBGLIDE:::dlgumbel(x)
+par(lwd=2)
+plot(x, lrp, type="l")
+lines(x, rp, col = "orange")
+legend("topleft", c("LeftSkewed", "RightSkewed"), lwd=2,
+       col = c("black", "orange"))XS
 
-RPointCloud:::pgumbel
-RPointCloud:::plgumbel
+EBGLIDE:::pgumbel
+EBGLIDE:::plgumbel
 args(gumbel::pgumbel)
 args(dgumbel::pgumbel)
 q <- seq(0.01, 0.99, 0.01)
-rp <- RPointCloud:::pgumbel(q, 0, 1)
+rp <- EBGLIDE:::pgumbel(q, 0, 1)
 g <- dgumbel::pgumbel(q, 0, 1)
 summary(g - rp) # equal
 
-RPointCloud:::qgumbel
+EBGLIDE:::qgumbel
 args(dgumbel::qgumbel)
 
-RPointCloud:::process
+EBGLIDE:::process
