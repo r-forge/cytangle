@@ -1,6 +1,6 @@
 ## Probably newer versions
 
-credible_cutoff <- function(target = 0.99,prior,object) {
+Xcredible_cutoff <- function(target = 0.99,prior,object) {
   X0 <- object@X0
   pd <- postEst(prior,object)
   top <- quantile(pd,target)
@@ -22,7 +22,7 @@ credible_cutoff <- function(target = 0.99,prior,object) {
   }
 }
 
-calculate_scores <- function(true,pred) {
+Xcalculate_scores <- function(true,pred) {
   true_pos = 0
   false_pos = 0
   false_neg = 0
@@ -52,7 +52,7 @@ calculate_scores <- function(true,pred) {
   return(list(precision, recall, f1, specificity))
 }
 
-binary_calculate_scores <- function(true,pred) {
+Xbinary_calculate_scores <- function(true,pred) {
   true_pos = 0
   false_pos = 0
   false_neg = 0
@@ -104,7 +104,7 @@ binary_calculate_scores <- function(true,pred) {
 #   return(list)
 # }
 
-calculate_counts <- function(total, sig_loops, called_loops, ret_list) {
+Xcalculate_counts <- function(total, sig_loops, called_loops, ret_list) {
   if (called_loops == sig_loops) {
     TP <- sig_loops
     FN <- 0

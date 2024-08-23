@@ -11,8 +11,8 @@ ripper <- ripsDiag(joint, maxdimension=1, maxscale = 3,
                    dist = "euclidean", library = "Dionysus",
                    location = TRUE)
 RD <- ripper$diagram
-gum <- EBGLIDE:::process(RD)
-tack <- EBGLIDE:::test(gum)
+gum <- transformDurations(RD)
+tack <- testLGumbel(gum)
 cb <- EBGLIDE:::con_band(RD)
 
 set.seed(97531)
@@ -21,8 +21,8 @@ ripped <- ripsDiag(jag, maxdimension=1, maxscale = 3,
                    dist = "euclidean", library = "Dionysus",
                    location = TRUE)
 RD2 <- ripped$diagram
-gum <- EBGLIDE:::process(RD)
-tack <- EBGLIDE:::test(gum)
+gum <- transformDurations(RD)
+tack <- testLGumbel(gum)
 cb2 <- EBGLIDE:::con_band(RD2)
 
 exp(cb)

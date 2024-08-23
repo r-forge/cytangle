@@ -97,9 +97,9 @@ setMethod("hist", "EBLGumbel", function(x, xlab="", ylab="Prob(Interesting | X)"
   invisible(x)
 })
 
-
-fitPrior <- function (object, minp, maxp, resn = 1000)  #get minimum p0 to keep postriors nonnegative
-{
+## 'object' should be of clsas EBLGumbel
+fitLGPrior <- function (object, minp, maxp, resn = 1000) {
+### get minimum p0 to keep postriors nonnegative
   sap <- sapply(sip <- seq(minp, maxp, length = resn),
                 function(x) min(postEst(x,object)))
   prior <- sip[max(which(sap >= 0))]

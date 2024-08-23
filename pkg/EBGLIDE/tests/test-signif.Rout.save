@@ -28,8 +28,8 @@ Type 'q()' to quit R.
 +                    dist = "euclidean", library = "Dionysus",
 +                    location = TRUE)
 > RD <- ripper$diagram
-> gum <- EBGLIDE:::process(RD)
-> tack <- EBGLIDE:::test(gum)
+> gum <- transformDurations(RD)
+> tack <- testLGumbel(gum)
 > cb <- EBGLIDE:::con_band(RD)
 > 
 > set.seed(97531)
@@ -38,8 +38,8 @@ Type 'q()' to quit R.
 +                    dist = "euclidean", library = "Dionysus",
 +                    location = TRUE)
 > RD2 <- ripped$diagram
-> gum <- EBGLIDE:::process(RD)
-> tack <- EBGLIDE:::test(gum)
+> gum <- transformDurations(RD)
+> tack <- testLGumbel(gum)
 > cb2 <- EBGLIDE:::con_band(RD2)
 > 
 > exp(cb)
@@ -54,4 +54,4 @@ Type 'q()' to quit R.
 > 
 > proc.time()
    user  system elapsed 
-   4.73    0.53    5.43 
+   2.76    0.15    2.96 

@@ -4,7 +4,7 @@
 ## Need to attribute this code to: https://doi.org/10.1038/s41598-023-37842-2
 
 ## Weird 1D duration transformation in order to fit a left skewed gumbel distribution
-process <- function(diag, A = 1, dimension = 1) {
+transformDurations <- function(diag, A = 1, dimension = 1) {
   P <- diag[which(diag[, 1] == dimension), "Death"] / diag[which(diag[, 1] == dimension), "Birth"]
   P <- log(log(P))
   B <- digamma(1) - mean(P) * A
@@ -14,7 +14,7 @@ process <- function(diag, A = 1, dimension = 1) {
 
 ## Significance test for 1D durations
 # the weird input is the 1D durations after transformation
-test <- function(weird, alpha = 0.05) {
+testLGumbel <- function(weird, alpha = 0.05) {
   x <- seq(0.000001, 0.999999, by = 0.000001)
   dist <- log(-log(x))
   X <- weird

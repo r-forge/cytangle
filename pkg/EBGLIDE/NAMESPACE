@@ -4,9 +4,13 @@
 
 import(methods)
 import(TDA)
-import(RPointCloud)
+#import(RPointCloud)
 
-importFrom("graphics", "legend")
+importFrom("graphics", "legend", "lines")
 importFrom("stats", "approx", "density", "ecdf", "lm", "loess",
            "p.adjust", "predict", "quantile", "sd")
 importFrom("fitdistrplus", "fitdist")
+
+export("transformDurations", "testLGumbel")
+export("fitLGPrior", "calculate_counts",
+       "old_cutoff", "new_cutoff", "credible_cutoff")
