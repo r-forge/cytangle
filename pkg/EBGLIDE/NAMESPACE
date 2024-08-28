@@ -9,6 +9,7 @@ import(TDA)
 importFrom("graphics", "legend", "lines")
 importFrom("stats", "approx", "density", "ecdf", "lm", "loess",
            "p.adjust", "predict", "quantile", "sd")
+importFrom("splines", "bs")
 importFrom("fitdistrplus", "fitdist")
 
 export("transformDurations", "testLGumbel")

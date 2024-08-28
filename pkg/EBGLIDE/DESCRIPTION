@@ -1,5 +1,5 @@
 Package: EBGLIDE
-Version: 0.0.6
+Version: 0.0.7
 Date: 2024-08-28
 Title: Testing Significance of Topological Loops and Voids
 Authors@R: c(person("Kevin R.", "Coombes", role = c("aut", "cre"),
@@ -14,7 +14,7 @@ Description: The method of topolgical data analysis uses persistent homology
   distinguish transient noise from long-lasting biologically meaningful
   structure. EBGLIDE provides tools to help solve this problem.
 Depends: R (>= 3.5)
-Imports: methods, graphics, stats, TDA, fitdistrplus
+Imports: methods, graphics, stats, TDA, splines, fitdistrplus
 Suggests: knitr, rmarkdown
 License: Artistic-2.0
 URL: http://oompa.r-forge.r-project.org/
