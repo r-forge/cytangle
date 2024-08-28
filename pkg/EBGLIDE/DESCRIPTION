@@ -1,6 +1,6 @@
 Package: EBGLIDE
-Version: 0.0.5
-Date: 2024-08-21
+Version: 0.0.6
+Date: 2024-08-28
 Title: Testing Significance of Topological Loops and Voids
 Authors@R: c(person("Kevin R.", "Coombes", role = c("aut", "cre"),
                     email = "krc@silicovore.com"),
