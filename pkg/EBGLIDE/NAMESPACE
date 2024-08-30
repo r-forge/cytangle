@@ -13,7 +13,8 @@ importFrom("splines", "bs")
 importFrom("fitdistrplus", "fitdist")
 
 export("transformDurations", "testLGumbel")
-export("calculate_counts", "old_cutoff", "new_cutoff", "credible_cutoff")
+export("calculate_counts", "calculate_scores",
+       "old_cutoff", "new_cutoff", "credible_cutoff")
 
 exportClasses("EBLGumbel")
 export("EBLGumbel", "fitLGPrior", "postEst")
