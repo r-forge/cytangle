@@ -79,7 +79,7 @@ collectShapes(xmldoc)
   alphanumeric identifiers of items decribing nodes. The \code{MIM}
   column is the edge type in GPML, which often contains terminology based
   on the "Molecular Interaction Map" standard. When creating an
-  \code{\link{igraph}} object from a pathway, the first two columns are
+  \code{\link[igraph]{igraph}} object from a pathway, the first two columns are
   used as identifiers to define the nodes at each end of the edge.
 
   The \code{collectNodes} function returns a data frame with three

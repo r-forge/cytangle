@@ -10,7 +10,7 @@ Converting GPML FIles to Igraph Objects
   Takes an XML file, either  GPML from WikiPathways, or KGML from KEGG,
   extracts the entities therein, 
   and makes minor adjustments necessary to convert it into an
-  \code{\link{igraph}} object. Along the way, it assigns a consistent set
+  \code{\link[igraph]{igraph}} object. Along the way, it assigns a consistent set
   of colors, line types, and shapes. 
 }
 \usage{
@@ -39,12 +39,12 @@ edgeLegend(x, graph)
   the \code{WayFindR}package. They achieve the primary goal of
   converting pathways from one of the biological graph XML file formats
   into a mathematical graph, in the format defined by the
-  \code{\link{igraph}} package. At that point, we can apply a wide
+  \code{\link[igraph]{igraph}} package. At that point, we can apply a wide
   variety of graph algorithms from computer science in  order to
   "compute on biological pathways".
 
   The implementation of these functions relies on the utility functions
-  described in \link{gpml-utility} or \code{kgml-utility}.
+  described in \code{\link{gpml-utility}} or \code{\link{kgml-utility}}.
 
   Briefly, the first algorithm starts by collecting all nodes
   (\code{DataNodes} in GPML) and edges (\code{Interactions} in GPML)
@@ -96,10 +96,10 @@ edgeLegend(x, graph)
   graph. The \code{nodes} data frame includes columns for \code{color}
   and \code{shape}, and the \code{edges} data frame includes columns for
   \code{color} and \code{lty} that are recognized and used by the
-  \code{\link{plot.igraph}} function.
+  \code{\link[igraph]{plot.igraph}} function.
   
   Both \code{nodeLegend} and \code{edgeLegend} invisibly return the same
-  value that is returned by the \code{\link{legend}} function that is
+  value that is returned by the \code{\link[graphics]{legend}} function that is
   used in the implementation.
 }
 \author{Kevin R. Coombes \email{krc@silicovore.com},

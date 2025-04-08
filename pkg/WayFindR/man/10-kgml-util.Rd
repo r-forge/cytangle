@@ -19,7 +19,7 @@ collectReactions(xmldoc)
   \item{xmldoc}{Either the name of an XML file meeting the
     specifications of the KEGG Genomic Markup Language (KGML), or an
     object of class \code{XMLInternalDocument} obtained by running such
-    a file through the \code{\link{xmlParseDoc}} function of the \code{XML}
+    a file through the \code{\link[XML]{xmlParseDoc}} function of the \code{XML}
     package. (All of the functions described here will call
     \code{xmlParseDoc} if it hasn't already been used.)}
   \item{anno}{Choose a method for analyzing KEGG compounds and
@@ -39,10 +39,10 @@ collectReactions(xmldoc)
   (e.g., G12345). These serve as identifieers into their local
   databases, and we want to convert them (usually) to IUPAC names to
   display on nodes in the final graph. Method "one" makes a separate
-  call to \code{\link{keggGet}} from the \code{KEGGREST} package. Method
+  call to \code{\link[KEGGREST]{keggGet}} from the \code{KEGGREST} package. Method
   "batch" makes calls in batches of ten identifiers, using the fact that
   \code{keggGet} enforces that limit. Method "all" makes a single call
-  using \code{\link{keggLink}} to download the entire database. Note
+  using \code{\link[KEGGREST]{keggLink}} to download the entire database. Note
   that all three methods cache their results in a package-local
   environment to avoid repeating the same call. In a profiling test of
   one moderat sized  pathway, a single invocation of
