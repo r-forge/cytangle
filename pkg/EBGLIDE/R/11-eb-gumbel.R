@@ -136,7 +136,7 @@ new_cutoff <- function(target, prior, object) {
   return(max(X0 + 1))
 }
 
-credible_cutoff <- function(target = 0.99,prior,object) {
+OLD_credible_cutoff <- function(target = 0.99,prior,object) {
   X0 <- object@X0
   pd <- postEst(prior,object)
   top <- quantile(pd,target)
@@ -150,70 +150,25 @@ credible_cutoff <- function(target = 0.99,prior,object) {
   }
 }
 
-calculate_scores <- function(true,pred) {
-  true_pos = 0
-  false_pos = 0
-  false_neg = 0
-  for (index in 1:length(true)) {
-    real <- true[index]
-    guess <- pred[index] 
-    
-    if (real == guess) {
-      true_pos = true_pos + real
-    }
-    else if (guess > real) {
-      true_pos = true_pos + real
-      false_pos = false_pos + (guess - real)
-    }
-    else if (real > guess) {
-      true_pos = true_pos + guess
-      false_neg = false_neg + (real - guess)
+credible_cutoff <- function(target = 0.99,prior,object) {
+  X0 <- object@X0
+  pd <- postEst(prior,object)
+  top <- quantile(pd,target)
+  
+  for (index in seq_along(pd)) {
+    value <- pd[index]
+    if (value >= top){
+      if (X0[index] > 1) {
+        co <- X0[index]
+        return_list <- list(posterior_distribution = pd, 
+          posterior_prob = top, cutoff = co)
+        return(return_list)
+      } else {
+        return_list <- list(posterior_distribution = pd, 
+          posterior_prob = top, cutoff = NA)
+        return(return_list)
+      }
     }
   }
-  precision = true_pos / (true_pos + false_pos)
-  recall = true_pos / (true_pos + false_neg)
-  f1 = (2 * precision * recall) / (precision + recall)
-  return(list(precision, recall, f1))
 }
 
-binary_calculate_scores <- function(true,pred) {
-  true_pos = 0
-  false_pos = 0
-  false_neg = 0
-  for (index in 1:length(true)) {
-    real <- true[index]
-    guess <- pred[index]
-    
-    if (real == guess) {
-      true_pos = true_pos + 1
-    }
-    else if (guess > real) {
-      false_pos = false_pos + 1
-    }
-    else if (real > guess) {
-      false_neg = false_neg + 1
-    }
-  }
-  precision = true_pos / (true_pos + false_pos)
-  recall = true_pos / (true_pos + false_neg)
-  f1 = (2 * precision * recall) / (precision + recall)
-  return(list(precision, recall, f1))
-}
-
-calculate_counts <- function(count, sig_count,pred_num,list) {
-  if(pred_num == sig_count) {
-    list[[1]] <- list[[1]] + sig_count
-    list[[3]] <- list[[3]] + (count - sig_count)
-  }
-  else if (pred_num > sig_count) {
-    list[[1]] <- list[[1]] + (sig_count)
-    list[[2]] <- list[[2]] + (pred_num - sig_count)
-    list[[3]] <- list[[3]] + (count - pred_num)
-  }
-  else if (sig_count > pred_num) {
-    list[[1]] <- list[[1]] + pred_num
-    list[[3]] <- list[[3]] + (count - sig_count)
-    list[[4]] <- list[[4]] + (sig_count - pred_num)
-  }
-  return(list)
-}
