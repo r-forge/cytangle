@@ -42,15 +42,14 @@ getIUPAC <- function(cnum) {
   if (exists(cnum, where = WAYcache)) {
     label <- WAYcache[[cnum]]
   } else {
-    suppressMessages( ans <- CIDs(get_cids(cnum)) )
-    if (ncol(ans) < 2) {
+    kg <- try(keggGet(cnum), silent = TRUE)
+    if (inherits(kg, "try-error")) {
       label <- cnum
     } else {
-      cid <- as.data.frame(ans)[1,2]
-      ans <- get_properties("IUPACName", cid)
-      R <- as.data.frame(retrieve(ans))
-      label <- R$IUPACName
-      }
+      label <- kg[[1]]$NAME[1]
+      label <- ifelse(is.null(label) | label == "",
+                      cnum, label)
+    }
     assign(cnum, label, envir = WAYcache)
   }
   label
@@ -153,6 +152,7 @@ collectEntries <- function(xmldoc, anno = c("all", "one", "batch")) {
       } else { ##if (tag == "cpd")
         label <- cpdanno(key)
       }
+      if(is.null(label)) label <- key
       repl <- c(nid, label, "compound")
       self <- key
     } else if (typ %in% c("map", "ortholog")) {

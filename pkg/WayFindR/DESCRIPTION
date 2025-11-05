@@ -1,6 +1,6 @@
 Package: WayFindR
-Version: 0.3.1
-Date: 2025-04-08
+Version: 0.5.0
+Date: 2025-11-05
 Title: Computing Graph Structures on WikiPathways
 Authors@R: c(person("Kevin R.", "Coombes", role = c("aut", "cre"),
                     email = "krc@silicovore.com"),
@@ -11,7 +11,7 @@ Description: Converts pathways from 'WikiPathways' GPML format or
   cycles in the resulting graphs and determine which ones involve
   negative feedback (inhibition).
 Depends: R (>= 3.5)
-Imports: graphics, utils, XML, igraph, KEGGREST, PubChemR (>= 2.0),
+Imports: graphics, utils, XML, igraph, KEGGREST,
   AnnotationDbi, org.Hs.eg.db, DescTools, Rgraphviz
 Suggests: knitr, rmarkdown, Polychrome
 License: Artistic-2.0

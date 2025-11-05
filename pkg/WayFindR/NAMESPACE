@@ -11,11 +11,9 @@ importFrom("igraph",
            "neighbors", "subgraph", "set_graph_attr",
            "as_graphnel", "as_ids", "edge_attr",
            "graph_attr", "vertex_attr")
+importFrom("KEGGREST", "keggGet",  "keggList")
 importFrom("graphics", "legend", "polygon")
 importFrom("utils", "head")
-importFrom("PubChemR", "get_cids", "get_properties",
-           "CIDs", "retrieve")                       # Annotate KEGG compounds
-importFrom("KEGGREST", "keggGet", "keggList")        # Annotate KEGG glycans
 importFrom("AnnotationDbi", "select")                # Annotate KEGG genes
 importFrom("org.Hs.eg.db", "org.Hs.eg.db")           # Annotate KEGG genes
 importFrom("DescTools", "DrawEllipse")
