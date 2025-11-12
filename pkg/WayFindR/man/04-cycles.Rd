@@ -1,6 +1,7 @@
 \name{gpml-cycles}
 \alias{gpml-cycles}
 \alias{findCycles}
+\alias{discoverCycles}
 \alias{interpretCycle}
 \alias{cycleSubgraph}
 \title{
@@ -12,6 +13,7 @@ Finding Cycles in Biological Pathways
 }
 \usage{
 findCycles(graph)
+discoverCycles(graph, nsteps = 50, futility = 20)
 interpretCycle(v, graph)
 cycleSubgraph(graph, cycles)
 }
@@ -21,6 +23,9 @@ cycleSubgraph(graph, cycles)
   \item{v}{One of the cycles produced by the \code{findCycles} function.}
   \item{cycles}{The list of cycles produced by the \code{findCycles}
     function.}
+  \item{nsteps}{Length of each random walk}
+  \item{futility}{After this number of random walks without seeing a new
+    cycle, halt.}
 }
 \details{
   The implementation of the \code{findCycles} function, while provably
@@ -38,11 +43,21 @@ cycleSubgraph(graph, cycles)
   value to the user, it chooses a unique representative for each such
   cycle by finding the "earliest" node, based on its index, to start
   from.
+
+  As documented in the \code{igraph} package, the \code{all_simple_paths}
+  function scales exponentially and may run out of memory, If that
+  happens (or if you suspect that will happen), you can fall back to the
+  \code{discoverCycles} function. This function makes no claim to
+  completeness. Instead, it simply makes a lot of random walks through
+  the graph, testing each time whether the walk revealed a cycle. If a
+  consecutive set of \code{futililty} random walks fails to discover a
+  new cycle, it halts.
 }
 \value{
   The \code{findCycles} function returns a list. Each element of the
   list is a cycle, repreented by a named character vector specifying the
-  nodes in the order that they can be traversed.
+  nodes in the order that they can be traversed. The
+  \code{discoverCycles} function forces its output into the same format.
 
   The \code{interpretCycle} function returns a matrix with two columns,
   \code{genes} and \code{arrows}. Each row contains the gene name (or

@@ -6,7 +6,7 @@ importFrom("XML",
            "getNodeSet", "xmlGetAttr", "xmlNamespace",
            "xmlParseDoc", "xmlRoot", "xmlParent")
 importFrom("igraph",
-           "E", "V", "all_simple_paths",
+           "E", "V", "all_simple_paths", "random_walk",
            "get.edge.ids", "graph_from_data_frame",
            "neighbors", "subgraph", "set_graph_attr",
            "as_graphnel", "as_ids", "edge_attr",
@@ -33,7 +33,8 @@ export("collectEntries", "collectRelations", "collectReactions")
 
 ## graph and cycle functions
 export("GPMLtoIgraph", "nodeLegend", "edgeLegend")
-export("findCycles", "interpretCycle", "cycleSubgraph")
+export("findCycles", "discoverCycles",
+       "interpretCycle", "cycleSubgraph")
 
 export("as.graphNEL")
 export("KGMLtoIgraph")

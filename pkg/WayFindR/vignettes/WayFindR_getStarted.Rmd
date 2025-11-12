@@ -183,7 +183,7 @@ Once the pathway is converted, WayFindR provides a suite of tools for
 in-depth analysis. Let's explore how to find cycles within the pathway graph
 (if they exist).
 
-```{r}
+```{r fc}
 cyc <- findCycles(G)
 length(cyc)
 cyc
