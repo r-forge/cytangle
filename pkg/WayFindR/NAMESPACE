@@ -14,8 +14,6 @@ importFrom("igraph",
 importFrom("KEGGREST", "keggGet",  "keggList")
 importFrom("graphics", "legend", "polygon")
 importFrom("utils", "head")
-importFrom("AnnotationDbi", "select")                # Annotate KEGG genes
-importFrom("org.Hs.eg.db", "org.Hs.eg.db")           # Annotate KEGG genes
 importFrom("DescTools", "DrawEllipse")
 importFrom("Rgraphviz", "agopen", "edgeNames")
 

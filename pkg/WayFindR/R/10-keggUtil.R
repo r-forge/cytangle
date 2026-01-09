@@ -93,6 +93,7 @@ getGlycanAll <- function(gnum) {
   val
 }
 
+annwarn <- 0
 collectEntries <- function(xmldoc, anno = c("all", "one", "batch")) {
   if (inherits(xmldoc, "XMLInternalDocument")) {
     mydoc <- xmldoc
@@ -136,8 +137,18 @@ collectEntries <- function(xmldoc, anno = c("all", "one", "batch")) {
     nam <- strsplit(xmlGetAttr(entry, "name"), " ")[[1]]
     if (typ == "gene") { # figure out gene labels
       key <- gsub("hsa:", "", nam )
-      sel <- suppressMessages(select(org.Hs.eg.db, keys = key,
-                                     columns = c("SYMBOL", "GENETYPE")))
+      if (requireNamespace("org.Hs.eg.db", quietly = TRUE)) {
+        sel <- suppressMessages(AnnotationDbi::select(
+                                org.Hs.eg.db::org.Hs.eg.db,
+                                keys = key,
+                                columns = c("SYMBOL", "GENETYPE")))
+      } else {
+        if (annwarn == 0) {
+          annwarn <- 1
+          warning("Suggested packages 'AnnotationDbi' and 'org.Hs.eg.db' must be installed for full annotation of KEGG gene symbols.\n")
+          }
+        sel <- data.frame(SYMBOL = key, GENETYPE = "unknown")
+      }
       sy <- sel$SYMBOL
       if (length(sy) > 3) sy <- sy[1:3]
       sym <- paste(sy, collapse = ",")
