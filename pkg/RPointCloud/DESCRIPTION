@@ -1,6 +1,6 @@
 Package: RPointCloud
-Version: 0.8.0
-Date: 2024-08-19
+Version: 0.9.0
+Date: 2026-02-17
 Title: Visualizing Topological Loops and Voids
 Authors@R: c(person("Kevin R.", "Coombes", role = c("aut", "cre"),
                     email = "krc@silicovore.com"),
