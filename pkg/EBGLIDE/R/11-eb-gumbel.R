@@ -6,8 +6,8 @@ pgumbel <- function(q, mu, beta) exp(-exp((mu-q)/beta)) #CDF
 qgumbel <- function(p, mu, beta) mu-beta*log(-log(p)) #quantile
 
 GumbelFit <- function(data, resn = 200){
-  breaks <- seq(0, max(data), length = resn)
-  hist <- hist(data,breaks =breaks, plot = F)
+#  breaks <- seq(0, max(data)+ 0.0001, length = resn)
+  hist <- hist(data, breaks = resn, plot = FALSE)
   X0 <- hist$mids
   pdf <- hist$density
   fit <- fitdist(data, "gumbel", start = list(mu = mean(data),beta = sd(data)))
@@ -55,8 +55,8 @@ EBLGumbel <- function(data, resn = 200, method=c("loess", "density", "spline")) 
   method <- match.arg(method)
   breaks <- seq(min(data), max(data), length = resn)
   hist <- hist(data, breaks = breaks, plot = FALSE)
-  X0 <- hist$mids[hist$mids > -3]
-  pdf <- hist$density[hist$mids > -3]
+  X0 <- hist$mids# [hist$mids > -3]
+  pdf <- hist$density#[hist$mids > -3]
   theo <- lgumbelpdf(X0)
   loessMethod <- function(X0, pdf) {
     LO <- loess(pdf ~ X0)
